@@ -46,11 +46,12 @@
 
    const normalize = (d) => {
     if (!d) return "";
-    // This regex pulls out the first M/D pattern it finds
+    // This regex looks for digits/digits, ignoring everything else
     const match = d.match(/(\d{1,2})\/(\d{1,2})/);
     if (!match) return "";
-    return `${parseInt(match[1])}/${parseInt(match[2])}`;
-    };
+    // Forces "04/08" and "4/8" and "04/08  " all into "4/8"
+    return `${parseInt(match[1])}/${parseInt(match[2])}`; 
+};
 
     function getDistance(lat1, lon1, lat2, lon2) {
         const R = 3958.8;
