@@ -2,13 +2,10 @@ const fs = require('fs');
 const path = require('path');
 
 export default function handler(req, res) {
-    // Use path.resolve and join with the current working directory
-    // This is the most reliable way to find root files in a Vercel environment
     const phantomPath = path.join(process.cwd(), 'phantom-data.json');
     const raggedPath = path.join(process.cwd(), 'ragged-data.json');
 
     try {
-        // Check if files exist before reading to provide better error logging
         if (!fs.existsSync(phantomPath) || !fs.existsSync(raggedPath)) {
             console.error("Data files missing at:", process.cwd());
             return res.status(404).json({ error: "One or more data files not found" });
@@ -24,9 +21,12 @@ export default function handler(req, res) {
 
         const getSortTime = (d) => {
             if (!d) return 0;
-            let datePart = d.split(' ')[0]; 
+
+            // FIX: Use the regex split here to handle the double-spaces in your JSON
+            // This grabs the date part (04/19/2026) regardless of how many spaces follow it
+            let datePart = d.trim().split(/\s+/)[0]; 
             
-            // Ensures a full date string for the Date constructor
+            // Ensures a full date string for the Date constructor if year is missing
             if ((datePart.match(/\//g) || []).length < 2) {
                 datePart += '/2026';
             }
