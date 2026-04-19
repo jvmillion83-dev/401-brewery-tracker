@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>401 Brewery Tracker</title>
+    <style>
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background-color: #121212; color: white; margin: 0; padding: 15px; display: flex; flex-direction: column; align-items: center; }
+        h1 { color: #ffcc00; font-size: 1.5rem; margin-top: 20px; text-align: center; }
+        #date-picker { display: flex; overflow-x: auto; width: 100%; max-width: 400px; padding: 15px 5px; gap: 12px; scroll-snap-type: x mandatory; -webkit-overflow-scrolling: touch; scrollbar-width: none; }
+        #date-picker::-webkit-scrollbar { display: none; }
+        .date-pill { min-width: 65px; padding: 12px 8px; background: #1e1e1e; border: 1px solid #333; border-radius: 12px; text-align: center; cursor: pointer; flex-shrink: 0; transition: 0.2s; scroll-snap-align: center; }
+        .date-pill:hover { border-color: #ffcc00; }
+        .date-pill.active { background: #ffcc00; color: #121212; border-color: #ffcc00; font-weight: bold; transform: scale(1.1); }
+        .date-pill span { display: block; font-size: 0.7rem; text-transform: uppercase; opacity: 0.8; }
+        .date-pill strong { font-size: 1.2rem; display: block; margin-top: 2px; }
+        #truck-container { width: 100%; max-width: 400px; }
+        .card { background: #1e1e1e; margin: 12px 0; padding: 18px; border-radius: 15px; border: 1px solid #333; box-shadow: 0 4px 12px rgba(0,0,0,0.5); }
+        .truck-name { font-size: 1.2rem; font-weight: bold; color: #ffcc00; margin-bottom: 8px; display: block; }
+        .status-badge { background: #2e7d32; color: white; font-size: 0.7rem; padding: 4px 8px; border-radius: 5px; text-transform: uppercase; margin-top: 10px; display: inline-block; }
+        .distance-tag { font-size: 0.65rem; color: #aaa; margin-left: 8px; }
+        .brewery-link { color: #ffcc00; font-size: 0.7rem; text-transform: uppercase; font-weight: bold; letter-spacing: 1px; background: rgba(255,204,0,0.1); padding: 4px 8px; border-radius: 4px; text-decoration: none; display: inline-block; transition: 0.2s; }
+        .brewery-link:hover { background: rgba(255,204,0,0.25); transform: translateY(-1px); }
+    </style>
+</head>
+<body>
+
+    <h1>🚚 401 Brewery Tracker</h1>
+    <p>Aggregating: <strong>RI Craft Breweries</strong></p>
+
+    <div id="date-picker"></div>
+    <div id="truck-container"></div>
+
+   <script>
+    let allTruckData = [];
+    let userCoords = null;
+
+    // Brewery Metadata
+    const breweryData = {
+    "PHANTOM FARMS": { 
+        lat: 41.9744, lng: -71.4556, 
+        url: "https://phantomfarmsbrewing.com/",
+        hours: ["12-8pm", "5-9pm", "Closed", "4-9pm", "4-9pm", "12-10pm", "12-10pm"]
+    },
+    "RAGGED ISLAND": { 
+        lat: 41.6163, lng: -71.2569, 
+        url: "https://www.raggedislandbrewing.com/",
+        hours: ["12-9pm", "12-9pm", "12-9pm", "12-9pm", "12-9pm", "12-9pm", "12-9pm"]
+    },
+    "UNION STATION BREWERY": {
+        lat: 41.8268, lng: -71.4144,
+        url: "https://unionstationpvd.com/providence-union-station-brewery-food-menu",
+        hours: ["11:30am-9pm", "11:30am-10pm", "11:30am-10pm", "11:30am-10pm", "11:30am-10pm", "11:30am-11pm", "11:30am-11pm"],
+        hasKitchen: true
+    },
+    "APPONAUG BREWING": {
+        lat: 41.7028, lng: -71.4475,
+        url: "https://apponaugbrewing.com/menu",
+        hours: ["12-8pm", "11:30am-9pm", "11:30am-9pm", "11:30am-9pm", "11:30am-9pm", "11:30am-10pm", "11:30am-10pm"],
+        hasKitchen: true
+    },
+    "BRAVO BREWING COMPANY": { 
+        lat: 41.9565, lng: -71.7017, 
+        url: "https://bravobrewingcompany.com/",
+        hours: ["12-6pm", "5-9pm", "Closed", "5-9pm", "5-10pm", "11am-10pm", "12-10pm"], // Added comma here
+        hasKitchen: true
+    },
+    "ANGLE TREE BREWERY": { 
+        lat: 41.9815, lng: -71.3310, 
+        url: "https://angletreebrew.com/north-attleborough-angle-tree-brewery-food-menu",
+        hours: ["1-6pm", "Closed", "Closed", "6-9pm", "4-9pm", "4-9pm", "1-9pm"], // Added comma here
+        hasKitchen: true
+    }
+};
+
+    const normalize = (d) => {
+        if (!d) return "";
+        let dateOnly = d.split(' ')[0]; 
+        let [m, d_num] = dateOnly.split('/');
+        return `${parseInt(m)}/${parseInt(d_num)}`; 
+    };
+
+    function getDistance(lat1, lon1, lat2, lon2) {
+        const R = 3958.8; 
+        const dLat = (lat2 - lat1) * Math.PI / 180;
+        const dLon = (lon2 - lon1) * Math.PI / 180;
+        const a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+                  Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
+                  Math.sin(dLon / 2) * Math.sin(dLon / 2);
+        const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+        return R * c;
+    }
+
+    async function initApp() {
+        const container = document.getElementById('truck-container');
+        
+        // 1. Get User Location
+        if ("geolocation" in navigator) {
+            navigator.geolocation.getCurrentPosition((position) => {
+                userCoords = { lat: position.coords.latitude, lng: position.coords.longitude };
+                const activePill = document.querySelector('.date-pill.active');
+                if (activePill) activePill.click();
+            });
+        }
+
+        // 2. Fetch API Data
+        try {
+            const response = await fetch('http://192.168.0.3:3000/trucks');
+            const rawData = await response.json();
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
+
+            allTruckData = rawData.filter(item => {
+                let itemDateStr = item.start.split(' ')[0];
+                if (!itemDateStr.includes('2026')) itemDateStr += '/2026';
+                return new Date(itemDateStr) >= today;
+            });
+
+            // 3. Always generate the calendar (Next 7 Days)
+            generateDatePicker();
+            
+            // 4. Default to today
+            const todayStr = `${today.getMonth() + 1}/${today.getDate()}`;
+            renderDate(todayStr);
+
+        } catch (err) {
+            console.error("Failed to load trucks:", err);
+            // Even if API fails, we can still show the kitchen breweries!
+            generateDatePicker();
+            const today = new Date();
+            renderDate(`${today.getMonth() + 1}/${today.getDate()}`);
+        }
+    }
+
+    function generateDatePicker() {
+        const picker = document.getElementById('date-picker');
+        picker.innerHTML = ''; // Clear existing
+        
+        const monthNames = ["", "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+        
+        // Generate the next 7 days regardless of truck availability
+        for (let i = 0; i < 7; i++) {
+            const d = new Date();
+            d.setDate(d.getDate() + i);
+            const normDate = `${d.getMonth() + 1}/${d.getDate()}`;
+            
+            const pill = document.createElement('div');
+            pill.className = `date-pill ${i === 0 ? 'active' : ''}`;
+            
+            pill.innerHTML = `<span>${monthNames[d.getMonth() + 1]}</span><strong>${d.getDate()}</strong>`;
+            pill.onclick = () => {
+                document.querySelectorAll('.date-pill').forEach(p => p.classList.remove('active'));
+                pill.classList.add('active');
+                renderDate(normDate); 
+            };
+            picker.appendChild(pill);
+        }
+    }
+
+    function renderDate(selectedNormDate) {
+        const container = document.getElementById('truck-container');
+        container.innerHTML = ''; 
+
+        // Fix the date offset issue
+        const [m, d] = selectedNormDate.split('/');
+        const selectedDateObj = new Date(2026, parseInt(m) - 1, parseInt(d));
+        const selectedDay = selectedDateObj.getDay(); 
+        
+        // 1. Map API data for this specific day
+        let filtered = allTruckData
+            .filter(item => normalize(item.start) === selectedNormDate)
+            .map(item => {
+                const info = breweryData[item.brewery.toUpperCase()];
+                let dist = Infinity;
+                if (info && userCoords) {
+                    dist = getDistance(userCoords.lat, userCoords.lng, info.lat, info.lng);
+                }
+                return { ...item, distance: dist, url: info ? info.url : "#", hasKitchen: false };
+            });
+
+        // 2. Always Inject Kitchens
+        Object.keys(breweryData).forEach(name => {
+            if (breweryData[name].hasKitchen) {
+                const info = breweryData[name];
+                let dist = Infinity;
+                if (userCoords) dist = getDistance(userCoords.lat, userCoords.lng, info.lat, info.lng);
+                
+                // Only add if they aren't already in the list via the API
+                if (!filtered.some(f => f.brewery.toUpperCase() === name)) {
+                    filtered.push({
+                        brewery: name,
+                        truck: "In-House Kitchen",
+                        distance: dist,
+                        url: info.url,
+                        hasKitchen: true
+                    });
+                }
+            }
+        });
+
+        filtered.sort((a, b) => a.distance - b.distance);
+
+        filtered.forEach(item => {
+            const info = breweryData[item.brewery.toUpperCase()];
+            const cleanName = item.truck.replace(/,\s*$/, '').trim();
+            const todayHours = (info && info.hours) ? info.hours[selectedDay] : "Hours TBD";
+            const isClosed = todayHours.toLowerCase() === "closed";
+
+            // ONLY RENDER IF THE BREWERY IS OPEN
+            if (!isClosed) {
+                const hoursColor = "#888"; 
+                const hasDistance = item.distance !== Infinity && !isNaN(item.distance);
+                const distText = hasDistance ? `${item.distance.toFixed(1)} miles` : "";
+
+                const badgeLabel = item.hasKitchen ? "Full Kitchen" : "Scheduled";
+                const badgeColor = item.hasKitchen ? '#0277bd' : '#2e7d32';
+
+                const card = document.createElement('div');
+                card.className = 'card';
+                card.innerHTML = `
+                    <div style="margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center;">
+                        <div>
+                            <a href="${item.url}" target="_blank" class="brewery-link">
+                                ${item.brewery} ${item.hasKitchen ? 'MENU' : ''} ↗
+                            </a>
+                            <span style="font-size: 0.6rem; margin-left: 8px; vertical-align: middle;">
+                                <span style="color: #666;">TAPROOM:</span> 
+                                <span style="color: ${hoursColor};">${todayHours}</span>
+                            </span>
+                        </div>
+                        <span class="distance-tag">${distText}</span>
+                    </div>
+                    <span class="truck-name">${cleanName}</span>
+                    <span class="status-badge" style="background: ${badgeColor};">
+                        ${badgeLabel}
+                    </span>
+                `;
+                container.appendChild(card);
+            }
+        });
+    } // Closes renderDate
+
+    initApp();
+</script>
+</body>
+</html>
