@@ -121,7 +121,8 @@ console.log("Total trucks available:", allTruckData.length);
         let filtered = allTruckData
             .filter(item => normalize(item.start) === selectedNormDate)
             .map(item => {
-                const info = breweryData[item.brewery.toUpperCase()];
+                const info = breweryData[item.brewery.toUpperCase()] || 
+             breweryData[Object.keys(breweryData).find(key => item.brewery.toUpperCase().includes(key))];
                 let dist = info && userCoords ? getDistance(userCoords.lat, userCoords.lng, info.lat, info.lng) : Infinity;
                 return { ...item, distance: dist, url: info?.url || "#", hasKitchen: false };
             });
