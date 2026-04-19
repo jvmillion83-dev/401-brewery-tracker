@@ -92,42 +92,40 @@
     }
 
     async function initApp() {
-        const container = document.getElementById('truck-container');
-        
-        // 1. Get User Location
-        if ("geolocation" in navigator) {
-            navigator.geolocation.getCurrentPosition((position) => {
-                userCoords = { lat: position.coords.latitude, lng: position.coords.longitude };
-                const activePill = document.querySelector('.date-pill.active');
-                if (activePill) activePill.click();
-            });
-        }
-
-        // 2. Fetch API Data
-        try {
-            const response = await fetch('/api/trucks');
-            const rawData = await response.json();
-            const today = new Date();
-            today.setHours(0, 0, 0, 0);
-
-           allTruckData = rawData; // For now, let's stop filtering so we can see if data loads at all
-            });
-
-            // 3. Always generate the calendar (Next 7 Days)
-            generateDatePicker();
-            
-            // 4. Default to today
-            const todayStr = `${today.getMonth() + 1}/${today.getDate()}`;
-            renderDate(todayStr);
-
-        } catch (err) {
-            console.error("Failed to load trucks:", err);
-            // Even if API fails, we can still show the kitchen breweries!
-            generateDatePicker();
-            const today = new Date();
-            renderDate(`${today.getMonth() + 1}/${today.getDate()}`);
-        }
+    const container = document.getElementById('truck-container');
+    
+    // 1. Get User Location
+    if ("geolocation" in navigator) {
+        navigator.geolocation.getCurrentPosition((position) => {
+            userCoords = { lat: position.coords.latitude, lng: position.coords.longitude };
+            const activePill = document.querySelector('.date-pill.active');
+            if (activePill) activePill.click();
+        });
     }
+
+    // 2. Fetch API Data
+    try {
+        const response = await fetch('/api/trucks');
+        const rawData = await response.json();
+        
+        // Use all data for testing to ensure the connection works
+        allTruckData = rawData; 
+
+        // 3. Always generate the calendar
+        generateDatePicker();
+        
+        // 4. Default to today
+        const today = new Date();
+        const todayStr = `${today.getMonth() + 1}/${today.getDate()}`;
+        renderDate(todayStr);
+
+    } catch (err) {
+        console.error("Failed to load trucks:", err);
+        generateDatePicker();
+        const today = new Date();
+        renderDate(`${today.getMonth() + 1}/${today.getDate()}`);
+    }
+}
 
     function generateDatePicker() {
         const picker = document.getElementById('date-picker');
