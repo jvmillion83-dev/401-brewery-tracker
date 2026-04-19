@@ -3,5 +3,10 @@
   "rewrites": [
     { "source": "/api/trucks", "destination": "/api/trucks.js" },
     { "source": "/(.*)", "destination": "/public/$1" }
-  ]
+  ],
+  "functions": {
+    "api/trucks.js": {
+      "includeFiles": "*-data.json"
+    }
+  }
 }
