@@ -111,7 +111,7 @@
 console.log("Looking for date:", selectedNormDate);
 console.log("Total trucks available:", allTruckData.length);
         const [m, d] = selectedNormDate.split('/');
-        const selectedDay = new Date(2026, parseInt(m) - 1, parseInt(d)).getDay();
+        const selectedDay = new Date(new Date().getFullYear(), parseInt(m) - 1, parseInt(d)).getDay();
 
         let filtered = allTruckData
             .filter(item => normalize(item.start) === selectedNormDate)
