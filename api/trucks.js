@@ -4,6 +4,7 @@ const path = require('path');
 export default function handler(req, res) {
     const phantomPath = path.join(process.cwd(), 'phantom-data.json');
     const raggedPath = path.join(process.cwd(), 'ragged-data.json');
+    const craftedPath = path.join(process.cwd(), 'crafted-hope-data.json');
 
     try {
         if (!fs.existsSync(phantomPath) || !fs.existsSync(raggedPath)) {
@@ -13,10 +14,14 @@ export default function handler(req, res) {
 
         const phantomData = JSON.parse(fs.readFileSync(phantomPath, 'utf8'));
         const raggedData = JSON.parse(fs.readFileSync(raggedPath, 'utf8'));
+        const craftedData = fs.existsSync(craftedPath) 
+    ? JSON.parse(fs.readFileSync(craftedPath, 'utf8')) 
+    : [];
 
         const combined = [
             ...phantomData.map(item => ({ ...item, brewery: "PHANTOM FARMS" })),
-            ...raggedData.map(item => ({ ...item, brewery: "RAGGED ISLAND" }))
+            ...raggedData.map(item => ({ ...item, brewery: "RAGGED ISLAND" })),
+            ...craftedData.map(item => ({ ...item, brewery: "CRAFTED HOPE" }))
         ];
 
         const getSortTime = (d) => {
