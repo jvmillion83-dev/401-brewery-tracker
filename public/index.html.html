@@ -110,10 +110,7 @@
             const today = new Date();
             today.setHours(0, 0, 0, 0);
 
-            allTruckData = rawData.filter(item => {
-                let itemDateStr = item.start.split(' ')[0];
-                if (!itemDateStr.includes('2026')) itemDateStr += '/2026';
-                return new Date(itemDateStr) >= today;
+           allTruckData = rawData; // For now, let's stop filtering so we can see if data loads at all
             });
 
             // 3. Always generate the calendar (Next 7 Days)
