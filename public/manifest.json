@@ -1,11 +1,12 @@
 {
-  "short_name": "401 Brewery",
-  "name": "401 Brewery Tracker",
-  "icons": [
+  "short_name": "Brew 401",
+  "name": "Brew 401: RI Brewery Food Truck Tracker",
+ "icons": [
     {
       "src": "icon.png",
       "sizes": "192x192",
-      "type": "image/png"
+      "type": "image/png",
+      "purpose": "any maskable"
     },
     {
       "src": "icon-512.png",
