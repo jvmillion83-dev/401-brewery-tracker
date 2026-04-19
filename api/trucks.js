@@ -19,11 +19,18 @@ export default function handler(req, res) {
 
         // 4. Sort logic (keeping it chronological)
         const getSortTime = (d) => {
-            if (!d) return 0;
-            let datePart = d.split(' ')[0];
-            if (!datePart.includes('2026')) datePart += '/2026';
-            return new Date(datePart).getTime();
-        };
+    if (!d) return 0;
+    // Split to get just the date part (e.g., "4/19")
+    let datePart = d.split(' ')[0]; 
+    
+    // If there aren't two slashes (meaning year is missing), add 2026
+    if ((datePart.match(/\//g) || []).length < 2) {
+        datePart += '/2026';
+    }
+    
+    const parsed = new Date(datePart);
+    return isNaN(parsed.getTime()) ? 0 : parsed.getTime();
+};
 
         combined.sort((a, b) => getSortTime(a.start) - getSortTime(b.start));
 
