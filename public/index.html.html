@@ -105,7 +105,7 @@
 
         // 2. Fetch API Data
         try {
-            const response = await fetch('http://192.168.0.3:3000/trucks');
+            const response = await fetch('/api/trucks');
             const rawData = await response.json();
             const today = new Date();
             today.setHours(0, 0, 0, 0);
