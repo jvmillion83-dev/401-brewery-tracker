@@ -117,16 +117,24 @@
 
         let filtered = allTruckData
             .filter(item => normalize(item.start) === selectedNormDate)
-            .map(item => {
-                const name = item.brewery.toUpperCase();
-                // Match by exact name or first word to handle "BRAVO" vs "BRAVO BREWING COMPANY"
-                const matchKey = Object.keys(breweryData).find(key => name.includes(key.split(' ')[0]));
-                const info = breweryData[matchKey];
-                
-                if (!info) return null;
-                const dist = userCoords ? getDistance(userCoords.lat, userCoords.lng, info.lat, info.lng) : Infinity;
-                return { ...item, brewery: matchKey, distance: dist, url: info.url, hasKitchen: item.hasKitchen || false };
-            })
+           .map(item => {
+    const nameInJson = item.brewery.toUpperCase().trim();
+    
+    // Look for a key in breweryData that is INSIDE the JSON name, 
+    // OR a JSON name that is INSIDE the breweryData key.
+    const matchKey = Object.keys(breweryData).find(key => 
+        nameInJson.includes(key.split(' ')[0]) || key.includes(nameInJson)
+    );
+    
+    const info = breweryData[matchKey];
+    if (!info) {
+        console.log("No match found for:", nameInJson); // This helps you debug!
+        return null;
+    }
+
+    let dist = userCoords ? getDistance(userCoords.lat, userCoords.lng, info.lat, info.lng) : Infinity;
+    return { ...item, brewery: matchKey, distance: dist, url: info.url, hasKitchen: item.hasKitchen || false };
+})
             .filter(item => item !== null);
 
         // Add in-house kitchens if no truck is scheduled
