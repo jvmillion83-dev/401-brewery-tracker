@@ -49,13 +49,13 @@
         "ANGLE TREE BREWERY": { lat: 41.9815, lng: -71.3310, url: "https://angletreebrew.com/north-attleborough-angle-tree-brewery-food-menu", hours: ["1-6pm", "Closed", "Closed", "6-9pm", "4-9pm", "4-9pm", "1-9pm"], hasKitchen: true }
     };
 
-   const normalize = (d) => {
+  const normalize = (d) => {
     if (!d) return "";
-    // This regex looks for digits/digits, ignoring everything else
-    const match = d.match(/(\d{1,2})\/(\d{1,2})/);
+    // Clean up the string and find the first MM/DD pattern
+    const match = d.trim().match(/(\d{1,2})\/(\d{1,2})/);
     if (!match) return "";
-    // Forces "04/08" and "4/8" and "04/08  " all into "4/8"
-    return `${parseInt(match[1])}/${parseInt(match[2])}`; 
+    // Returns "4/24" regardless of leading zeros or trailing text
+    return `${parseInt(match[1])}/${parseInt(match[2])}`;
 };
 
     function getDistance(lat1, lon1, lat2, lon2) {
@@ -67,12 +67,20 @@
     }
 
     async function initApp() {
+    // Wait for the page to load fully before asking
+    setTimeout(() => {
         if ("geolocation" in navigator) {
             navigator.geolocation.getCurrentPosition((position) => {
                 userCoords = { lat: position.coords.latitude, lng: position.coords.longitude };
-                renderDate(document.querySelector('.date-pill.active').dataset.date);
-            });
+                // Re-render once we have location
+                const activePill = document.querySelector('.date-pill.active');
+                if (activePill) renderDate(activePill.dataset.date);
+            }, (err) => console.log("User denied location or error:", err));
         }
+    }, 1000);
+
+    // ... rest of your try/fetch code ...
+}
 
         try {
             const response = await fetch('/api/trucks');
