@@ -1,9 +1,10 @@
 [
   {
     "brewery": "BRAVO BREWING COMPANY",
-    "truck": "75¢ wings",
-    "start": "04/25/2026 5:00PM",
-    "end": "04/25/2026 8:45PM"
+    "truck": "Full Kitchen including 75¢ wings",
+    "start": "04/20/2026 5:00PM",
+    "end": "04/20/2026 8:45PM"
+    "hasKitchen": true
   },
   {
     "brewery": "UNCOMMON PAIR BREWING",
