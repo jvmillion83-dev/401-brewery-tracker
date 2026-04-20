@@ -138,13 +138,19 @@
             .filter(item => item !== null);
 
         // Add in-house kitchens if no truck is scheduled
-        Object.keys(breweryData).forEach(name => {
-            if (breweryData[name].hasKitchen && !filtered.some(f => f.brewery === name)) {
-                const info = breweryData[name];
-                const dist = userCoords ? getDistance(userCoords.lat, userCoords.lng, info.lat, info.lng) : Infinity;
-                filtered.push({ brewery: name, truck: "In-House Kitchen", distance: dist, url: info.url, hasKitchen: true });
-            }
-        });
+Object.keys(breweryData).forEach(name => {
+    // This check ensures we don't add a kitchen if Bravo already has an entry from your JSON
+    const isAlreadyListed = filtered.some(f => 
+        f.brewery.toUpperCase().includes(name.split(' ')[0]) || 
+        name.toUpperCase().includes(f.brewery.toUpperCase())
+    );
+
+    if (breweryData[name].hasKitchen && !isAlreadyListed) {
+        const info = breweryData[name];
+        const dist = userCoords ? getDistance(userCoords.lat, userCoords.lng, info.lat, info.lng) : Infinity;
+        filtered.push({ brewery: name, truck: "In-House Kitchen", distance: dist, url: info.url, hasKitchen: true });
+    }
+});
 
         filtered.sort((a, b) => a.distance - b.distance);
 
