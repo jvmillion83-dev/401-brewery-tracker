@@ -3,14 +3,14 @@ const path = require('path');
 
 export default function handler(req, res) {
     // We use __dirname and go up one level to reach the root where the JSONs live
-    const baseDir = path.join(__dirname, '..');
-    
-    const paths = {
-        phantom: path.join(baseDir, 'phantom-data.json'),
-        ragged: path.join(baseDir, 'ragged-data.json'),
-        crafted: path.join(baseDir, 'crafted-hope-data.json'),
-        manual: path.join(baseDir, 'manual-data.json')
-    };
+   const baseDir = path.join(__dirname, '..', 'public');
+
+const paths = {
+    phantom: path.join(baseDir, 'phantom-data.json'),
+    ragged: path.join(baseDir, 'ragged-data.json'),
+    crafted: path.join(baseDir, 'crafted-hope-data.json'),
+    manual: path.join(baseDir, 'manual-data.json')
+};
 
     try {
         const phantomData = fs.existsSync(paths.phantom) ? JSON.parse(fs.readFileSync(paths.phantom, 'utf8')) : [];

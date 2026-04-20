@@ -2,7 +2,7 @@
   "version": 2,
   "functions": {
     "api/trucks.js": {
-      "includeFiles": "./*.json"
+      "includeFiles": "public/*.json"
     }
   }
 }
