@@ -1,3 +1,20 @@
+
+const manualPath = path.join(process.cwd(), 'manual-events.json');
+
+// Inside the try block, read it
+const manualData = fs.existsSync(manualPath) 
+    ? JSON.parse(fs.readFileSync(manualPath, 'utf8')) 
+    : [];
+
+// Add it to your combined array
+const combined = [
+    ...phantomData.map(item => ({ ...item, brewery: "PHANTOM FARMS" })),
+    ...raggedData.map(item => ({ ...item, brewery: "RAGGED ISLAND" })),
+    ...craftedData.map(item => ({ ...item, brewery: "CRAFTED HOPE BREWING" })),
+    ...craftedData.map(item => ({ ...item, brewery: "BRAVO BREWING COMPANY" })),
+    ...manualData // No .map needed here because the brewery is already in the JSON!
+];
+
 const fs = require('fs');
 const path = require('path');
 
