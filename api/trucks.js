@@ -18,11 +18,11 @@ export default function handler(req, res) {
 
         // 3. Combine everything into one array
         const combined = [
-            ...phantomData.map(item => ({ ...item, brewery: "PHANTOM FARMS" })),
-            ...raggedData.map(item => ({ ...item, brewery: "RAGGED ISLAND" })),
-            ...craftedData.map(item => ({ ...item, brewery: "CRAFTED HOPE BREWING" })),
-            ...manualData // manualData already has the brewery names inside the JSON
-        ];
+    ...phantomData.map(item => ({ ...item, brewery: "PHANTOM FARMS" })),
+    ...raggedData.map(item => ({ ...item, brewery: "RAGGED ISLAND" })),
+    ...craftedData.map(item => ({ ...item, brewery: "CRAFTED HOPE BREWING" })),
+    ...manualData // This pulls BRAVO from your manual-data.json
+];
 
         // 4. Sorting logic
         const getSortTime = (d) => {
