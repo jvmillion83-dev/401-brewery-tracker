@@ -7,7 +7,7 @@ export default function handler(req, res) {
     const phantomPath = path.join(process.cwd(), 'phantom-data.json');
     const raggedPath = path.join(process.cwd(), 'ragged-data.json');
     const craftedPath = path.join(process.cwd(), 'crafted-hope-data.json');
-    const manualPath = path.join(process.cwd(), 'manual-data.json');
+    const manualPath = path.join(__dirname, '..', 'manual-data.json');
 
     try {
         // 2. Read files (with safety checks)

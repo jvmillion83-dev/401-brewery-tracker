@@ -1,11 +1,8 @@
 {
   "version": 2,
-  "rewrites": [
-    { "source": "/api/trucks", "destination": "/api/trucks.js" }
-  ],
   "functions": {
     "api/trucks.js": {
-      "includeFiles": "./*.json"
+      "includeFiles": "*.json"
     }
   }
 }
