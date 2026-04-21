@@ -61,9 +61,9 @@
     <h1>🍺 Brew 401</h1>
     <p style="margin-top:-10px; color:#888;"><strong>Rhode Island Brewery Tracker</strong></p>
 <div class="tab-container">
-    <div class="tab active" id="food-tab" onclick="switchTab('food')">🍔 Food</div>
-    <div class="tab" id="beer-tab" onclick="switchTab('beer')">🍺 Beer</div>
-</div>
+    <div class="tab active" id="beer-tab" onclick="switchTab('beer')">🍺 Beer</div>
+    <div class="tab" id="food-tab" onclick="switchTab('food')">🍔 Food</div>
+</div></div>
     <div id="date-picker"></div>
     <div id="truck-container"></div>
 
@@ -170,11 +170,15 @@ function switchTab(type) {
     }
 
     function renderDate(selectedNormDate) {
-        const container = document.getElementById('truck-container');
-        container.innerHTML = '';
-        const [m, d] = selectedNormDate.split('/');
-        const selectedDay = new Date(new Date().getFullYear(), parseInt(m) - 1, parseInt(d)).getDay();
+    const container = document.getElementById('truck-container');
+    container.innerHTML = '';
+    const [m, d] = selectedNormDate.split('/');
+    const selectedDay = new Date(new Date().getFullYear(), parseInt(m) - 1, parseInt(d)).getDay();
 
+    let listToRender = [];
+
+    if (currentTab === 'food') {
+        // --- FOOD TAB LOGIC ---
         let filtered = allTruckData
             .filter(item => normalize(item.start) === selectedNormDate)
             .map(item => {
@@ -187,44 +191,71 @@ function switchTab(type) {
             })
             .filter(item => item !== null);
 
+        // Add In-House Kitchens if not already listed by a truck event
         Object.keys(breweryData).forEach(name => {
-            const isAlreadyListed = filtered.some(f => f.brewery === name);
-            if (breweryData[name].hasKitchen && !isAlreadyListed) {
+            if (breweryData[name].hasKitchen && !filtered.some(f => f.brewery === name)) {
                 const info = breweryData[name];
                 const dist = userCoords ? getDistance(userCoords.lat, userCoords.lng, info.lat, info.lng) : Infinity;
                 filtered.push({ brewery: name, truck: "In-House Kitchen", distance: dist, url: info.url, hasKitchen: true });
             }
         });
+        listToRender = filtered;
 
-        filtered.sort((a, b) => a.distance - b.distance);
-        if (filtered.length === 0) {
-            container.innerHTML = '<p style="text-align:center; color:#666; margin-top:20px;">No events found.</p>';
-            return;
-        }
-
-        filtered.forEach(item => {
-            const info = breweryData[item.brewery];
-            const todayHours = info?.hours ? info.hours[selectedDay] : "Hours TBD";
-            if (todayHours.toLowerCase() === "closed") return;
-
-            const card = document.createElement('div');
-            card.className = 'card';
-            const logoHtml = info.logo ? `<img src="${info.logo}" alt="${item.brewery}" class="brewery-logo">` : `<span class="text-link">${item.brewery} ↗</span>`;
-
-            card.innerHTML = `
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
-                    <a href="${item.url}" target="_blank" class="brewery-link">${logoHtml}</a>
-                    <span class="distance-tag">${item.distance !== Infinity ? item.distance.toFixed(1) + ' mi' : ''}</span>
-                </div>
-                <div style="font-size: 0.7rem; color: #888; margin-bottom: 10px;">Taproom: ${todayHours}</div>
-                <span class="truck-name">${item.truck}</span>
-                <span class="status-badge" style="background: ${item.hasKitchen ? '#0277bd' : '#2e7d32'};">
-                    ${item.hasKitchen ? 'Full Kitchen' : 'Scheduled'}
-                </span>
-            `;
-            container.appendChild(card);
+    } else {
+        // --- BEER TAB LOGIC ---
+        // Just show every brewery that is open on this day
+        Object.keys(breweryData).forEach(name => {
+            const info = breweryData[name];
+            const todayHours = info.hours[selectedDay];
+            
+            if (todayHours.toLowerCase() !== "closed") {
+                const dist = userCoords ? getDistance(userCoords.lat, userCoords.lng, info.lat, info.lng) : Infinity;
+                listToRender.push({
+                    brewery: name,
+                    truck: "Taproom Open",
+                    distance: dist,
+                    url: info.url,
+                    hours: todayHours,
+                    isOpenNow: isOpen(todayHours) // Uses your helper!
+                });
+            }
         });
     }
+
+    listToRender.sort((a, b) => a.distance - b.distance);
+
+    if (listToRender.length === 0) {
+        container.innerHTML = `<p style="text-align:center; color:#666; margin-top:20px;">No ${currentTab} available today.</p>`;
+        return;
+    }
+
+    listToRender.forEach(item => {
+        const info = breweryData[item.brewery];
+        const todayHours = info.hours[selectedDay];
+        const card = document.createElement('div');
+        card.className = 'card';
+        
+        // Custom styling for Beer Tab vs Food Tab
+        const statusText = currentTab === 'beer' ? (item.isOpenNow ? 'Open Now' : 'Scheduled') : (item.hasKitchen ? 'Full Kitchen' : 'Scheduled');
+        const statusColor = currentTab === 'beer' ? (item.isOpenNow ? '#2e7d32' : '#444') : (item.hasKitchen ? '#0277bd' : '#2e7d32');
+        const mainLabel = currentTab === 'beer' ? "Taproom Hours" : item.truck;
+
+        card.innerHTML = `
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+                <a href="${item.url}" target="_blank" class="brewery-link">
+                    <img src="${info.logo}" alt="${item.brewery}" class="brewery-logo">
+                </a>
+                <span class="distance-tag">${item.distance !== Infinity ? item.distance.toFixed(1) + ' mi' : ''}</span>
+            </div>
+            <div style="font-size: 0.7rem; color: #888; margin-bottom: 10px;">Taproom: ${todayHours}</div>
+            <span class="truck-name">${mainLabel}</span>
+            <span class="status-badge" style="background: ${statusColor};">
+                ${statusText}
+            </span>
+        `;
+        container.appendChild(card);
+    });
+}
 
     initApp();
 </script>
