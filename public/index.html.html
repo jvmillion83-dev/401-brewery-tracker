@@ -22,6 +22,18 @@
         .status-badge { background: #2e7d32; color: white; font-size: 0.7rem; padding: 4px 8px; border-radius: 5px; text-transform: uppercase; margin-top: 10px; display: inline-block; }
         .distance-tag { font-size: 0.65rem; color: #aaa; margin-left: 8px; }
         .brewery-link { color: #ffcc00; font-size: 0.7rem; text-transform: uppercase; font-weight: bold; letter-spacing: 1px; background: rgba(255,204,0,0.1); padding: 4px 10px; border-radius: 6px; text-decoration: none; display: inline-block; transition: 0.2s; }
+.brewery-logo {
+    height: 40px; /* Adjust height to fit your design */
+    width: auto;
+    max-width: 120px;
+    object-fit: contain;
+    filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3));
+}
+
+.brewery-link {
+    background: none !important; /* Remove the old yellow background bubble */
+    padding: 0 !important;
+}
     </style>
 </head>
 <body>
@@ -37,7 +49,7 @@
     let userCoords = null;
 
     const breweryData = {
-        "PHANTOM FARMS": { lat: 41.9744, lng: -71.4556, url: "https://phantomfarmsbrewing.com/", hours: ["12-8pm", "5-9pm", "Closed", "4-9pm", "4-9pm", "12-10pm", "12-10pm"] },
+        "PHANTOM FARMS": { lat: 41.9744, lng: -71.4556, url: "https://phantomfarmsbrewing.com/", logo: "/logos/phantom.png hours: ["12-8pm", "5-9pm", "Closed", "4-9pm", "4-9pm", "12-10pm", "12-10pm"] },
         "RAGGED ISLAND": { lat: 41.6163, lng: -71.2569, url: "https://www.raggedislandbrewing.com/", hours: ["12-9pm", "12-9pm", "12-9pm", "12-9pm", "12-9pm", "12-9pm", "12-9pm"] },
         "CRAFTED HOPE BREWING": { lat: 41.6563, lng: -71.4981, url: "https://www.craftedhopebrewing.com/foodtrucks", hours: ["12-6pm", "Closed", "Closed", "Closed", "3-9pm", "12-9pm", "12-9pm"] },
         "BRAVO BREWING COMPANY": { lat: 41.9565, lng: -71.7017, url: "https://bravobrewingcompany.com/", hours: ["12-6pm", "5-9pm", "Closed", "5-9pm", "5-10pm", "11am-10pm", "12-10pm"], hasKitchen: true },
@@ -147,6 +159,19 @@ Object.keys(breweryData).forEach(name => {
 
     if (breweryData[name].hasKitchen && !isAlreadyListed) {
         const info = breweryData[name];
+card.innerHTML = `
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+        <a href="${item.url}" target="_blank" class="brewery-link">
+            ${info.logo ? `<img src="${info.logo}" alt="${item.brewery}" class="brewery-logo">` : `<span>${item.brewery} ↗</span>`}
+        </a>
+        <span class="distance-tag">${item.distance !== Infinity ? item.distance.toFixed(1) + ' mi' : ''}</span>
+    </div>
+    <div style="font-size: 0.7rem; color: #888; margin-bottom: 10px;">Taproom: ${todayHours}</div>
+    <span class="truck-name">${item.truck}</span>
+    <span class="status-badge" style="background: ${item.hasKitchen ? '#0277bd' : '#2e7d32'};">
+        ${item.hasKitchen ? 'Full Kitchen' : 'Scheduled'}
+    </span>
+`;
         const dist = userCoords ? getDistance(userCoords.lat, userCoords.lng, info.lat, info.lng) : Infinity;
         filtered.push({ brewery: name, truck: "In-House Kitchen", distance: dist, url: info.url, hasKitchen: true });
     }
