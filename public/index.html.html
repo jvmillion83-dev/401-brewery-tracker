@@ -45,93 +45,22 @@
     let userCoords = null;
 
     const breweryData = {
-    "PHANTOM FARMS": { 
-        lat: 41.9744, lng: -71.4556, 
-        url: "https://phantomfarmsbrewing.com/", 
-        logo: "/logos/phantom.png", // Matches phantom.png
-        hours: ["12-8pm", "5-9pm", "Closed", "4-9pm", "4-9pm", "12-10pm", "12-10pm"] 
-    },
-    "RAGGED ISLAND": { 
-        lat: 41.6163, lng: -71.2569, 
-        url: "https://www.raggedislandbrewing.com/", 
-        logo: "/logos/raggedisland.png", // Matches raggedisland.png
-        hours: ["12-9pm", "12-9pm", "12-9pm", "12-9pm", "12-9pm", "12-9pm", "12-9pm"] 
-    },
-    "BRAVO BREWING COMPANY": { 
-        lat: 41.9565, lng: -71.7017, 
-        url: "https://bravobrewingcompany.com/", 
-        logo: "/logos/bravo.png", // Matches bravo.png
-        hours: ["12-6pm", "5-9pm", "Closed", "5-9pm", "5-10pm", "11am-10pm", "12-10pm"], 
-        hasKitchen: true 
-    },
-   "UNCOMMON PAIR BREWING": {  
-        lat: 41.8706, lng: -71.5219,  
-        url: "https://www.uncommonpairbrewing.com/",  
-        logo: "/logos/uncommon.png", 
-        hours: ["12-6pm", "Closed", "Closed", "Closed", "Closed", "12-9pm", "12-9pm"]  
-    },
+        "PHANTOM FARMS": { lat: 41.9744, lng: -71.4556, url: "https://phantomfarmsbrewing.com/", logo: "/logos/phantom.png", hours: ["12-8pm", "5-9pm", "Closed", "4-9pm", "4-9pm", "12-10pm", "12-10pm"] },
+        "RAGGED ISLAND": { lat: 41.6163, lng: -71.2569, url: "https://www.raggedislandbrewing.com/", logo: "/logos/raggedisland.png", hours: ["12-9pm", "12-9pm", "12-9pm", "12-9pm", "12-9pm", "12-9pm", "12-9pm"] },
+        "BRAVO BREWING COMPANY": { lat: 41.9565, lng: -71.7017, url: "https://bravobrewingcompany.com/", logo: "/logos/bravo.png", hours: ["12-6pm", "5-9pm", "Closed", "5-9pm", "5-10pm", "11am-10pm", "12-10pm"], hasKitchen: true },
+        "UNCOMMON PAIR BREWING": { lat: 41.8706, lng: -71.5219, url: "https://www.uncommonpairbrewing.com/", logo: "/logos/uncommon.png", hours: ["12-6pm", "Closed", "Closed", "Closed", "Closed", "12-9pm", "12-9pm"] },
+        "MONIKER BREWERY": { lat: 41.8185, lng: -71.4238, url: "https://www.monikerbrewery.com/", logo: "/logos/moniker.png", hours: ["12-6pm", "4-9pm", "4-9pm", "4-9pm", "4-9pm", "2-10pm", "12-10pm"] },
+        "FOOLPROOF BREWERY": { lat: 41.8704, lng: -71.4082, url: "https://www.foolproofbrewing.com/pawtucket/pawtucket-home/", logo: "/logos/foolproof.png", hours: ["2-8pm", "Closed", "2-9pm", "12-9pm", "12-9pm", "12-9pm", "12-9pm"] },
+        "LOPS BREWERY": { lat: 42.0073, lng: -71.5130, url: "https://www.lopsbrewing.com/", logo: "/logos/lops.png", hours: ["12-6pm", "4-8pm", "4-8pm", "4-8pm", "4-8pm", "12-9pm", "12-9pm"] },
+        "RAVENOUS BREWING CO.": { lat: 41.9538, lng: -71.4004, url: "https://ravenousbrewing.com/", logo: "/logos/ravenous.png", hours: ["12-6pm", "Closed", "Closed", "Closed", "4-9pm", "2-10pm", "12-10pm"] },
+        "CROOKED CURRENT BREWERY": { lat: 41.8728, lng: -71.4057, url: "http://www.crookedcurrentbreweryri.com/", logo: "/logos/crookedcurrent.png", hours: ["Closed", "Closed", "Closed", "Closed", "5-8pm", "5-9pm", "1-6pm"] },
+        "THE GUILD PAWTUCKET": { lat: 41.8705, lng: -71.3917, url: "https://www.theguildpawtucket.com/#food", logo: "/logos/theguildpawt.png", hours: ["12-6pm", "Closed", "4-8pm", "4-8pm", "4-8pm", "12-10pm", "12-10pm"], hasKitchen: true },
+        "UNION STATION BREWERY": { lat: 41.8268, lng: -71.4144, url: "https://unionstationpvd.com/", logo: "/logos/unionstation.png", hours: ["11:30am-9pm", "11:30am-10pm", "11:30am-10pm", "11:30am-10pm", "11:30am-10pm", "11:30am-11pm", "11:30am-11pm"], hasKitchen: true },
+        "APPONAUG BREWING": { lat: 41.7028, lng: -71.4475, url: "https://apponaugbrewing.com/", logo: "/logos/apponaug.png", hours: ["12-8pm", "Closed", "4-10pm", "4-10pm", "4-10pm", "4-11pm", "12-11pm"], hasKitchen: true },
+        "ANGLE TREE BREWERY": { lat: 41.9815, lng: -71.3310, url: "https://angletreebrew.com/", logo: "/logos/angletree.png", hours: ["1-6pm", "Closed", "Closed", "6-9pm", "4-9pm", "4-9pm", "1-9pm"], hasKitchen: true }
+    };
 
-       "MONIKER BREWERY": { 
-        lat: 41.8185, lng: -71.4238, 
-        url: "https://www.monikerbrewery.com//", 
-        logo: "/logos/moniker.png", // Matches moniker.png
-        hours: ["12-6pm", "4-9pm", "4-9pm", "4-9pm", "4-9pm", "2-10pm", "12-10pm"] 
-    },
-
-"FOOLPROOF BREWERY": { 
-        lat: 41.8704, lng: -71.4082, 
-        url: "https://www.foolproofbrewing.com/pawtucket/pawtucket-home//", 
-        logo: "/logos/foolproof.png", // Matches foolproof.png
-        hours: ["2-8pm", "Closed", "2-9pm", "12-9pm", "12-9pm", "12-9pm", "12-9pm"] 
-    },
-"LOPS BREWERY": { 
-        lat: 42.0073, lng: -71.5130, 
-        url: "https://www.lopsbrewing.com///", 
-        logo: "/logos/lops.png", // Matches lops.png
-        hours: ["12-6pm", "4-8pm", "4-8pm", "4-8pm", "4-8pm", "12-9pm", "12-9pm"] 
-    },
-"RAVENOUS BREWING CO.": { 
-        lat: 41.9538, lng: -71.4004, 
-        url: "https://ravenousbrewing.com////", 
-        logo: "/logos/ravenous.png", // Matches ravenous.png
-        hours: ["12-6pm", "Closed", "Closed", "Closed", "4-9pm", "2-10pm", "12-10pm"] 
-    },
-"CROOKED CURRENT BREWERY": { 
-        lat: 41.8728, lng: -71.4057, 
-        url: "http://www.crookedcurrentbreweryri.com////", 
-        logo: "/logos/crookedcurrent.png", // Matches crookedcurrent.png
-        hours: ["Closed", "Closed", "Closed", "Closed", "5-8pm", "5-9pm", "1-6pm"] 
-    },
-"THE GUILD PAWTUCKET": { 
-        lat: 41.8705, lng: -71.3917, 
-        url: "https://www.theguildpawtucket.com/#food////", 
-        logo: "/logos/theguildpawt.png", // Matches theguildpawt.png
-        hours: ["12-6pm", "Closed", "4-8pm", "4-8pm", "4-8pm", "12-10pm", "12-10pm"],
- 	hasKitchen: true
-    },
-    "UNION STATION BREWERY": { 
-        lat: 41.8268, lng: -71.4144, 
-        url: "https://unionstationpvd.com/", 
-        logo: "/logos/unionstation.png", // Matches unionstation.png
-        hours: ["11:30am-9pm", "11:30am-10pm", "11:30am-10pm", "11:30am-10pm", "11:30am-10pm", "11:30am-11pm", "11:30am-11pm"], 
-        hasKitchen: true 
-    },
-    "APPONAUG BREWING": { 
-        lat: 41.7028, lng: -71.4475, 
-        url: "https://apponaugbrewing.com/", 
-        logo: "/logos/apponaug.png", // Matches apponaug.png
-        hours: ["12-8pm", "Closed", "4-10pm", "4-10pm", "4-10pm", "4-11pm", "12-11pm"], 
-        hasKitchen: true 
-    },
-    "ANGLE TREE BREWERY": { 
-        lat: 41.9815, lng: -71.3310, 
-        url: "https://angletreebrew.com/", 
-        logo: "/logos/angletree.png", // Matches angletree.png
-        hours: ["1-6pm", "Closed", "Closed", "6-9pm", "4-9pm", "4-9pm", "1-9pm"], 
-        hasKitchen: true 
-    }
-};
-
+    // --- HELPERS ---
     const normalize = (d) => {
         if (!d) return "";
         const match = d.trim().match(/(\d{1,2})\/(\d{1,2})/);
@@ -146,21 +75,37 @@
         return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
     }
 
+    function isOpen(hoursString) {
+        if (!hoursString || hoursString.toLowerCase() === "closed") return false;
+        const now = new Date();
+        const currentTime = now.getHours() + (now.getMinutes() / 60);
+        const parts = hoursString.toLowerCase().split('-');
+        if (parts.length !== 2) return false;
+
+        function parseTime(t) {
+            let [time, modifier] = [t.replace(/[ap]m/, ''), t.includes('pm') ? 'pm' : 'am'];
+            let [hours, minutes] = time.split(':').map(Number);
+            if (!minutes) minutes = 0;
+            if (hours === 12) hours = 0;
+            if (modifier === 'pm') hours += 12;
+            return hours + (minutes / 60);
+        }
+        return currentTime >= parseTime(parts[0]) && currentTime <= parseTime(parts[1]);
+    }
+
+    // --- APP LOGIC ---
     async function initApp() {
         if ("geolocation" in navigator) {
             navigator.geolocation.getCurrentPosition((position) => {
                 userCoords = { lat: position.coords.latitude, lng: position.coords.longitude };
                 const active = document.querySelector('.date-pill.active');
                 if (active) renderDate(active.dataset.date);
-            }, (err) => console.log("Location denied"));
+            });
         }
-
         try {
             const response = await fetch('/api/trucks');
             allTruckData = await response.json();
-        } catch (err) {
-            console.error("Fetch error:", err);
-        }
+        } catch (err) { console.error("Fetch error:", err); }
         generateDatePicker();
         const today = new Date();
         renderDate(`${today.getMonth() + 1}/${today.getDate()}`);
@@ -168,7 +113,6 @@
 
     function generateDatePicker() {
         const picker = document.getElementById('date-picker');
-        picker.innerHTML = '';
         const months = ["", "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
         for (let i = 0; i < 7; i++) {
             const d = new Date();
@@ -197,9 +141,7 @@
             .filter(item => normalize(item.start) === selectedNormDate)
             .map(item => {
                 const nameInJson = item.brewery.toUpperCase().trim();
-                const matchKey = Object.keys(breweryData).find(key => 
-                    nameInJson.includes(key.split(' ')[0]) || key.includes(nameInJson)
-                );
+                const matchKey = Object.keys(breweryData).find(key => nameInJson.includes(key.split(' ')[0]) || key.includes(nameInJson));
                 const info = breweryData[matchKey];
                 if (!info) return null;
                 let dist = userCoords ? getDistance(userCoords.lat, userCoords.lng, info.lat, info.lng) : Infinity;
@@ -214,34 +156,9 @@
                 const dist = userCoords ? getDistance(userCoords.lat, userCoords.lng, info.lat, info.lng) : Infinity;
                 filtered.push({ brewery: name, truck: "In-House Kitchen", distance: dist, url: info.url, hasKitchen: true });
             }
-function isOpen(hoursString) {
-    if (hoursString.toLowerCase() === "closed") return false;
-    
-    const now = new Date();
-    const currentTime = now.getHours() + (now.getMinutes() / 60);
-    
-    // Simple parser for "12-8pm" or "11:30am-10pm"
-    const parts = hoursString.toLowerCase().split('-');
-    if (parts.length !== 2) return false;
-
-    function parseTime(t) {
-        let [time, modifier] = [t.replace(/[ap]m/, ''), t.includes('pm') ? 'pm' : 'am'];
-        let [hours, minutes] = time.split(':').map(Number);
-        if (!minutes) minutes = 0;
-        if (hours === 12) hours = 0;
-        if (modifier === 'pm') hours += 12;
-        return hours + (minutes / 60);
-    }
-
-    const openTime = parseTime(parts[0]);
-    const closeTime = parseTime(parts[1]);
-
-    return currentTime >= openTime && currentTime <= closeTime;
-}
         });
 
         filtered.sort((a, b) => a.distance - b.distance);
-
         if (filtered.length === 0) {
             container.innerHTML = '<p style="text-align:center; color:#666; margin-top:20px;">No events found.</p>';
             return;
@@ -254,10 +171,7 @@ function isOpen(hoursString) {
 
             const card = document.createElement('div');
             card.className = 'card';
-            
-            const logoHtml = info.logo 
-                ? `<img src="${info.logo}" alt="${item.brewery}" class="brewery-logo">` 
-                : `<span class="text-link">${item.brewery} ↗</span>`;
+            const logoHtml = info.logo ? `<img src="${info.logo}" alt="${item.brewery}" class="brewery-logo">` : `<span class="text-link">${item.brewery} ↗</span>`;
 
             card.innerHTML = `
                 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
