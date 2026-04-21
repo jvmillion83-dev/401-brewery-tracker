@@ -22,7 +22,13 @@
         .status-badge { color: white; font-size: 0.7rem; padding: 4px 8px; border-radius: 5px; text-transform: uppercase; margin-top: 10px; display: inline-block; }
         .distance-tag { font-size: 0.65rem; color: #aaa; margin-left: 8px; }
         .brewery-link { text-decoration: none; display: inline-block; transition: 0.2s; }
-        .brewery-logo { height: 40px; width: auto; max-width: 120px; object-fit: contain; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3)); }
+        .brewery-logo {
+    width: 100px;  /* Fixed width */
+    height: 50px;  /* Fixed height */
+    object-fit: contain; /* Keeps the logo from stretching */
+    object-position: left; /* Aligns it to the left where the text was */
+    filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3));
+}
         .text-link { color: #ffcc00; font-size: 0.7rem; text-transform: uppercase; font-weight: bold; letter-spacing: 1px; background: rgba(255,204,0,0.1); padding: 4px 10px; border-radius: 6px; }
     </style>
 </head>
