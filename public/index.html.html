@@ -80,7 +80,7 @@
 
 "FOOLPROOF BREWERY": { 
         lat: 41.8704, lng: -71.4082, 
-        url: "https://https://www.foolproofbrewing.com/pawtucket/pawtucket-home//", 
+        url: "https://www.foolproofbrewing.com/pawtucket/pawtucket-home//", 
         logo: "/logos/foolproof.png", // Matches foolproof.png
         hours: ["2-8pm", "Closed", "2-9pm", "12-9pm", "12-9pm", "12-9pm", "12-9pm"] 
     },
@@ -92,19 +92,19 @@
     },
 "RAVENOUS BREWING CO.": { 
         lat: 41.9538, lng: -71.4004, 
-        url: "https://https://ravenousbrewing.com////", 
+        url: "https://ravenousbrewing.com////", 
         logo: "/logos/ravenous.png", // Matches ravenous.png
         hours: ["12-6pm", "Closed", "Closed", "Closed", "4-9pm", "2-10pm", "12-10pm"] 
     },
 "CROOKED CURRENT BREWERY": { 
         lat: 41.8728, lng: -71.4057, 
-        url: "https://http://www.crookedcurrentbreweryri.com////", 
+        url: "http://www.crookedcurrentbreweryri.com////", 
         logo: "/logos/crookedcurrent.png", // Matches crookedcurrent.png
         hours: ["Closed", "Closed", "Closed", "Closed", "5-8pm", "5-9pm", "1-6pm"] 
     },
 "THE GUILD PAWTUCKET": { 
-        lat: 41.9538, lng: -71.4004, 
-        url: "https://https://www.theguildpawtucket.com/#food////", 
+        lat: 41.8705, lng: -71.3917, 
+        url: "https://www.theguildpawtucket.com/#food////", 
         logo: "/logos/theguildpawt.png", // Matches theguildpawt.png
         hours: ["12-6pm", "Closed", "4-8pm", "4-8pm", "4-8pm", "12-10pm", "12-10pm"],
  	hasKitchen: true
@@ -214,6 +214,30 @@
                 const dist = userCoords ? getDistance(userCoords.lat, userCoords.lng, info.lat, info.lng) : Infinity;
                 filtered.push({ brewery: name, truck: "In-House Kitchen", distance: dist, url: info.url, hasKitchen: true });
             }
+function isOpen(hoursString) {
+    if (hoursString.toLowerCase() === "closed") return false;
+    
+    const now = new Date();
+    const currentTime = now.getHours() + (now.getMinutes() / 60);
+    
+    // Simple parser for "12-8pm" or "11:30am-10pm"
+    const parts = hoursString.toLowerCase().split('-');
+    if (parts.length !== 2) return false;
+
+    function parseTime(t) {
+        let [time, modifier] = [t.replace(/[ap]m/, ''), t.includes('pm') ? 'pm' : 'am'];
+        let [hours, minutes] = time.split(':').map(Number);
+        if (!minutes) minutes = 0;
+        if (hours === 12) hours = 0;
+        if (modifier === 'pm') hours += 12;
+        return hours + (minutes / 60);
+    }
+
+    const openTime = parseTime(parts[0]);
+    const closeTime = parseTime(parts[1]);
+
+    return currentTime >= openTime && currentTime <= closeTime;
+}
         });
 
         filtered.sort((a, b) => a.distance - b.distance);
