@@ -49,10 +49,10 @@
     let userCoords = null;
 
     const breweryData = {
-        "PHANTOM FARMS": { lat: 41.9744, lng: -71.4556, url: "https://phantomfarmsbrewing.com/", logo: "/logos/phantom.png hours: ["12-8pm", "5-9pm", "Closed", "4-9pm", "4-9pm", "12-10pm", "12-10pm"] },
+        "PHANTOM FARMS": { lat: 41.9744, lng: -71.4556, url: "https://phantomfarmsbrewing.com/", logo: "/logos/phantom.png", hours: ["12-8pm", "5-9pm", "Closed", "4-9pm", "4-9pm", "12-10pm", "12-10pm"] },
         "RAGGED ISLAND": { lat: 41.6163, lng: -71.2569, url: "https://www.raggedislandbrewing.com/", hours: ["12-9pm", "12-9pm", "12-9pm", "12-9pm", "12-9pm", "12-9pm", "12-9pm"] },
         "CRAFTED HOPE BREWING": { lat: 41.6563, lng: -71.4981, url: "https://www.craftedhopebrewing.com/foodtrucks", hours: ["12-6pm", "Closed", "Closed", "Closed", "3-9pm", "12-9pm", "12-9pm"] },
-        "BRAVO BREWING COMPANY": { lat: 41.9565, lng: -71.7017, url: "https://bravobrewingcompany.com/", hours: ["12-6pm", "5-9pm", "Closed", "5-9pm", "5-10pm", "11am-10pm", "12-10pm"], hasKitchen: true },
+        "BRAVO BREWING COMPANY": { lat: 41.9565, lng: -71.7017, url: "https://bravobrewingcompany.com/", logo: "/logos/bravo.png", hours: ["12-6pm", "5-9pm", "Closed", "5-9pm", "5-10pm", "11am-10pm", "12-10pm"], hasKitchen: true },
         "UNCOMMON PAIR BREWING": { lat: 41.9360, lng: -71.4550, url: "https://www.uncommonpairbrewing.com/", hours: ["12-6pm", "3-9pm", "3-9pm", "3-9pm", "3-10pm", "12-10pm", "12-10pm"] },
         "UNION STATION BREWERY": { lat: 41.8268, lng: -71.4144, url: "https://unionstationpvd.com/", hours: ["11:30am-9pm", "11:30am-10pm", "11:30am-10pm", "11:30am-10pm", "11:30am-10pm", "11:30am-11pm", "11:30am-11pm"], hasKitchen: true },
         "APPONAUG BREWING": { lat: 41.7028, lng: -71.4475, url: "https://apponaugbrewing.com/", hours: ["12-8pm", "11:30am-9pm", "11:30am-9pm", "11:30am-9pm", "11:30am-9pm", "11:30am-10pm", "11:30am-10pm"], hasKitchen: true },
@@ -129,19 +129,19 @@
 
         let filtered = allTruckData
             .filter(item => normalize(item.start) === selectedNormDate)
-           .map(item => {
-    const nameInJson = item.brewery.toUpperCase().trim();
-    
-    // Look for a key in breweryData that is INSIDE the JSON name, 
-    // OR a JSON name that is INSIDE the breweryData key.
-    const matchKey = Object.keys(breweryData).find(key => 
-        nameInJson.includes(key.split(' ')[0]) || key.includes(nameInJson)
-    );
-    
-    const info = breweryData[matchKey];
-    if (!info) {
-        console.log("No match found for:", nameInJson); // This helps you debug!
-        return null;
+            .map(item => {
+                const nameInJson = item.brewery.toUpperCase().trim();
+                const matchKey = Object.keys(breweryData).find(key => 
+                    nameInJson.includes(key.split(' ')[0]) || key.includes(nameInJson)
+                );
+                
+                const info = breweryData[matchKey];
+                if (!info) return null;
+
+                let dist = userCoords ? getDistance(userCoords.lat, userCoords.lng, info.lat, info.lng) : Infinity;
+                return { ...item, brewery: matchKey, distance: dist, url: info.url, hasKitchen: item.hasKitchen || false };
+            })
+            .filter(item => item !== null);
     }
 
     let dist = userCoords ? getDistance(userCoords.lat, userCoords.lng, info.lat, info.lng) : Infinity;
@@ -151,31 +151,13 @@
 
         // Add in-house kitchens if no truck is scheduled
 Object.keys(breweryData).forEach(name => {
-    // This check ensures we don't add a kitchen if Bravo already has an entry from your JSON
-    const isAlreadyListed = filtered.some(f => 
-        f.brewery.toUpperCase().includes(name.split(' ')[0]) || 
-        name.toUpperCase().includes(f.brewery.toUpperCase())
-    );
-
-    if (breweryData[name].hasKitchen && !isAlreadyListed) {
-        const info = breweryData[name];
-card.innerHTML = `
-    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
-        <a href="${item.url}" target="_blank" class="brewery-link">
-            ${info.logo ? `<img src="${info.logo}" alt="${item.brewery}" class="brewery-logo">` : `<span>${item.brewery} ↗</span>`}
-        </a>
-        <span class="distance-tag">${item.distance !== Infinity ? item.distance.toFixed(1) + ' mi' : ''}</span>
-    </div>
-    <div style="font-size: 0.7rem; color: #888; margin-bottom: 10px;">Taproom: ${todayHours}</div>
-    <span class="truck-name">${item.truck}</span>
-    <span class="status-badge" style="background: ${item.hasKitchen ? '#0277bd' : '#2e7d32'};">
-        ${item.hasKitchen ? 'Full Kitchen' : 'Scheduled'}
-    </span>
-`;
-        const dist = userCoords ? getDistance(userCoords.lat, userCoords.lng, info.lat, info.lng) : Infinity;
-        filtered.push({ brewery: name, truck: "In-House Kitchen", distance: dist, url: info.url, hasKitchen: true });
-    }
-});
+            const isAlreadyListed = filtered.some(f => f.brewery === name);
+            if (breweryData[name].hasKitchen && !isAlreadyListed) {
+                const info = breweryData[name];
+                const dist = userCoords ? getDistance(userCoords.lat, userCoords.lng, info.lat, info.lng) : Infinity;
+                filtered.push({ brewery: name, truck: "In-House Kitchen", distance: dist, url: info.url, hasKitchen: true });
+            }
+        });
 
         filtered.sort((a, b) => a.distance - b.distance);
 
@@ -191,20 +173,29 @@ card.innerHTML = `
 
             const card = document.createElement('div');
             card.className = 'card';
+            
+            // LOGO LOGIC HERE
+            const logoHtml = info.logo 
+                ? `<img src="${info.logo}" alt="${item.brewery}" class="brewery-logo">` 
+                : `<span>${item.brewery} ↗</span>`;
+
             card.innerHTML = `
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
-                    <a href="${item.url}" target="_blank" class="brewery-link">${item.brewery} ↗</a>
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+                    <a href="${item.url}" target="_blank" class="brewery-link">
+                        ${logoHtml}
+                    </a>
                     <span class="distance-tag">${item.distance !== Infinity ? item.distance.toFixed(1) + ' mi' : ''}</span>
                 </div>
                 <div style="font-size: 0.7rem; color: #888; margin-bottom: 10px;">Taproom: ${todayHours}</div>
                 <span class="truck-name">${item.truck}</span>
-                <span class="status-badge" style="background: ${item.hasKitchen ? '#0277bd' : '#2e7d32'};">${item.hasKitchen ? 'Full Kitchen' : 'Scheduled'}</span>
+                <span class="status-badge" style="background: ${item.hasKitchen ? '#0277bd' : '#2e7d32'};">
+                    ${item.hasKitchen ? 'Full Kitchen' : 'Scheduled'}
+                </span>
             `;
             container.appendChild(card);
         });
     }
 
     initApp();
-</script>
-</body>
+</script></body>
 </html>
