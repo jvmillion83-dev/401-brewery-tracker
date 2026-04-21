@@ -19,21 +19,11 @@
         #truck-container { width: 100%; max-width: 400px; }
         .card { background: #1e1e1e; margin: 12px 0; padding: 18px; border-radius: 15px; border: 1px solid #333; box-shadow: 0 4px 12px rgba(0,0,0,0.5); }
         .truck-name { font-size: 1.2rem; font-weight: bold; color: #ffcc00; margin-bottom: 8px; display: block; }
-        .status-badge { background: #2e7d32; color: white; font-size: 0.7rem; padding: 4px 8px; border-radius: 5px; text-transform: uppercase; margin-top: 10px; display: inline-block; }
+        .status-badge { color: white; font-size: 0.7rem; padding: 4px 8px; border-radius: 5px; text-transform: uppercase; margin-top: 10px; display: inline-block; }
         .distance-tag { font-size: 0.65rem; color: #aaa; margin-left: 8px; }
-        .brewery-link { color: #ffcc00; font-size: 0.7rem; text-transform: uppercase; font-weight: bold; letter-spacing: 1px; background: rgba(255,204,0,0.1); padding: 4px 10px; border-radius: 6px; text-decoration: none; display: inline-block; transition: 0.2s; }
-.brewery-logo {
-    height: 40px; /* Adjust height to fit your design */
-    width: auto;
-    max-width: 120px;
-    object-fit: contain;
-    filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3));
-}
-
-.brewery-link {
-    background: none !important; /* Remove the old yellow background bubble */
-    padding: 0 !important;
-}
+        .brewery-link { text-decoration: none; display: inline-block; transition: 0.2s; }
+        .brewery-logo { height: 40px; width: auto; max-width: 120px; object-fit: contain; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3)); }
+        .text-link { color: #ffcc00; font-size: 0.7rem; text-transform: uppercase; font-weight: bold; letter-spacing: 1px; background: rgba(255,204,0,0.1); padding: 4px 10px; border-radius: 6px; }
     </style>
 </head>
 <body>
@@ -74,30 +64,23 @@
     }
 
     async function initApp() {
-        // Handle Geolocation
-        setTimeout(() => {
-            if ("geolocation" in navigator) {
-                navigator.geolocation.getCurrentPosition((position) => {
-                    userCoords = { lat: position.coords.latitude, lng: position.coords.longitude };
-                    const active = document.querySelector('.date-pill.active');
-                    if (active) renderDate(active.dataset.date);
-                }, (err) => console.log("Location denied"));
-            }
-        }, 1000);
+        if ("geolocation" in navigator) {
+            navigator.geolocation.getCurrentPosition((position) => {
+                userCoords = { lat: position.coords.latitude, lng: position.coords.longitude };
+                const active = document.querySelector('.date-pill.active');
+                if (active) renderDate(active.dataset.date);
+            }, (err) => console.log("Location denied"));
+        }
 
-        // Fetch Data
         try {
             const response = await fetch('/api/trucks');
             allTruckData = await response.json();
-            generateDatePicker();
-            const today = new Date();
-            renderDate(`${today.getMonth() + 1}/${today.getDate()}`);
         } catch (err) {
             console.error("Fetch error:", err);
-            generateDatePicker();
-            const today = new Date();
-            renderDate(`${today.getMonth() + 1}/${today.getDate()}`);
         }
+        generateDatePicker();
+        const today = new Date();
+        renderDate(`${today.getMonth() + 1}/${today.getDate()}`);
     }
 
     function generateDatePicker() {
@@ -134,23 +117,14 @@
                 const matchKey = Object.keys(breweryData).find(key => 
                     nameInJson.includes(key.split(' ')[0]) || key.includes(nameInJson)
                 );
-                
                 const info = breweryData[matchKey];
                 if (!info) return null;
-
                 let dist = userCoords ? getDistance(userCoords.lat, userCoords.lng, info.lat, info.lng) : Infinity;
                 return { ...item, brewery: matchKey, distance: dist, url: info.url, hasKitchen: item.hasKitchen || false };
             })
             .filter(item => item !== null);
-    }
 
-    let dist = userCoords ? getDistance(userCoords.lat, userCoords.lng, info.lat, info.lng) : Infinity;
-    return { ...item, brewery: matchKey, distance: dist, url: info.url, hasKitchen: item.hasKitchen || false };
-})
-            .filter(item => item !== null);
-
-        // Add in-house kitchens if no truck is scheduled
-Object.keys(breweryData).forEach(name => {
+        Object.keys(breweryData).forEach(name => {
             const isAlreadyListed = filtered.some(f => f.brewery === name);
             if (breweryData[name].hasKitchen && !isAlreadyListed) {
                 const info = breweryData[name];
@@ -174,16 +148,13 @@ Object.keys(breweryData).forEach(name => {
             const card = document.createElement('div');
             card.className = 'card';
             
-            // LOGO LOGIC HERE
             const logoHtml = info.logo 
                 ? `<img src="${info.logo}" alt="${item.brewery}" class="brewery-logo">` 
-                : `<span>${item.brewery} ↗</span>`;
+                : `<span class="text-link">${item.brewery} ↗</span>`;
 
             card.innerHTML = `
                 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
-                    <a href="${item.url}" target="_blank" class="brewery-link">
-                        ${logoHtml}
-                    </a>
+                    <a href="${item.url}" target="_blank" class="brewery-link">${logoHtml}</a>
                     <span class="distance-tag">${item.distance !== Infinity ? item.distance.toFixed(1) + ' mi' : ''}</span>
                 </div>
                 <div style="font-size: 0.7rem; color: #888; margin-bottom: 10px;">Taproom: ${todayHours}</div>
@@ -197,5 +168,6 @@ Object.keys(breweryData).forEach(name => {
     }
 
     initApp();
-</script></body>
+</script>
+</body>
 </html>
