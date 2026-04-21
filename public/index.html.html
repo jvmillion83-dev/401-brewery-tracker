@@ -39,15 +39,53 @@
     let userCoords = null;
 
     const breweryData = {
-        "PHANTOM FARMS": { lat: 41.9744, lng: -71.4556, url: "https://phantomfarmsbrewing.com/", logo: "/logos/phantom.png", hours: ["12-8pm", "5-9pm", "Closed", "4-9pm", "4-9pm", "12-10pm", "12-10pm"] },
-        "RAGGED ISLAND": { lat: 41.6163, lng: -71.2569, url: "https://www.raggedislandbrewing.com/", logo: "/logos/raggedisland.png", hours: ["12-9pm", "12-9pm", "12-9pm", "12-9pm", "12-9pm", "12-9pm", "12-9pm"] },
-        "CRAFTED HOPE BREWING": { lat: 41.6563, lng: -71.4981, url: "https://www.craftedhopebrewing.com/foodtrucks", logo: "/logos/craftedhope.png", hours: ["12-6pm", "Closed", "Closed", "Closed", "3-9pm", "12-9pm", "12-9pm"] },
-        "BRAVO BREWING COMPANY": { lat: 41.9565, lng: -71.7017, url: "https://bravobrewingcompany.com/", logo: "/logos/bravo.png", hours: ["12-6pm", "5-9pm", "Closed", "5-9pm", "5-10pm", "11am-10pm", "12-10pm"], hasKitchen: true },
-        "UNCOMMON PAIR BREWING": { lat: 41.9360, lng: -71.4550, url: "https://www.uncommonpairbrewing.com/", logo: "/logos/uncommon.png", hours: ["12-6pm", "3-9pm", "3-9pm", "3-9pm", "3-10pm", "12-10pm", "12-10pm"] },
-        "UNION STATION BREWERY": { lat: 41.8268, lng: -71.4144, url: "https://unionstationpvd.com/", hours: ["11:30am-9pm", "11:30am-10pm", "11:30am-10pm", "11:30am-10pm", "11:30am-10pm", "11:30am-11pm", "11:30am-11pm"], hasKitchen: true },
-        "APPONAUG BREWING": { lat: 41.7028, lng: -71.4475, url: "https://apponaugbrewing.com/", logo: "/logos/apponaug.png", hours: ["12-8pm", "11:30am-9pm", "11:30am-9pm", "11:30am-9pm", "11:30am-9pm", "11:30am-10pm", "11:30am-10pm"], hasKitchen: true },
-        "ANGLE TREE BREWERY": { lat: 41.9815, lng: -71.3310, url: "https://angletreebrew.com/", logo: "/logos/angletree.png", hours: ["1-6pm", "Closed", "Closed", "6-9pm", "4-9pm", "4-9pm", "1-9pm"], hasKitchen: true }
-    };
+    "PHANTOM FARMS": { 
+        lat: 41.9744, lng: -71.4556, 
+        url: "https://phantomfarmsbrewing.com/", 
+        logo: "/logos/phantom.png", // Matches phantom.png
+        hours: ["12-8pm", "5-9pm", "Closed", "4-9pm", "4-9pm", "12-10pm", "12-10pm"] 
+    },
+    "RAGGED ISLAND": { 
+        lat: 41.6163, lng: -71.2569, 
+        url: "https://www.raggedislandbrewing.com/", 
+        logo: "/logos/raggedisland.png", // Matches raggedisland.png
+        hours: ["12-9pm", "12-9pm", "12-9pm", "12-9pm", "12-9pm", "12-9pm", "12-9pm"] 
+    },
+    "BRAVO BREWING COMPANY": { 
+        lat: 41.9565, lng: -71.7017, 
+        url: "https://bravobrewingcompany.com/", 
+        logo: "/logos/bravo.png", // Matches bravo.png
+        hours: ["12-6pm", "5-9pm", "Closed", "5-9pm", "5-10pm", "11am-10pm", "12-10pm"], 
+        hasKitchen: true 
+    },
+    "UNCOMMON PAIR BREWING": { 
+        lat: 41.9360, lng: -71.4550, 
+        url: "https://www.uncommonpairbrewing.com/", 
+        logo: "/logos/uncommon.png", // Matches uncommon.png
+        hours: ["12-6pm", "3-9pm", "3-9pm", "3-9pm", "3-10pm", "12-10pm", "12-10pm"] 
+    },
+    "UNION STATION BREWERY": { 
+        lat: 41.8268, lng: -71.4144, 
+        url: "https://unionstationpvd.com/", 
+        logo: "/logos/unionstation.png", // Matches unionstation.png
+        hours: ["11:30am-9pm", "11:30am-10pm", "11:30am-10pm", "11:30am-10pm", "11:30am-10pm", "11:30am-11pm", "11:30am-11pm"], 
+        hasKitchen: true 
+    },
+    "APPONAUG BREWING": { 
+        lat: 41.7028, lng: -71.4475, 
+        url: "https://apponaugbrewing.com/", 
+        logo: "/logos/apponaug.png", // Matches apponaug.png
+        hours: ["12-8pm", "11:30am-9pm", "11:30am-9pm", "11:30am-9pm", "11:30am-9pm", "11:30am-10pm", "11:30am-10pm"], 
+        hasKitchen: true 
+    },
+    "ANGLE TREE BREWERY": { 
+        lat: 41.9815, lng: -71.3310, 
+        url: "https://angletreebrew.com/", 
+        logo: "/logos/angletree.png", // Matches angletree.png
+        hours: ["1-6pm", "Closed", "Closed", "6-9pm", "4-9pm", "4-9pm", "1-9pm"], 
+        hasKitchen: true 
+    }
+};
 
     const normalize = (d) => {
         if (!d) return "";
