@@ -190,7 +190,7 @@ function switchTab(type) {
         }
     }
 
-    function renderDate(selectedNormDate) {
+   function renderDate(selectedNormDate) {
     const container = document.getElementById('truck-container');
     container.innerHTML = '';
     const [m, d] = selectedNormDate.split('/');
@@ -199,7 +199,6 @@ function switchTab(type) {
     let listToRender = [];
 
     if (currentTab === 'food') {
-        // --- FOOD TAB LOGIC ---
         let filtered = allTruckData
             .filter(item => normalize(item.start) === selectedNormDate)
             .map(item => {
@@ -212,7 +211,6 @@ function switchTab(type) {
             })
             .filter(item => item !== null);
 
-        // Add In-House Kitchens if not already listed by a truck event
         Object.keys(breweryData).forEach(name => {
             if (breweryData[name].hasKitchen && !filtered.some(f => f.brewery === name)) {
                 const info = breweryData[name];
@@ -223,12 +221,9 @@ function switchTab(type) {
         listToRender = filtered;
 
     } else {
-        // --- BEER TAB LOGIC ---
-        // Just show every brewery that is open on this day
         Object.keys(breweryData).forEach(name => {
             const info = breweryData[name];
             const todayHours = info.hours[selectedDay];
-            
             if (todayHours.toLowerCase() !== "closed") {
                 const dist = userCoords ? getDistance(userCoords.lat, userCoords.lng, info.lat, info.lng) : Infinity;
                 listToRender.push({
@@ -237,7 +232,7 @@ function switchTab(type) {
                     distance: dist,
                     url: info.url,
                     hours: todayHours,
-                    isOpenNow: isOpen(todayHours) // Uses your helper!
+                    isOpenNow: isOpen(todayHours)
                 });
             }
         });
@@ -256,30 +251,16 @@ function switchTab(type) {
         const card = document.createElement('div');
         card.className = 'card';
         
-        // Custom styling for Beer Tab vs Food Tab
+        // Logical check for styling and buttons
         const statusText = currentTab === 'beer' ? (item.isOpenNow ? 'Open Now' : 'Scheduled') : (item.hasKitchen ? 'Full Kitchen' : 'Scheduled');
         const statusColor = currentTab === 'beer' ? (item.isOpenNow ? '#2e7d32' : '#444') : (item.hasKitchen ? '#0277bd' : '#2e7d32');
         const mainLabel = currentTab === 'beer' ? "Taproom Hours" : item.truck;
-const tapListHtml = info.tapListUrl 
-    ? `<a href="${info.tapListUrl}" target="_blank" class="tap-list-btn">📝 View Tap List</a>` 
-    : '';
+        
+        const tapListHtml = (currentTab === 'beer' && info.tapListUrl) 
+            ? `<a href="${info.tapListUrl}" target="_blank" class="tap-list-btn">📝 View Tap List</a>` 
+            : '';
 
-card.innerHTML = `
-    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
-        <a href="${item.url}" target="_blank" class="brewery-link">
-            <img src="${info.logo}" alt="${item.brewery}" class="brewery-logo">
-        </a>
-        <span class="distance-tag">${item.distance !== Infinity ? item.distance.toFixed(1) + ' mi' : ''}</span>
-    </div>
-    <div style="font-size: 0.7rem; color: #888; margin-bottom: 10px;">Taproom: ${todayHours}</div>
-    <span class="truck-name">${mainLabel}</span>
-    <div style="display: flex; align-items: center; gap: 10px;">
-        <span class="status-badge" style="background: ${statusColor};">
-            ${statusText}
-        </span>
-    </div>
-    ${currentTab === 'beer' ? tapListHtml : ''} 
-`;
+        // Unified HTML construction - Only call this ONCE
         card.innerHTML = `
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
                 <a href="${item.url}" target="_blank" class="brewery-link">
@@ -289,9 +270,12 @@ card.innerHTML = `
             </div>
             <div style="font-size: 0.7rem; color: #888; margin-bottom: 10px;">Taproom: ${todayHours}</div>
             <span class="truck-name">${mainLabel}</span>
-            <span class="status-badge" style="background: ${statusColor};">
-                ${statusText}
-            </span>
+            <div style="display: flex; align-items: center; gap: 10px;">
+                <span class="status-badge" style="background: ${statusColor};">
+                    ${statusText}
+                </span>
+            </div>
+            ${tapListHtml}
         `;
         container.appendChild(card);
     });
