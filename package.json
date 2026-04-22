@@ -11,7 +11,16 @@
   "license": "ISC",
   "type": "commonjs",
   "dependencies": {
+    "cheerio": "^1.2.0",
     "cors": "^2.8.6",
     "express": "^5.2.1"
-  }
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jvmillion83-dev/401-brewery-tracker.git"
+  },
+  "bugs": {
+    "url": "https://github.com/jvmillion83-dev/401-brewery-tracker/issues"
+  },
+  "homepage": "https://github.com/jvmillion83-dev/401-brewery-tracker#readme"
 }
