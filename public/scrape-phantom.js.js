@@ -1,5 +1,6 @@
 import * as cheerio from 'cheerio';
 import { writeFile } from 'fs/promises';
+import { join } from 'path';
 
 const URL = "https://phantomfarmsbrewing.com/pages/calendar";
 
@@ -14,36 +15,38 @@ async function scrape() {
         let foodTrucks = [];
         const currentYear = new Date().getFullYear();
 
-        // Phantom's calendar lists events in text blocks usually following a date
-        // We look for bullet points or specific text containers
         $('li, p, .event-item').each((i, el) => {
             const text = $(el).text().trim();
-            
-            // Check if this line contains a food truck or specific vendor
             const isFood = /Food Truck|Pizza|Grill|Lobster|Kitchen|Kreations|Fusion/i.test(text);
             
             if (isFood) {
-                // Try to find a date in the string like "April 23" or "04/23"
-                const dateMatch = text.match(/(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)\s\d{1,2}/i);
-                let dateStr = dateMatch ? `${dateMatch[0]}, ${currentYear}` : "Check Calendar";
+                const dateMatch = text.match(/(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)\s(\d{1,2})/i);
+                
+                if (dateMatch) {
+                    // Convert "Apr 23" to "4/23/2026" so your app's normalize() helper works perfectly
+                    const monthMap = { Jan:1, Feb:2, Mar:3, Apr:4, May:5, Jun:6, Jul:7, Aug:8, Sep:9, Oct:10, Nov:11, Dec:12 };
+                    const monthNum = monthMap[dateMatch[1]];
+                    const dayNum = dateMatch[2];
+                    const formattedDate = `${monthNum}/${dayNum}/${currentYear}`;
 
-                // Clean the truck name (remove the date and bullets)
-                const truckName = text.split('●')[0].replace(dateMatch ? dateMatch[0] : '', '').trim();
+                    const truckName = text.split('●')[0].replace(dateMatch[0], '').trim();
 
-                foodTrucks.push({
-                    "truck": truckName || text,
-                    "start": dateStr,
-                    "end": dateStr,
-                    "brewery": "PHANTOM FARMS"
-                });
+                    foodTrucks.push({
+                        "truck": truckName || text,
+                        "start": formattedDate,
+                        "end": formattedDate,
+                        "brewery": "PHANTOM FARMS"
+                    });
+                }
             }
         });
 
-        // Save to your phantom-data.json file
-        await writeFile('phantom-data.json', JSON.stringify(foodTrucks, null, 2));
+        // This ensures it saves into the public folder regardless of where you run it from
+        const outputPath = './public/phantom-data.json';
+        await writeFile(outputPath, JSON.stringify(foodTrucks, null, 2));
         
         console.log(`✅ Success! Found ${foodTrucks.length} entries.`);
-        console.log("Check phantom-data.json for your updates.");
+        console.log(`Check ${outputPath} for your updates.`);
 
     } catch (err) {
         console.error("❌ Scrape failed:", err);
