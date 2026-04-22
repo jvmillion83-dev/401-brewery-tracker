@@ -54,6 +54,19 @@
     background: #ffcc00; 
     color: #121212; 
 }
+.tap-list-btn {
+    display: block;
+    margin-top: 12px;
+    padding: 8px;
+    background: #ffcc00;
+    color: #121212;
+    text-align: center;
+    border-radius: 8px;
+    text-decoration: none;
+    font-size: 0.8rem;
+    font-weight: bold;
+    text-transform: uppercase;
+}
     </style>
 </head>
 <body>
@@ -85,7 +98,13 @@ function switchTab(type) {
     const breweryData = {
         "BRAVO BREWING COMPANY": { lat: 41.9565, lng: -71.7017, url: "https://bravobrewingcompany.com/", logo: "/logos/bravo.png", hours: ["12-6pm", "5-9pm", "Closed", "5-9pm", "5-10pm", "11am-10pm", "12-10pm"], hasKitchen: true }, 
         "NARRAGANSETT BREWERY": { lat: 41.9565, lng: -71.7017, url: "https://www.narragansettbeer.com/pages/providence-brewery", logo: "/logos/gansett.png", hours: ["12-9pm", "4-10pm", "4-10pm", "4-10pm", "12-10pm", "12pm-10pm", "12-9pm"], hasKitchen: true },        
-        "PHANTOM FARMS": { lat: 41.9744, lng: -71.4556, url: "https://phantomfarmsbrewing.com/", logo: "/logos/phantom.png", hours: ["12-8pm", "5-9pm", "Closed", "4-9pm", "4-9pm", "12-10pm", "12-10pm"] },
+        "PHANTOM FARMS": { 
+    lat: 41.9744, lng: -71.4556, 
+    url: "https://phantomfarmsbrewing.com/", 
+    tapListUrl: "https://phantomfarmsbrewing.com/pages/beers-on-tap", // Scrapeable link
+    logo: "/logos/phantom.png", 
+    hours: ["12-8pm", "5-9pm", "Closed", "4-9pm", "4-9pm", "12-10pm", "12-10pm"] 
+},
         "RAGGED ISLAND": { lat: 41.6163, lng: -71.2569, url: "https://www.raggedislandbrewing.com/", logo: "/logos/raggedisland.png", hours: ["12-9pm", "12-9pm", "12-9pm", "12-9pm", "12-9pm", "12-9pm", "12-9pm"] },  
         "SKYROC BREWERY": { lat: 41.9442, lng: -71.2860, url: "https://skyrocbrewery.com/brewery", logo: "/logos/skyroc.png", hours: ["Closed", "Closed", "Closed", "Closed", "Closed", "4-8pm", "1-8pm"] },      
         "UNCOMMON PAIR BREWING": { lat: 41.8706, lng: -71.5219, url: "https://www.uncommonpairbrewing.com/", logo: "/logos/uncommon.png", hours: ["Closed", "Closed", "Closed", "4-8", "Closed", "12-9pm", "12-9pm"] },
@@ -241,7 +260,26 @@ function switchTab(type) {
         const statusText = currentTab === 'beer' ? (item.isOpenNow ? 'Open Now' : 'Scheduled') : (item.hasKitchen ? 'Full Kitchen' : 'Scheduled');
         const statusColor = currentTab === 'beer' ? (item.isOpenNow ? '#2e7d32' : '#444') : (item.hasKitchen ? '#0277bd' : '#2e7d32');
         const mainLabel = currentTab === 'beer' ? "Taproom Hours" : item.truck;
+const tapListHtml = info.tapListUrl 
+    ? `<a href="${info.tapListUrl}" target="_blank" class="tap-list-btn">📝 View Tap List</a>` 
+    : '';
 
+card.innerHTML = `
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+        <a href="${item.url}" target="_blank" class="brewery-link">
+            <img src="${info.logo}" alt="${item.brewery}" class="brewery-logo">
+        </a>
+        <span class="distance-tag">${item.distance !== Infinity ? item.distance.toFixed(1) + ' mi' : ''}</span>
+    </div>
+    <div style="font-size: 0.7rem; color: #888; margin-bottom: 10px;">Taproom: ${todayHours}</div>
+    <span class="truck-name">${mainLabel}</span>
+    <div style="display: flex; align-items: center; gap: 10px;">
+        <span class="status-badge" style="background: ${statusColor};">
+            ${statusText}
+        </span>
+    </div>
+    ${currentTab === 'beer' ? tapListHtml : ''} 
+`;
         card.innerHTML = `
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
                 <a href="${item.url}" target="_blank" class="brewery-link">
