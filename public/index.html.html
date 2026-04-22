@@ -154,21 +154,29 @@ function switchTab(type) {
 
     // --- APP LOGIC ---
     async function initApp() {
-        if ("geolocation" in navigator) {
-            navigator.geolocation.getCurrentPosition((position) => {
-                userCoords = { lat: position.coords.latitude, lng: position.coords.longitude };
-                const active = document.querySelector('.date-pill.active');
-                if (active) renderDate(active.dataset.date);
-            });
-        }
-        try {
-            const response = await fetch('/api/trucks');
-            allTruckData = await response.json();
-        } catch (err) { console.error("Fetch error:", err); }
-        generateDatePicker();
-        const today = new Date();
-        renderDate(`${today.getMonth() + 1}/${today.getDate()}`);
+    // ... (geolocation code)
+    
+    try {
+        // Load the main API data
+        const response = await fetch('/api/trucks');
+        const mainData = await response.json();
+        
+        // Load your custom Phantom data
+        const phantomRes = await fetch('phantom-data.json');
+        const phantomData = await phantomRes.json();
+        
+        // Combine them
+        allTruckData = [...mainData, ...phantomData];
+        
+    } catch (err) { 
+        console.error("Data load error:", err); 
     }
+    
+    generateDatePicker();
+    // Render for today
+    const today = new Date();
+    renderDate(`${today.getMonth() + 1}/${today.getDate()}`);
+}
 
 async function syncPhantomTrucks() {
     try {
