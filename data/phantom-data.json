@@ -1,5 +1,37 @@
 [
-  {
+  
+// Example logic for your scraper to save to phantom-data.json
+async function scrapePhantomCalendar() {
+    const url = "https://phantomfarmsbrewing.com/pages/calendar";
+    const response = await fetch(`https://api.allorigins.win/get?url=${encodeURIComponent(url)}`);
+    const data = await response.json();
+    
+    const parser = new DOMParser();
+    const doc = parser.parseFromString(data.contents, 'text/html');
+    
+    // Phantom uses a standard calendar grid; we look for the event titles
+    const events = doc.querySelectorAll('.desc'); // Common selector for their calendar events
+    let foodTrucks = [];
+
+    events.forEach(event => {
+        const text = event.innerText.trim();
+        // Filter for common food truck keywords or specific known vendors
+        if (text.includes("Food Truck") || text.includes("Pizza") || text.includes("Grill") || text.includes("Lobster")) {
+            // Logic to find the associated date from the parent container
+            const dateVal = event.closest('.day')?.querySelector('.date')?.innerText; 
+            foodTrucks.push({
+                truck: text,
+                date: dateVal, // You'll want to normalize this to M/D format
+                brewery: "PHANTOM FARMS"
+            });
+        }
+    });
+
+    // This is where you'd write the 'foodTrucks' array to phantom-data.json
+    console.log(JSON.stringify(foodTrucks));
+}
+
+{
     "truck": "W's Wood Fire Pizza",
     "start": "04/08/2026  4:00PM",
     "end": "04/08/2026  8:00PM"
@@ -74,4 +106,5 @@
     "start": "04/30/2026  4:00PM",
     "end": "04/30/2026  8:00PM"
   }
+
 ]

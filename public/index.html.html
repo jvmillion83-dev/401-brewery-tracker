@@ -107,7 +107,7 @@ function switchTab(type) {
 },
         "RAGGED ISLAND": { lat: 41.6163, lng: -71.2569, url: "https://www.raggedislandbrewing.com/", logo: "/logos/raggedisland.png", hours: ["12-9pm", "12-9pm", "12-9pm", "12-9pm", "12-9pm", "12-9pm", "12-9pm"] },  
         "SKYROC BREWERY": { lat: 41.9442, lng: -71.2860, url: "https://skyrocbrewery.com/brewery", logo: "/logos/skyroc.png", hours: ["Closed", "Closed", "Closed", "Closed", "Closed", "4-8pm", "1-8pm"] },      
-        "UNCOMMON PAIR BREWING": { lat: 41.8706, lng: -71.5219, url: "https://www.uncommonpairbrewing.com/", logo: "/logos/uncommon.png", hours: ["Closed", "Closed", "Closed", "4-8", "Closed", "12-9pm", "12-9pm"] },
+        "UNCOMMON PAIR BREWING": { lat: 41.8706, lng: -71.5219, url: "https://www.uncommonpairbrewing.com/", logo: "/logos/uncommon.png", hours: ["12-6pm", "Closed", "Closed", "Closed", "Closed", "12-9pm", "12-9pm"] },
         "MONIKER BREWERY": { lat: 41.8185, lng: -71.4238, url: "https://www.monikerbrewery.com/", logo: "/logos/moniker.png", hours: ["12-6pm", "4-9pm", "4-9pm", "4-9pm", "4-9pm", "2-10pm", "12-10pm"] },
         "FOOLPROOF BREWERY": { lat: 41.8704, lng: -71.4082, url: "https://www.foolproofbrewing.com/pawtucket/pawtucket-home/", logo: "/logos/foolproof.png", hours: ["2-8pm", "Closed", "2-9pm", "12-9pm", "12-9pm", "12-9pm", "12-9pm"] },
         "LOPS BREWERY": { lat: 42.0073, lng: -71.5130, url: "https://www.lopsbrewing.com/", logo: "/logos/lops.png", hours: ["12-6pm", "4-8pm", "4-8pm", "4-8pm", "4-8pm", "12-9pm", "12-9pm"] },
@@ -169,6 +169,22 @@ function switchTab(type) {
         const today = new Date();
         renderDate(`${today.getMonth() + 1}/${today.getDate()}`);
     }
+
+async function syncPhantomTrucks() {
+    try {
+        const response = await fetch('phantom-data.json');
+        const phantomTrucks = await response.json();
+        
+        // Merge this with your 'allTruckData' array
+        allTruckData = [...allTruckData, ...phantomTrucks];
+        
+        // Re-render the UI to show the new trucks
+        const activeDate = document.querySelector('.date-pill.active').dataset.date;
+        renderDate(activeDate);
+    } catch (err) {
+        console.error("Failed to sync Phantom data:", err);
+    }
+}
 
     function generateDatePicker() {
         const picker = document.getElementById('date-picker');
