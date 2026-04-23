@@ -1,147 +1,20 @@
 [
-  
-// Example logic for your scraper to save to phantom-data.json
-async function scrapePhantomCalendar() {
-    const url = "https://phantomfarmsbrewing.com/pages/calendar";
-    // Using AllOrigins to handle the cross-origin request
-    const response = await fetch(`https://api.allorigins.win/get?url=${encodeURIComponent(url)}`);
-    const data = await response.json();
-    
-    const parser = new DOMParser();
-    const doc = parser.parseFromString(data.contents, 'text/html');
-    
-    // Updated Selectors for Phantom's Shopify Calendar
-    // They list events in 'li' tags or specific event containers
-    const events = doc.querySelectorAll('.fc-event-title, .calendar-event-title, .event-item'); 
-    let foodTrucks = [];
-
-    // We need to find the current year/month context if not in the string
-    const currentYear = new Date().getFullYear();
-
-    events.forEach(event => {
-        const text = event.innerText.trim();
-        
-        // Filter for Food Trucks
-        const isFood = /Food Truck|Pizza|Grill|Lobster|Kitchen|Kreations/i.test(text);
-        
-        if (isFood) {
-            // Finding the date is tricky on calendars. 
-            // We look for a date string or the parent day container.
-            const parentDay = event.closest('.fc-daygrid-day, .calendar-day');
-            let dateStr = parentDay ? parentDay.getAttribute('data-date') : ""; 
-            
-            // If we can't find a data-date attribute, we'll need to parse 
-            // the text if it contains a date like "Apr 23"
-            if (!dateStr) {
-                const dateMatch = text.match(/(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)\s\d{1,2}/i);
-                if (dateMatch) dateStr = `${dateMatch[0]} ${currentYear}`;
-            }
-
-            if (dateStr) {
-                foodTrucks.push({
-                    "truck": text,
-                    "start": dateStr, // This will be normalized by your app
-                    "end": dateStr,
-                    "brewery": "PHANTOM FARMS"
-                });
-            }
-        }
-    });
-
-    // To actually "save" this to your phantom-data.json, 
-    // you have to manually copy this output or use a Node.js script.
-    // Browsers cannot write files to your hard drive for security.
-    console.log("COPY THIS INTO YOUR JSON FILE:");
-    console.log(JSON.stringify(foodTrucks, null, 2));
-[
-  {
-    "truck": "W's Wood Fire Pizza",
-    "start": "04/08/2026 4:00PM",
-    "end": "04/08/2026 8:00PM",
-    "brewery": "PHANTOM FARMS"
-  },
   {
     "truck": "Rocket Food Truck",
-    "start": "04/09/2026 5:00PM",
-    "end": "04/09/2026 8:00PM",
+    "start": "4/24/2026",
+    "end": "4/24/2026",
     "brewery": "PHANTOM FARMS"
   },
   {
     "truck": "Nanu Burmese Fusion",
-    "start": "04/10/2026 4:00PM",
-    "end": "04/10/2026 8:00PM",
+    "start": "4/25/2026",
+    "end": "4/25/2026",
     "brewery": "PHANTOM FARMS"
   },
   {
     "truck": "FYR Grill",
-    "start": "04/11/2026 2:00PM",
-    "end": "04/11/2026 8:00PM",
-    "brewery": "PHANTOM FARMS"
-  },
-  {
-    "truck": "Rocket Fine Street Food",
-    "start": "04/12/2026 2:00PM",
-    "end": "04/12/2026 6:00PM",
-    "brewery": "PHANTOM FARMS"
-  },
-  {
-    "truck": "FYR Grill Food Truck",
-    "start": "04/15/2026 4:00PM",
-    "end": "04/15/2026 8:00PM",
-    "brewery": "PHANTOM FARMS"
-  },
-  {
-    "truck": "FYR Grill Food Truck",
-    "start": "04/16/2026 4:00PM",
-    "end": "04/16/2026 8:00PM",
-    "brewery": "PHANTOM FARMS"
-  },
-  {
-    "truck": "Cousin's Maine Lobster",
-    "start": "04/17/2026 3:00PM",
-    "end": "04/17/2026 8:00PM",
-    "brewery": "PHANTOM FARMS"
-  },
-  {
-    "truck": "Nanu Burmese Fusion",
-    "start": "04/18/2026 2:00PM",
-    "end": "04/18/2026 7:00PM",
-    "brewery": "PHANTOM FARMS"
-  },
-  {
-    "truck": "Sticks Pizza",
-    "start": "04/19/2026 12:00PM",
-    "end": "04/19/2026 6:00PM",
-    "brewery": "PHANTOM FARMS"
-  },
-  {
-    "truck": "Rocket Food Truck",
-    "start": "04/22/2026 5:00PM",
-    "end": "04/22/2026 8:00PM",
-    "brewery": "PHANTOM FARMS"
-  },
-  {
-    "truck": "Nanu Burmese Fusion",
-    "start": "04/24/2026 4:00PM",
-    "end": "04/24/2026 8:00PM",
-    "brewery": "PHANTOM FARMS"
-  },
-  {
-    "truck": "Sticks Pizza",
-    "start": "04/25/2026 12:00PM",
-    "end": "04/25/2026 6:00PM",
-    "brewery": "PHANTOM FARMS"
-  },
-  {
-    "truck": "Rocket Food Truck",
-    "start": "04/29/2026 5:00PM",
-    "end": "04/29/2026 8:00PM",
-    "brewery": "PHANTOM FARMS"
-  },
-  {
-    "truck": "FYR Grill Food Truck",
-    "start": "04/30/2026 4:00PM",
-    "end": "04/30/2026 8:00PM",
+    "start": "4/26/2026",
+    "end": "4/26/2026",
     "brewery": "PHANTOM FARMS"
   }
 ]
