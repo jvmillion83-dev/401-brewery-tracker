@@ -16,5 +16,22 @@
     "start": "4/26/2026",
     "end": "4/26/2026",
     "brewery": "PHANTOM FARMS"
-  }
+  },
+
+  {
+    "truck": "Rocket Food Truck",
+    "start": "4/29/2026",
+    "end": "4/29/2026",
+    "brewery": "PHANTOM FARMS"
+  },
+
+  {
+    "truck": "FYR Grill",
+    "start": "4/30/2026",
+    "end": "4/30/2026",
+    "brewery": "PHANTOM FARMS"
+
+
+
+
 ]
