@@ -184,33 +184,26 @@
 
             // Add In-House Kitchens, but ONLY if the brewery is OPEN today
             Object.keys(breweryData).forEach(name => {
-                const info = breweryData[name];
-                const isOpenToday = info.hours[selectedDay].toLowerCase() !== "closed";
-                
-                if (info.hasKitchen && isOpenToday && !filtered.some(f => f.brewery === name)) {
-                    const dist = userCoords ? getDistance(userCoords.lat, userCoords.lng, info.lat, info.lng) : Infinity;
-                    filtered.push({ brewery: name, truck: "In-House Kitchen", distance: dist, url: info.url, hasKitchen: true });
-                }
-            });
-            listToRender = filtered;
+    const info = breweryData[name];
+    const todayHours = info.hours[selectedDay];
+    
+    if (todayHours.toLowerCase() !== "closed") {
+        const dist = userCoords ? getDistance(userCoords.lat, userCoords.lng, info.lat, info.lng) : Infinity;
+        
+        // ONLY SHOW "Open Now" IF THE SELECTED DATE IS ACTUALLY TODAY
+        const isActuallyToday = selectedNormDate === `${new Date().getMonth() + 1}/${new Date().getDate()}`;
+        const openStatus = isActuallyToday ? checkIfOpen(todayHours) : false;
 
-        } else {
-            // Beer Tab: Only show breweries that are NOT "Closed"
-            Object.keys(breweryData).forEach(name => {
-                const info = breweryData[name];
-                const todayHours = info.hours[selectedDay];
-                if (todayHours.toLowerCase() !== "closed") {
-                    const dist = userCoords ? getDistance(userCoords.lat, userCoords.lng, info.lat, info.lng) : Infinity;
-                    listToRender.push({
-                        brewery: name,
-                        truck: "Taproom Open",
-                        distance: dist,
-                        url: info.url,
-                        hours: todayHours,
-                        isOpenNow: isOpen(todayHours)
-                    });
-                }
-            });
+        listToRender.push({
+            brewery: name,
+            truck: "Taproom Open",
+            distance: dist,
+            url: info.url,
+            hours: todayHours,
+            isOpenNow: openStatus
+        });
+    }
+});
         }
 
         listToRender.sort((a, b) => a.distance - b.distance);
