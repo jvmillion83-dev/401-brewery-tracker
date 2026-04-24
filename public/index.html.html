@@ -23,7 +23,6 @@
         .distance-tag { font-size: 0.65rem; color: #aaa; margin-left: 8px; }
         .brewery-link { text-decoration: none; display: inline-block; transition: 0.2s; }
         .brewery-logo { width: 100px; height: 50px; object-fit: contain; object-position: left; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3)); }
-        .text-link { color: #ffcc00; font-size: 0.7rem; text-transform: uppercase; font-weight: bold; letter-spacing: 1px; background: rgba(255,204,0,0.1); padding: 4px 10px; border-radius: 6px; }
         .tab-container { display: flex; width: 100%; max-width: 400px; background: #1e1e1e; border-radius: 12px; margin-bottom: 10px; padding: 4px; }
         .tab { flex: 1; text-align: center; padding: 10px; cursor: pointer; border-radius: 10px; font-size: 0.9rem; font-weight: bold; transition: 0.3s; color: #888; }
         .tab.active { background: #ffcc00; color: #121212; }
@@ -57,7 +56,7 @@
         "UNCOMMON PAIR BREWING": { lat: 41.8706, lng: -71.5219, url: "https://www.uncommonpairbrewing.com/", logo: "/logos/uncommon.png", hours: ["12-6pm", "Closed", "Closed", "Closed", "Closed", "12-9pm", "12-9pm"] },
         "MONIKER BREWERY": { lat: 41.8185, lng: -71.4238, url: "https://www.monikerbrewery.com/", logo: "/logos/moniker.png", hours: ["12-6pm", "4-9pm", "4-9pm", "4-9pm", "4-9pm", "2-10pm", "12-10pm"] },
         "BUTTONWOODS BREWERY": { lat: 41.8273, lng: -71.4302, url: "https://www.buttonwoodsbrewery.com/", logo: "/logos/buttonwoods.png", hours: ["12-8pm", "4-8pm", "Closed", "4-9pm", "4-9pm", "12-10pm", "12-10pm"], hasKitchen: true },
-        "CROOK POINT BREWING COMPANY": { lat: 41.8273, lng: -71.3754, url: "https://crookpointbrewing.com/?utm_source=ig&utm_medium=social&utm_content=link_in_bio&fbclid=PAZXh0bgNhZW0CMTEAc3J0YwZhcHBfaWQMMjU2MjgxMDQwNTU4AAGnJhmxrX91RT7IeRcojj8EWTFLD6e5nRADlR8j67_7A7KqKLXMnnv2NazEuaE_aem_7BI2Iw46wWbXdFkBq5V2sQ/", logo: "/logos/crookpoint.png", hours: ["12-6pm", "Closed", "Closed", "4-9pm", "4-9pm", "4-10pm", "12-10pm"] },
+        "CROOK POINT BREWING COMPANY": { lat: 41.8273, lng: -71.3754, url: "https://crookpointbrewing.com/", logo: "/logos/crookpoint.png", hours: ["12-6pm", "Closed", "Closed", "4-9pm", "4-9pm", "4-10pm", "12-10pm"] },
         "FOOLPROOF BREWERY": { lat: 41.8704, lng: -71.4082, url: "https://www.foolproofbrewing.com/pawtucket/pawtucket-home/", logo: "/logos/foolproof.png", hours: ["2-8pm", "Closed", "2-9pm", "12-9pm", "12-9pm", "12-9pm", "12-9pm"] },
         "LOPS BREWERY": { lat: 42.0073, lng: -71.5130, url: "https://www.lopsbrewing.com/", logo: "/logos/lops.png", hours: ["12-6pm", "4-8pm", "4-8pm", "4-8pm", "4-8pm", "12-9pm", "12-9pm"] },
         "LONG LIVE BEERWORKS": { lat: 41.8094, lng: -71.4260, url: "https://www.longlivebeerworks.com/", logo: "/logos/longlive.png", hours: ["12-6pm", "3-10pm", "Closed", "3-10pm", "3-10pm", "1-10pm", "12-10pm"] },
@@ -66,7 +65,6 @@
         "CROOKED CURRENT BREWERY": { lat: 41.8728, lng: -71.4057, url: "http://www.crookedcurrentbreweryri.com/", logo: "/logos/crookedcurrent.png", hours: ["Closed", "Closed", "Closed", "Closed", "5-8pm", "5-9pm", "1-6pm"] },
         "TILTED BARN BREWERY": { lat: 41.5707, lng: -71.5192, url: "https://www.tiltedbarnbrewery.com/", logo: "/logos/tiltedbarn.png", hours: ["12-5pm", "Closed", "Closed", "4-8pm", "12-8pm", "12-8pm", "12-8pm"] },
         "THE GUILD PAWTUCKET": { lat: 41.8705, lng: -71.3917, url: "https://www.theguildpawtucket.com/#food", logo: "/logos/theguildpawt.png", hours: ["12-6pm", "Closed", "4-8pm", "4-8pm", "4-8pm", "12-10pm", "12-10pm"], hasKitchen: true },
-
         "UNION STATION BREWERY": { lat: 41.8268, lng: -71.4144, url: "https://unionstationpvd.com/", logo: "/logos/unionstation.png", hours: ["11:30am-9pm", "11:30am-10pm", "11:30am-10pm", "11:30am-10pm", "11:30am-10pm", "11:30am-11pm", "11:30am-11pm"], hasKitchen: true },
         "APPONAUG BREWING": { lat: 41.7028, lng: -71.4475, url: "https://apponaugbrewing.com/", logo: "/logos/apponaug.png", hours: ["12-8pm", "Closed", "4-10pm", "4-10pm", "4-10pm", "4-11pm", "12-11pm"], hasKitchen: true },
         "ANGLE TREE BREWERY": { lat: 41.9815, lng: -71.3310, url: "https://angletreebrew.com/", logo: "/logos/angletree.png", hours: ["1-6pm", "Closed", "Closed", "6-9pm", "4-9pm", "4-9pm", "1-9pm"], hasKitchen: true }
@@ -80,7 +78,7 @@
     };
 
     function getDistance(lat1, lon1, lat2, lon2) {
-        const R = 3958.8; // Miles
+        const R = 3958.8;
         const dLat = (lat2 - lat1) * Math.PI / 180;
         const dLon = (lon2 - lon1) * Math.PI / 180;
         const a = Math.sin(dLat / 2) * Math.sin(dLat / 2) + Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) * Math.sin(dLon / 2) * Math.sin(dLon / 2);
@@ -115,17 +113,14 @@
     }
 
     async function initApp() {
-        // 1. Get Geolocation first
         if (navigator.geolocation) {
             navigator.geolocation.getCurrentPosition(position => {
                 userCoords = { lat: position.coords.latitude, lng: position.coords.longitude };
-                // Re-render once we have coordinates to show miles
                 const activeDate = document.querySelector('.date-pill.active')?.dataset.date || `${new Date().getMonth() + 1}/${new Date().getDate()}`;
                 renderDate(activeDate);
-            }, () => console.log("Location access denied."));
+            });
         }
 
-        // 2. Load Data
         try {
             const response = await fetch('/api/trucks');
             const mainData = await response.json();
@@ -168,6 +163,7 @@
         let listToRender = [];
 
         if (currentTab === 'food') {
+            // First, find all food trucks scheduled for this date
             let filtered = allTruckData
                 .filter(item => normalize(item.start) === selectedNormDate)
                 .map(item => {
@@ -175,24 +171,23 @@
                     const matchKey = Object.keys(breweryData).find(key => nameInJson.includes(key.split(' ')[0]) || key.includes(nameInJson));
                     const info = breweryData[matchKey];
                     if (!info) return null;
+                    
+                    // Logic check: Even if a truck is scheduled, do we show it if the brewery is closed?
+                    // Usually, if a truck is there, the taproom is open. If you want to hide it when 
+                    // closed regardless of the truck, uncomment the next line:
+                    // if (info.hours[selectedDay].toLowerCase() === "closed") return null;
+
                     let dist = userCoords ? getDistance(userCoords.lat, userCoords.lng, info.lat, info.lng) : Infinity;
                     return { ...item, brewery: matchKey, distance: dist, url: info.url, hasKitchen: item.hasKitchen || false };
                 })
                 .filter(item => item !== null);
 
-// Inside your brewery rendering loop
-breweries.forEach(brewery => {
-    // 1. Get the status for the selected day
-    const status = brewery.taproomStatus; // Or however you're pulling "Closed/Open"
-
-    // 2. Only render the card if it's NOT closed
-    if (status !== "Closed") {
-        renderBreweryCard(brewery);
-    }
-});
+            // Add In-House Kitchens, but ONLY if the brewery is OPEN today
             Object.keys(breweryData).forEach(name => {
-                if (breweryData[name].hasKitchen && !filtered.some(f => f.brewery === name)) {
-                    const info = breweryData[name];
+                const info = breweryData[name];
+                const isOpenToday = info.hours[selectedDay].toLowerCase() !== "closed";
+                
+                if (info.hasKitchen && isOpenToday && !filtered.some(f => f.brewery === name)) {
                     const dist = userCoords ? getDistance(userCoords.lat, userCoords.lng, info.lat, info.lng) : Infinity;
                     filtered.push({ brewery: name, truck: "In-House Kitchen", distance: dist, url: info.url, hasKitchen: true });
                 }
@@ -200,6 +195,7 @@ breweries.forEach(brewery => {
             listToRender = filtered;
 
         } else {
+            // Beer Tab: Only show breweries that are NOT "Closed"
             Object.keys(breweryData).forEach(name => {
                 const info = breweryData[name];
                 const todayHours = info.hours[selectedDay];
@@ -257,5 +253,7 @@ breweries.forEach(brewery => {
 
     initApp();
 </script>
+</body>
+</html>
 </body>
 </html>
