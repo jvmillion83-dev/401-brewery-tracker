@@ -15,8 +15,26 @@
   },
   {
     "brewery": "UNCOMMON PAIR BREWING",
-    "truck": "Pa'l Monte Food Truck",
-    "start": "04/24/2026 5:00PM",
+    "truck": "ABCD Brothers Kitchen",
+    "start": "04/24/2026 4:00PM",
     "end": "04/24/2026 9:00PM"
+  },
+{
+    "brewery": "LOPS BREWERY",
+    "truck": "Pa'l Monte Food Truck",
+    "start": "04/26/2026 4:00PM",
+    "end": "04/26/2026 9:00PM"
+  },
+{
+    "brewery": "UNCOMMON PAIR BREWING",
+    "truck": "Pa'l Monte Food Truck",
+    "start": "05/16/2026 4:00PM",
+    "end": "05/16/2026 9:00PM"
+  },
+{
+    "brewery": "UNCOMMON PAIR BREWING",
+    "truck": "W's Wood Fire Pizza",
+    "start": "05/29/2026 4:00PM",
+    "end": "05/29/2026 9:00PM"
   }
 ]
