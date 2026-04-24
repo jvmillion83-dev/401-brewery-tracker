@@ -4,7 +4,7 @@
   "description": "The ultimate guide to Rhode Island breweries and food trucks.",
   "icons": [
     {
-      "src": "brew 401.png",
+      "src": "brew401.png",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "any maskable"
