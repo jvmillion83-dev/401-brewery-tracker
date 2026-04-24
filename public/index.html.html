@@ -231,6 +231,33 @@
             const mainLabel = currentTab === 'beer' ? "Taproom Hours" : item.truck;
             const tapListHtml = (currentTab === 'beer' && info.tapListUrl) ? `<a href="${info.tapListUrl}" target="_blank" class="tap-list-btn">📝 View Tap List</a>` : '';
 
+const checkIfOpen = (hoursString) => {
+  if (!hoursString || hoursString.toLowerCase() === 'closed') return false;
+
+  const now = new Date();
+  const currentHour = now.getHours(); // 24-hour format (e.g., 16 for 4 PM)
+  const currentMinutes = now.getMinutes();
+
+  // Basic parser for strings like "5-9pm" or "12-9pm"
+  // Note: This assumes PM if not specified for the end time
+  const [start, end] = hoursString.replace('pm', '').split('-');
+  
+  let startHour = parseInt(start);
+  let endHour = parseInt(end);
+
+  // Convert to 24-hour time for comparison
+  // If start is 1-11 and it's afternoon/evening, it's likely PM 
+  // (Adjust logic if you have 11am openings)
+  if (startHour < 12 && startHour >= 1) startHour += 12; 
+  if (endHour < 12) endHour += 12;
+
+  const currentTimeInMinutes = (currentHour * 60) + currentMinutes;
+  const startTimeInMinutes = startHour * 60;
+  const endTimeInMinutes = endHour * 60;
+
+  return currentTimeInMinutes >= startTimeInMinutes && currentTimeInMinutes < endTimeInMinutes;
+};
+
             card.innerHTML = `
                 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
                     <a href="${item.url}" target="_blank" class="brewery-link">
