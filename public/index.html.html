@@ -35,10 +35,18 @@
 }
 
 .main-logo {
-    max-width: 180px; /* Adjust this to fit your preference */
+    max-width: 160px; /* Slightly smaller looks a bit more "app-like" */
     height: auto;
-    filter: drop-shadow(0 4px 6px rgba(0,0,0,0.3));
+    margin-top: 10px;
+    filter: drop-shadow(0 2px 8px rgba(0,0,0,0.6)); /* Makes the gold pop against the black */
+    animation: fadeIn 0.8s ease-in;
 }
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-5px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
     </style>
 </head>
 <body>
@@ -46,8 +54,9 @@
    <div class="app-header">
     <img src="logos/brew401.png" alt="Brew 401 Logo" class="main-logo">
 </div>
-<p style="margin-top: 5px; color:#888; text-align: center;"><strong>Rhode Island Brewery Tracker</strong></p>
-    <p style="margin-top:-10px; color:#888;"><strong>The Ultimate RI Brewery/Food Truck tracker</strong></p>
+<p style="margin-top: 5px; color:#aaa; text-align: center; font-size: 0.9rem; letter-spacing: 1px;">
+    Ultimate RI Brewery Food Truck Tracker
+</p>
 
     <div class="tab-container">
         <div class="tab active" id="beer-tab" onclick="switchTab('beer')">🍺 Beer</div>
