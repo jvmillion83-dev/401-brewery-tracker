@@ -1,6 +1,6 @@
 {
   "short_name": "Brew 401",
-  "name": "Brew 401: RI Brewery Food Truck Tracker",
+  "name": "The Ultimate RI Brewery/Food Truck tracker",
  "icons": [
     {
       "src": "icon.png",
@@ -19,4 +19,19 @@
   "theme_color": "#ffcc00",
   "display": "standalone",
   "orientation": "portrait"
+}
+{
+  "name": "Brew 401",
+  "short_name": "Brew 401",
+  "icons": [
+    {
+      "src": "brew 401.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ],
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#121212",
+  "theme_color": "#ffcc00"
 }
