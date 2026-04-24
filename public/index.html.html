@@ -180,6 +180,16 @@
                 })
                 .filter(item => item !== null);
 
+// Inside your brewery rendering loop
+breweries.forEach(brewery => {
+    // 1. Get the status for the selected day
+    const status = brewery.taproomStatus; // Or however you're pulling "Closed/Open"
+
+    // 2. Only render the card if it's NOT closed
+    if (status !== "Closed") {
+        renderBreweryCard(brewery);
+    }
+});
             Object.keys(breweryData).forEach(name => {
                 if (breweryData[name].hasKitchen && !filtered.some(f => f.brewery === name)) {
                     const info = breweryData[name];
