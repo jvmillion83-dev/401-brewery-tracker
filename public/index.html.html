@@ -231,32 +231,43 @@
             const mainLabel = currentTab === 'beer' ? "Taproom Hours" : item.truck;
             const tapListHtml = (currentTab === 'beer' && info.tapListUrl) ? `<a href="${info.tapListUrl}" target="_blank" class="tap-list-btn">📝 View Tap List</a>` : '';
 
-const checkIfOpen = (hoursString) => {
-  if (!hoursString || hoursString.toLowerCase() === 'closed') return false;
+function checkIfOpen(hoursString) {
+    if (!hoursString || hoursString.toLowerCase() === "closed") return false;
+    
+    const now = new Date();
+    // Use Rhode Island local time
+    const currentTimeInMinutes = (now.getHours() * 60) + now.getMinutes();
 
-  const now = new Date();
-  const currentHour = now.getHours(); // 24-hour format (e.g., 16 for 4 PM)
-  const currentMinutes = now.getMinutes();
+    const parts = hoursString.toLowerCase().replace(/\s+/g, '').split('-');
+    if (parts.length !== 2) return false;
 
-  // Basic parser for strings like "5-9pm" or "12-9pm"
-  // Note: This assumes PM if not specified for the end time
-  const [start, end] = hoursString.replace('pm', '').split('-');
-  
-  let startHour = parseInt(start);
-  let endHour = parseInt(end);
+    function parseToMinutes(t) {
+        // Matches "11:30am", "12pm", "5pm", "11", etc.
+        const match = t.match(/(\d+)(?::(\d+))?\s*(am|pm)?/);
+        if (!match) return 0;
 
-  // Convert to 24-hour time for comparison
-  // If start is 1-11 and it's afternoon/evening, it's likely PM 
-  // (Adjust logic if you have 11am openings)
-  if (startHour < 12 && startHour >= 1) startHour += 12; 
-  if (endHour < 12) endHour += 12;
+        let hours = parseInt(match[1]);
+        let minutes = match[2] ? parseInt(match[2]) : 0;
+        let ampm = match[3];
 
-  const currentTimeInMinutes = (currentHour * 60) + currentMinutes;
-  const startTimeInMinutes = startHour * 60;
-  const endTimeInMinutes = endHour * 60;
+        // Smart AM/PM detection if the string is missing it (like "5-9pm")
+        if (!ampm) {
+            // If it's the start time and < 7, it's likely PM (5-9pm)
+            // If it's the end time, it's almost certainly PM
+            ampm = 'pm';
+        }
 
-  return currentTimeInMinutes >= startTimeInMinutes && currentTimeInMinutes < endTimeInMinutes;
-};
+        if (ampm === 'pm' && hours < 12) hours += 12;
+        if (ampm === 'am' && hours === 12) hours = 0;
+
+        return (hours * 60) + minutes;
+    }
+
+    const startMinutes = parseToMinutes(parts[0]);
+    const endMinutes = parseToMinutes(parts[1]);
+
+    return currentTimeInMinutes >= startMinutes && currentTimeInMinutes < endMinutes;
+}
 
             card.innerHTML = `
                 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
