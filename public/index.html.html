@@ -97,7 +97,7 @@
             if (!match) return 0;
             let hours = parseInt(match[1]);
             let minutes = match[2] ? parseInt(match[2]) : 0;
-            let ampm = match[3] || 'pm';
+            let ampm = match[3] || (hours >= 11 && hours < 12 ? 'am' : 'pm'); // Smarter am/pm guess
             if (ampm === 'pm' && hours < 12) hours += 12;
             if (ampm === 'am' && hours === 12) hours = 0;
             return (hours * 60) + minutes;
@@ -128,7 +128,10 @@
             const phantomRes = await fetch('phantom-data.json');
             const phantomData = await phantomRes.json();
             allTruckData = [...mainData, ...phantomData];
-        } catch (err) { console.error("Data load error:", err); }
+        } catch (err) { 
+            console.warn("API load failed, using fallback empty data.");
+            allTruckData = []; 
+        }
 
         generateDatePicker();
         const today = new Date();
@@ -234,10 +237,6 @@
                 ${tapListHtml}
             `;
             container.appendChild(card);
-        });
-    }
-
-    initApp();
         });
     }
 
