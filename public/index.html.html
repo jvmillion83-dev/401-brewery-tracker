@@ -85,22 +85,24 @@
         return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
     }
 
-    function isOpen(hoursString) {
+    function checkIfOpen(hoursString) {
         if (!hoursString || hoursString.toLowerCase() === "closed") return false;
         const now = new Date();
-        const currentTime = now.getHours() + (now.getMinutes() / 60);
-        const parts = hoursString.toLowerCase().split('-');
+        const currentTimeInMinutes = (now.getHours() * 60) + now.getMinutes();
+        const parts = hoursString.toLowerCase().replace(/\s+/g, '').split('-');
         if (parts.length !== 2) return false;
 
-        function parseTime(t) {
-            let [time, modifier] = [t.replace(/[ap]m/, ''), t.includes('pm') ? 'pm' : 'am'];
-            let [hours, minutes] = time.split(':').map(Number);
-            if (!minutes) minutes = 0;
-            if (hours === 12) hours = 0;
-            if (modifier === 'pm') hours += 12;
-            return hours + (minutes / 60);
+        function parseToMinutes(t) {
+            const match = t.match(/(\d+)(?::(\d+))?\s*(am|pm)?/);
+            if (!match) return 0;
+            let hours = parseInt(match[1]);
+            let minutes = match[2] ? parseInt(match[2]) : 0;
+            let ampm = match[3] || 'pm';
+            if (ampm === 'pm' && hours < 12) hours += 12;
+            if (ampm === 'am' && hours === 12) hours = 0;
+            return (hours * 60) + minutes;
         }
-        return currentTime >= parseTime(parts[0]) && currentTime <= parseTime(parts[1]);
+        return currentTimeInMinutes >= parseToMinutes(parts[0]) && currentTimeInMinutes < parseToMinutes(parts[1]);
     }
 
     // --- APP LOGIC ---
@@ -108,8 +110,8 @@
         currentTab = type;
         document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
         document.getElementById(`${type}-tab`).classList.add('active');
-        const activeDate = document.querySelector('.date-pill.active').dataset.date;
-        renderDate(activeDate);
+        const activePill = document.querySelector('.date-pill.active');
+        if (activePill) renderDate(activePill.dataset.date);
     }
 
     async function initApp() {
@@ -120,10 +122,9 @@
                 renderDate(activeDate);
             });
         }
-
         try {
-            const response = await fetch('/api/trucks');
-            const mainData = await response.json();
+            const mainRes = await fetch('/api/trucks');
+            const mainData = await mainRes.json();
             const phantomRes = await fetch('phantom-data.json');
             const phantomData = await phantomRes.json();
             allTruckData = [...mainData, ...phantomData];
@@ -136,6 +137,7 @@
 
     function generateDatePicker() {
         const picker = document.getElementById('date-picker');
+        picker.innerHTML = '';
         const months = ["", "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
         for (let i = 0; i < 7; i++) {
             const d = new Date();
@@ -159,11 +161,11 @@
         container.innerHTML = '';
         const [m, d] = selectedNormDate.split('/');
         const selectedDay = new Date(new Date().getFullYear(), parseInt(m) - 1, parseInt(d)).getDay();
+        const isActuallyToday = selectedNormDate === `${new Date().getMonth() + 1}/${new Date().getDate()}`;
 
         let listToRender = [];
 
         if (currentTab === 'food') {
-            // First, find all food trucks scheduled for this date
             let filtered = allTruckData
                 .filter(item => normalize(item.start) === selectedNormDate)
                 .map(item => {
@@ -171,43 +173,38 @@
                     const matchKey = Object.keys(breweryData).find(key => nameInJson.includes(key.split(' ')[0]) || key.includes(nameInJson));
                     const info = breweryData[matchKey];
                     if (!info) return null;
-                    
-                    // Logic check: Even if a truck is scheduled, do we show it if the brewery is closed?
-                    // Usually, if a truck is there, the taproom is open. If you want to hide it when 
-                    // closed regardless of the truck, uncomment the next line:
-                    // if (info.hours[selectedDay].toLowerCase() === "closed") return null;
-
                     let dist = userCoords ? getDistance(userCoords.lat, userCoords.lng, info.lat, info.lng) : Infinity;
-                    return { ...item, brewery: matchKey, distance: dist, url: info.url, hasKitchen: item.hasKitchen || false };
+                    return { ...item, brewery: matchKey, distance: dist, url: info.url, hasKitchen: false };
                 })
                 .filter(item => item !== null);
 
-            // Add In-House Kitchens, but ONLY if the brewery is OPEN today
             Object.keys(breweryData).forEach(name => {
-    const info = breweryData[name];
-    const todayHours = info.hours[selectedDay];
-    
-    if (todayHours.toLowerCase() !== "closed") {
-        const dist = userCoords ? getDistance(userCoords.lat, userCoords.lng, info.lat, info.lng) : Infinity;
-        
-        // ONLY SHOW "Open Now" IF THE SELECTED DATE IS ACTUALLY TODAY
-        const isActuallyToday = selectedNormDate === `${new Date().getMonth() + 1}/${new Date().getDate()}`;
-        const openStatus = isActuallyToday ? checkIfOpen(todayHours) : false;
-
-        listToRender.push({
-            brewery: name,
-            truck: "Taproom Open",
-            distance: dist,
-            url: info.url,
-            hours: todayHours,
-            isOpenNow: openStatus
-        });
-    }
-});
+                const info = breweryData[name];
+                if (info.hasKitchen && info.hours[selectedDay].toLowerCase() !== "closed" && !filtered.some(f => f.brewery === name)) {
+                    const dist = userCoords ? getDistance(userCoords.lat, userCoords.lng, info.lat, info.lng) : Infinity;
+                    filtered.push({ brewery: name, truck: "In-House Kitchen", distance: dist, url: info.url, hasKitchen: true });
+                }
+            });
+            listToRender = filtered;
+        } else {
+            Object.keys(breweryData).forEach(name => {
+                const info = breweryData[name];
+                const todayHours = info.hours[selectedDay];
+                if (todayHours.toLowerCase() !== "closed") {
+                    const dist = userCoords ? getDistance(userCoords.lat, userCoords.lng, info.lat, info.lng) : Infinity;
+                    listToRender.push({
+                        brewery: name,
+                        truck: "Taproom Open",
+                        distance: dist,
+                        url: info.url,
+                        hours: todayHours,
+                        isOpenNow: isActuallyToday ? checkIfOpen(todayHours) : false
+                    });
+                }
+            });
         }
 
         listToRender.sort((a, b) => a.distance - b.distance);
-
         if (listToRender.length === 0) {
             container.innerHTML = `<p style="text-align:center; color:#666; margin-top:20px;">No ${currentTab} available today.</p>`;
             return;
@@ -215,52 +212,12 @@
 
         listToRender.forEach(item => {
             const info = breweryData[item.brewery];
-            const todayHours = info.hours[selectedDay];
             const card = document.createElement('div');
             card.className = 'card';
-            
             const statusText = currentTab === 'beer' ? (item.isOpenNow ? 'Open Now' : 'Scheduled') : (item.hasKitchen ? 'Full Kitchen' : 'Scheduled');
             const statusColor = currentTab === 'beer' ? (item.isOpenNow ? '#2e7d32' : '#444') : (item.hasKitchen ? '#0277bd' : '#2e7d32');
             const mainLabel = currentTab === 'beer' ? "Taproom Hours" : item.truck;
             const tapListHtml = (currentTab === 'beer' && info.tapListUrl) ? `<a href="${info.tapListUrl}" target="_blank" class="tap-list-btn">📝 View Tap List</a>` : '';
-
-function checkIfOpen(hoursString) {
-    if (!hoursString || hoursString.toLowerCase() === "closed") return false;
-    
-    const now = new Date();
-    // Use Rhode Island local time
-    const currentTimeInMinutes = (now.getHours() * 60) + now.getMinutes();
-
-    const parts = hoursString.toLowerCase().replace(/\s+/g, '').split('-');
-    if (parts.length !== 2) return false;
-
-    function parseToMinutes(t) {
-        // Matches "11:30am", "12pm", "5pm", "11", etc.
-        const match = t.match(/(\d+)(?::(\d+))?\s*(am|pm)?/);
-        if (!match) return 0;
-
-        let hours = parseInt(match[1]);
-        let minutes = match[2] ? parseInt(match[2]) : 0;
-        let ampm = match[3];
-
-        // Smart AM/PM detection if the string is missing it (like "5-9pm")
-        if (!ampm) {
-            // If it's the start time and < 7, it's likely PM (5-9pm)
-            // If it's the end time, it's almost certainly PM
-            ampm = 'pm';
-        }
-
-        if (ampm === 'pm' && hours < 12) hours += 12;
-        if (ampm === 'am' && hours === 12) hours = 0;
-
-        return (hours * 60) + minutes;
-    }
-
-    const startMinutes = parseToMinutes(parts[0]);
-    const endMinutes = parseToMinutes(parts[1]);
-
-    return currentTimeInMinutes >= startMinutes && currentTimeInMinutes < endMinutes;
-}
 
             card.innerHTML = `
                 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
@@ -269,16 +226,18 @@ function checkIfOpen(hoursString) {
                     </a>
                     <span class="distance-tag">${item.distance !== Infinity ? item.distance.toFixed(1) + ' mi' : ''}</span>
                 </div>
-                <div style="font-size: 0.7rem; color: #888; margin-bottom: 10px;">Taproom: ${todayHours}</div>
+                <div style="font-size: 0.7rem; color: #888; margin-bottom: 10px;">Taproom: ${info.hours[selectedDay]}</div>
                 <span class="truck-name">${mainLabel}</span>
                 <div style="display: flex; align-items: center; gap: 10px;">
-                    <span class="status-badge" style="background: ${statusColor};">
-                        ${statusText}
-                    </span>
+                    <span class="status-badge" style="background: ${statusColor};">${statusText}</span>
                 </div>
                 ${tapListHtml}
             `;
             container.appendChild(card);
+        });
+    }
+
+    initApp();
         });
     }
 
