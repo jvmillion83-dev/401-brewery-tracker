@@ -73,19 +73,13 @@
     let currentTab = 'beer';
 
     const breweryData = {
-        "BRAVO BREWING COMPANY": { 
-    lat: 41.9565, 
-    lng: -71.7017, 
-    url: "https://bravobrewingcompany.com/", 
-    tapListUrl: "https://bravobrewingcompany.com/#:~:text=BRAVO%20ON%20TAP",
-    logo: "/logos/bravo.png", 
-    hours: ["12-6pm", "5-9pm", "Closed", "5-9pm", "5-10pm", "11am-10pm", "12-10pm"], 
-    hasKitchen: true 
+         "BRAVO BREWING COMPANY": { lat: 41.9565,  lng: -71.7017, url: "https://bravobrewingcompany.com/",  tapListUrl: "https://bravobrewingcompany.com/#:~:text=BRAVO%20ON%20TAP", logo: "/logos/bravo.png", hours: ["12-6pm", "5-9pm", "Closed", "5-9pm", "5-10pm", "11am-10pm", "12-10pm"], hasKitchen: true    
 },
         "NARRAGANSETT BREWERY": { lat: 41.8190, lng: -71.4050, url: "https://www.narragansettbeer.com/pages/providence-brewery",tapListUrl: "https://www.narragansettbeer.com/pages/providence-brewery#:~:text=WHAT'S%20ON%20TAP%3F", logo: "/logos/gansett.png", hours: ["12-9pm", "4-10pm", "4-10pm", "4-10pm", "12-10pm", "12pm-10pm", "12-9pm"], hasKitchen: true },        
         "PHANTOM FARMS": { lat: 41.9744, lng: -71.4556, url: "https://phantomfarmsbrewing.com/", tapListUrl: "https://phantomfarmsbrewing.com/pages/beers-on-tap", logo: "/logos/phantom.png", hours: ["12-8pm", "5-9pm", "Closed", "4-9pm", "4-9pm", "12-10pm", "12-10pm"] },
-        "RAGGED ISLAND": { lat: 41.6163, lng: -71.2569, url: "https://www.raggedislandbrewing.com/",tapListUrl: "https://raggedislandbrewing.com/our-beer/", logo: "/logos/raggedisland.png", hours: ["12-9pm", "12-9pm", "12-9pm", "12-9pm", "12-9pm", "12-9pm", "12-9pm"] },  
-        "SKYROC BREWERY": { lat: 41.9442, lng: -71.2860, url: "https://skyrocbrewery.com/brewery",tapListUrl: "https://skyrocbrewery.com/our-beer", logo: "/logos/skyroc.png", hours: ["Closed", "Closed", "Closed", "Closed", "Closed", "4-8pm", "1-8pm"] },      
+        "RAGGED ISLAND": { lat: 41.6163, lng: -71.2569, url: "https://www.raggedislandbrewing.com/",tapListUrl: "https://raggedislandbrewing.com/our-beer#:~:text=Current%20Beers%20on%20Tap", logo: "/logos/raggedisland.png", hours: ["12-9pm", "12-9pm", "12-9pm", "12-9pm", "12-9pm", "12-9pm", "12-9pm"] },  
+        "RAVENOUS BREWING CO.": { lat: 41.9538, lng: -71.4004, url: "https://ravenousbrewing.com/",logo: "/logos/ravenous.png", hours: ["12-6pm", "Closed", "Closed", "Closed", "4-9pm", "2-10pm", "12-10pm"] },
+              
         "UNCOMMON PAIR BREWING": { lat: 41.8706, lng: -71.5219, url: "https://www.uncommonpairbrewing.com/",tapListUrl: "https://www.uncommonpairbrewing.com/our-beers", logo: "/logos/uncommon.png", hours: ["12-6pm", "Closed", "Closed", "Closed", "Closed", "12-9pm", "12-9pm"] },
         "MONIKER BREWERY": { lat: 41.8185, lng: -71.4238, url: "https://www.monikerbrewery.com/", tapListUrl: "https://www.monikerbrewery.com/providencebeer", logo: "/logos/moniker.png", hours: ["12-6pm", "4-9pm", "4-9pm", "4-9pm", "4-9pm", "2-10pm", "12-10pm"] },
         "BUTTONWOODS BREWERY": { lat: 41.8273, lng: -71.4302, url: "https://www.buttonwoodsbrewery.com/", tapListUrl: "https://www.buttonwoodsbrewery.com/#whatwebrew",logo: "/logos/buttonwoods.png", hours: ["12-8pm", "4-8pm", "Closed", "4-9pm", "4-9pm", "12-10pm", "12-10pm"], hasKitchen: true },
@@ -94,14 +88,14 @@
         "LOPS BREWERY": { lat: 42.0073, lng: -71.5130, url: "https://www.lopsbrewing.com/", tapListUrl: "https://www.lopsbrewing.com/tasting-room-menu", logo: "/logos/lops.png", hours: ["12-6pm", "4-8pm", "4-8pm", "4-8pm", "4-8pm", "12-9pm", "12-9pm"] },
         "LONG LIVE BEERWORKS": { lat: 41.8094, lng: -71.4260, url: "https://www.longlivebeerworks.com/", tapListUrl: "https://untappd.com/v/long-live-beerworks/4174253", logo: "/logos/longlive.png", hours: ["12-6pm", "3-10pm", "Closed", "3-10pm", "3-10pm", "1-10pm", "12-10pm"] },
         "PIVOTAL BREWING COMPANY": { lat: 41.6729, lng: -71.2709, url: "https://pivotalbrewing.com/", tapListUrl: "https://pivotalbrewing.com/bristol-pivotal-brewing-company-beer-menu", logo: "/logos/pivotal.png", hours: ["12-6pm", "Closed", "Closed", "4-9pm", "4-9pm", "2-10pm", "12-10pm"] },
-        "RAVENOUS BREWING CO.": { lat: 41.9538, lng: -71.4004, url: "https://ravenousbrewing.com/", tapListUrl: "https://ravenousbrewing.com/", logo: "/logos/ravenous.png", hours: ["12-6pm", "Closed", "Closed", "Closed", "4-9pm", "2-10pm", "12-10pm"] },
+        
         "CROOKED CURRENT BREWERY": { lat: 41.8728, lng: -71.4057, url: "http://www.crookedcurrentbreweryri.com/", tapListUrl: "http://www.crookedcurrentbreweryri.com/our-beer", logo: "/logos/crookedcurrent.png", hours: ["Closed", "Closed", "Closed", "Closed", "5-8pm", "5-9pm", "1-6pm"] },
       "CRAFTED HOPE BREWING": { lat: 41.6563, lng: -71.4975, url: "https://www.craftedhopebrewing.com/?utm_source=ig&utm_medium=social&utm_content=link_in_bio&fbclid=PAZXh0bgNhZW0CMTEAc3J0YwZhcHBfaWQMMjU2MjgxMDQwNTU4AAGnW4nyCuhC8JvVnkekvOITpQi-NaP7s26xt-6CdvFeCwFMgTu3qT1-ARzy9u4_aem_7vbIk_PciZ7nc9Vw3mujRw", tapListUrl: "https://www.craftedhopebrewing.com/beers", logo: "/logos/craftedhope.png", hours: ["12-6pm", "Closed", "Closed", "Closed", "3-9pm", "12-9pm", "12-9pm"] },
         "TILTED BARN BREWERY": { lat: 41.5707, lng: -71.5192, url: "https://www.tiltedbarnbrewery.com/",tapListUrl: "https://www.tiltedbarnbrewery.com/on-tap-to-go", logo: "/logos/tiltedbarn.png", hours: ["12-5pm", "Closed", "Closed", "4-8pm", "12-8pm", "12-8pm", "12-8pm"] },
         "THE GUILD PAWTUCKET": { lat: 41.8705, lng: -71.3917, url: "https://www.theguildpawtucket.com/#food", tapListUrl: "https://www.theguildpawtucket.com/", logo: "/logos/theguildpawt.png", hours: ["12-6pm", "Closed", "4-8pm", "4-8pm", "4-8pm", "12-10pm", "12-10pm"], hasKitchen: true },
         "UNION STATION BREWERY": { lat: 41.8268, lng: -71.4144, url: "https://unionstationpvd.com/", tapListUrl: "https://unionstationpvd.com/providence-union-station-brewery-our-beer", logo: "/logos/unionstation.png", hours: ["11:30am-9pm", "11:30am-10pm", "11:30am-10pm", "11:30am-10pm", "11:30am-10pm", "11:30am-11pm", "11:30am-11pm"], hasKitchen: true },
-        "APPONAUG BREWING": { lat: 41.7028, lng: -71.4475, url: "https://apponaugbrewing.com/", tapListUrl: "https://apponaugbrewing.com/warwick-apponaug-brewing-menus",logo: "/logos/apponaug.png", hours: ["12-8pm", "Closed", "4-10pm", "4-10pm", "4-10pm", "4-11pm", "12-11pm"], hasKitchen: true },
-        "ANGLE TREE BREWERY": { lat: 41.9815, lng: -71.3310, url: "https://angletreebrew.com/", tapListUrl: "https://angletreebrew.com/north-attleborough-angle-tree-brewery-drink-menu", logo: "/logos/angletree.png", hours: ["1-6pm", "Closed", "Closed", "6-9pm", "4-9pm", "4-9pm", "1-9pm"], hasKitchen: true }
+        "APPONAUG BREWING": { lat: 41.7028, lng: -71.4475, url: "https://apponaugbrewing.com/", tapListUrl: "https://apponaugbrewing.com/warwick-apponaug-brewing-menus",logo: "/logos/apponaug.png", hours: ["12-8pm", "Closed", "4-10pm", "4-10pm", "4-10pm", "4-11pm", "12-11pm"], hasKitchen: true }
+        
     };
 
     // --- HELPERS ---
