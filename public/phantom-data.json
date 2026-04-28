@@ -1,30 +1,6 @@
 [
 
-  {
-    "truck": "Kroffle Kreations",
-    "start": "4/23/2026",
-    "end": "4/23/2026",
-    "brewery": "PHANTOM FARMS"
-  },
-  {
-    "truck": "Rocket Food Truck",
-    "start": "4/24/2026",
-    "end": "4/24/2026",
-    "brewery": "PHANTOM FARMS"
-  },
-  {
-    "truck": "Nanu Burmese Fusion",
-    "start": "4/25/2026",
-    "end": "4/25/2026",
-    "brewery": "PHANTOM FARMS"
-  },
-  {
-    "truck": "FYR Grill",
-    "start": "4/26/2026",
-    "end": "4/26/2026",
-    "brewery": "PHANTOM FARMS"
-  },
-  {
+    {
     "truck": "Rocket Food Truck",
     "start": "4/29/2026",
     "end": "4/29/2026",
@@ -35,5 +11,15 @@
     "start": "4/30/2026",
     "end": "4/30/2026",
     "brewery": "PHANTOM FARMS"
+  },
+  {
+    "truck": "Rocket Food Truck",
+    "start": "5/01/2026",
+    "end": "5/01/2026",
+    "brewery": "PHANTOM FARMS"
   }
+
+
+
+
 ]
