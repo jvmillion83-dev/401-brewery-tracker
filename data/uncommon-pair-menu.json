@@ -1,0 +1,36 @@
+{
+  "lastUpdated": "5/2/2026, 12:39:22 PM",
+  "count": 6,
+  "beers": [
+    {
+      "name": "GOOSEBERRY DRIFT",
+      "abv": "ABV 6.0%",
+      "description": "Gooseberry puree, sea salt, toasted oak spirals, and chamomile"
+    },
+    {
+      "name": "DOCTOR ROUGH",
+      "abv": "ABV 6.0%",
+      "description": "Pale Ale with Biscuit body"
+    },
+    {
+      "name": "THA GOVNAH",
+      "abv": "ABV 6%",
+      "description": "Brown ale with toasted oak spirals & 20Year Panamanian rum"
+    },
+    {
+      "name": "DEEPER FIVE",
+      "abv": "ABV 6%",
+      "description": "Our 5 grain stout with an English twist"
+    },
+    {
+      "name": "COMMON GROUND",
+      "abv": "ABV 6%",
+      "description": "American Pale Ale"
+    },
+    {
+      "name": "TEA PARTY",
+      "abv": "ABV 5%",
+      "description": "More than a tea infused hard seltzer - Stage Your Rebellion - galaxy|pine|lavender|lemon| lime|raspberry|peach| watermelon|hibiscus|vanilla| cherry|orange|jalapeño"
+    }
+  ]
+}
