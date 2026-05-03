@@ -119,10 +119,15 @@ const showMenu = (breweryName) => {
 
     // --- HELPERS ---
     const normalize = (d) => {
-        if (!d) return "";
-        const match = d.trim().match(/(\d{1,2})\/(\d{1,2})/);
-        return match ? `${parseInt(match[1])}/${parseInt(match[2])}` : "";
-    };
+    if (!d) return "";
+    // This regex looks for Month/Day and ignores anything after it (like /2026)
+    const match = d.trim().match(/^(\d{1,2})\/(\d{1,2})/);
+    if (match) {
+        // Returns "5/3" even if the input was "5/3/2026"
+        return `${parseInt(match[1])}/${parseInt(match[2])}`;
+    }
+    return "";
+};
 
     function getDistance(lat1, lon1, lat2, lon2) {
         const R = 3958.8;
