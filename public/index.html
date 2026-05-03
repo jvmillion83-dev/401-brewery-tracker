@@ -161,29 +161,38 @@ const showMenu = (breweryName) => {
         if (activePill) renderDate(activePill.dataset.date);
     }
 
-    async function initApp() {
-        if (navigator.geolocation) {
-            navigator.geolocation.getCurrentPosition(position => {
-                userCoords = { lat: position.coords.latitude, lng: position.coords.longitude };
-                const activeDate = document.querySelector('.date-pill.active')?.dataset.date || `${new Date().getMonth() + 1}/${new Date().getDate()}`;
-                renderDate(activeDate);
-            });
-        }
-        try {
-            const mainRes = await fetch('/api/trucks');
-            const mainData = await mainRes.json();
-            const phantomRes = await fetch('phantom-data.json');
-            const phantomData = await phantomRes.json();
-            allTruckData = [...mainData, ...phantomData];
-        } catch (err) { 
-            console.warn("API load failed, using fallback empty data.");
-            allTruckData = []; 
-        }
-
-        generateDatePicker();
-        const today = new Date();
-        renderDate(`${today.getMonth() + 1}/${today.getDate()}`);
+   async function initApp() {
+    console.log("Initializing Brew 401...");
+    generateDatePicker(); // Ensure the date bar actually shows up!
+    
+    // 1. Fetch data
+    try {
+        const [mainRes, phantomRes] = await Promise.all([
+            fetch('/api/trucks'),
+            fetch('phantom-data.json')
+        ]);
+        
+        const mainData = await mainRes.json();
+        const phantomData = await phantomRes.json();
+        
+        allTruckData = [...mainData, ...phantomData];
+    } catch (err) { 
+        console.error("Data load error:", err);
     }
+
+    // 2. Initial Render (so the user isn't looking at a blank screen)
+    const today = new Date();
+    const dateString = `${today.getMonth() + 1}/${today.getDate()}`;
+    renderDate(dateString);
+
+    // 3. Update with Location if available
+    if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(position => {
+            userCoords = { lat: position.coords.latitude, lng: position.coords.longitude };
+            renderDate(dateString); // Re-render to sort by distance
+        });
+    }
+}
 
     function generateDatePicker() {
         const picker = document.getElementById('date-picker');
