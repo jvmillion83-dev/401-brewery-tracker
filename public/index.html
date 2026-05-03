@@ -154,8 +154,8 @@ const showMenu = (breweryName) => {
                 fetch('manual-trucks.json').catch(() => ({ json: () => [] }))
             ]);
             const mainData = await mainRes.json();
-            const phantomData = await phantomRes.json();
-            allTruckData = [...mainData, ...phantomData];
+            const manualData = await phantomRes.json();
+            allTruckData = [...mainData, ...manualData];
         } catch (err) {
             console.error("Data load error:", err);
         }
