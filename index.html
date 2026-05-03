@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Brew 401</title>
+    <link rel="manifest" href="/manifest.json">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <style>
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background-color: #121212; color: white; margin: 0; padding: 15px; display: flex; flex-direction: column; align-items: center; }
+        h1 { color: #ffcc00; font-size: 1.8rem; margin-top: 20px; text-align: center; font-family: Georgia, serif; text-transform: uppercase; letter-spacing: 2px; }
+        #date-picker { display: flex; overflow-x: auto; width: 100%; max-width: 400px; padding: 15px 5px; gap: 12px; scroll-snap-type: x mandatory; -webkit-overflow-scrolling: touch; scrollbar-width: none; }
+        #date-picker::-webkit-scrollbar { display: none; }
+        .date-pill { min-width: 65px; padding: 12px 8px; background: #1e1e1e; border: 1px solid #333; border-radius: 12px; text-align: center; cursor: pointer; flex-shrink: 0; transition: 0.2s; scroll-snap-align: center; }
+        .date-pill.active { background: #ffcc00; color: #121212; border-color: #ffcc00; font-weight: bold; transform: scale(1.1); }
+        .date-pill span { display: block; font-size: 0.7rem; text-transform: uppercase; opacity: 0.8; }
+        .date-pill strong { font-size: 1.2rem; display: block; margin-top: 2px; }
+        #truck-container { width: 100%; max-width: 400px; }
+        .card { background: #1e1e1e; margin: 12px 0; padding: 18px; border-radius: 15px; border: 1px solid #333; box-shadow: 0 4px 12px rgba(0,0,0,0.5); }
+        .truck-name { font-size: 1.2rem; font-weight: bold; color: #ffcc00; margin-bottom: 8px; display: block; }
+        .status-badge { color: white; font-size: 0.7rem; padding: 4px 8px; border-radius: 5px; text-transform: uppercase; margin-top: 10px; display: inline-block; }
+        .distance-tag { font-size: 0.65rem; color: #aaa; margin-left: 8px; }
+        .brewery-link { text-decoration: none; display: inline-block; transition: 0.2s; }
+        .brewery-logo { width: 100px; height: 50px; object-fit: contain; object-position: left; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3)); }
+        .tab-container { display: flex; width: 100%; max-width: 400px; background: #1e1e1e; border-radius: 12px; margin-bottom: 10px; padding: 4px; }
+        .tab { flex: 1; text-align: center; padding: 10px; cursor: pointer; border-radius: 10px; font-size: 0.9rem; font-weight: bold; transition: 0.3s; color: #888; }
+        .tab.active { background: #ffcc00; color: #121212; }
+        .tap-list-btn { display: block; margin-top: 12px; padding: 8px; background: #ffcc00; color: #121212; text-align: center; border-radius: 8px; text-decoration: none; font-size: 0.8rem; font-weight: bold; text-transform: uppercase; }
+.app-header {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    padding: 10px 0;
+}
+
+.main-logo {
+    max-width: 160px; /* Slightly smaller looks a bit more "app-like" */
+    height: auto;
+    margin-top: 10px;
+    filter: drop-shadow(0 2px 8px rgba(0,0,0,0.6)); /* Makes the gold pop against the black */
+    animation: fadeIn 0.8s ease-in;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-5px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+    </style>
+</head>
+<body>
+<header>
+    <h1>🍺 Brew 401</h1>
+</header>
+   <p style="margin-top: 5px; color:#aaa; text-align: center; font-size: 0.9rem; letter-spacing: 1px;">
+    Ultimate RI Brewery Food Truck Tracker
+</p>
+
+    <div class="tab-container">
+        <div class="tab active" id="beer-tab" onclick="switchTab('beer')">🍺 Beer</div>
+        <div class="tab" id="food-tab" onclick="switchTab('food')">🍔 Food</div>
+    </div>
+    
+    <div id="date-picker"></div>
+    <div id="truck-container"></div>
+
+<script>
+    let allTruckData = [];
+    let userCoords = null;
+    let currentTab = 'beer';
+
+    const breweryData = {
+         "BRAVO BREWING COMPANY": { lat: 41.9565,  lng: -71.7017, url: "https://bravobrewingcompany.com/",  tapListUrl: "https://bravobrewingcompany.com/#:~:text=BRAVO%20ON%20TAP", logo: "/logos/bravo.png", hours: ["12-6pm", "5-9pm", "Closed", "5-9pm", "5-10pm", "11am-10pm", "12-10pm"], hasKitchen: true    
+},
+        "NARRAGANSETT BREWERY": { lat: 41.8190, lng: -71.4050, url: "https://www.narragansettbeer.com/pages/providence-brewery",tapListUrl: "https://www.narragansettbeer.com/pages/providence-brewery#:~:text=WHAT'S%20ON%20TAP%3F", logo: "/logos/gansett.png", hours: ["12-9pm", "4-10pm", "4-10pm", "4-10pm", "12-10pm", "12pm-10pm", "12-9pm"], hasKitchen: true },        
+        "PHANTOM FARMS": { lat: 41.9744, lng: -71.4556, url: "https://phantomfarmsbrewing.com/", tapListUrl: "https://phantomfarmsbrewing.com/pages/beers-on-tap", logo: "/logos/phantom.png", hours: ["12-8pm", "5-9pm", "Closed", "4-9pm", "4-9pm", "12-10pm", "12-10pm"] },
+        "RAGGED ISLAND": { lat: 41.6163, lng: -71.2569, url: "https://www.raggedislandbrewing.com/",tapListUrl: "https://raggedislandbrewing.com/our-beer#:~:text=Current%20Beers%20on%20Tap", logo: "/logos/raggedisland.png", hours: ["12-9pm", "12-9pm", "12-9pm", "12-9pm", "12-9pm", "12-9pm", "12-9pm"] },  
+        
+              
+        "UNCOMMON PAIR BREWING": { lat: 41.8706, lng: -71.5219, url: "https://www.uncommonpairbrewing.com/",tapListUrl: "https://www.uncommonpairbrewing.com/our-beers#:~:text=NOW%20POURING.", logo: "/logos/uncommon.png", hours: ["12-6pm", "Closed", "Closed", "Closed", "Closed", "12-9pm", "12-9pm"] },
+        "MONIKER BREWERY": { lat: 41.8185, lng: -71.4238, url: "https://www.monikerbrewery.com/", tapListUrl: "https://www.monikerbrewery.com/providencebeer", logo: "/logos/moniker.png", hours: ["12-6pm", "4-9pm", "4-9pm", "4-9pm", "4-9pm", "2-10pm", "12-10pm"] },
+        "BUTTONWOODS BREWERY": { lat: 41.8273, lng: -71.4302, url: "https://www.buttonwoodsbrewery.com/", tapListUrl: "https://www.buttonwoodsbrewery.com/#whatwebrew#:~:text=our%20beer",logo: "/logos/buttonwoods.png", hours: ["12-8pm", "4-8pm", "Closed", "4-9pm", "4-9pm", "12-10pm", "12-10pm"], hasKitchen: true },
+        "CROOK POINT BREWING COMPANY": { lat: 41.8273, lng: -71.3754, url: "https://crookpointbrewing.com/", tapListUrl: "https://crookpointbrewing.com/beer-food/",logo: "/logos/crookpoint.png", hours: ["12-6pm", "Closed", "Closed", "4-9pm", "4-9pm", "4-10pm", "12-10pm"] },
+        "FOOLPROOF BREWERY": { lat: 41.8704, lng: -71.4082, url: "https://www.foolproofbrewing.com/pawtucket/pawtucket-home/", tapListUrl: "https://www.foolproofbrewing.com/pawtucket/on-tap#:~:text=Pawtucket%20Taproom", logo: "/logos/foolproof.png", hours: ["2-8pm", "Closed", "2-9pm", "12-9pm", "12-9pm", "12-9pm", "12-9pm"] },
+        "LOPS BREWERY": { lat: 42.0073, lng: -71.5130, url: "https://www.lopsbrewing.com/", tapListUrl: "https://www.lopsbrewing.com/tasting-room-menu", logo: "/logos/lops.png", hours: ["12-6pm", "4-8pm", "4-8pm", "4-8pm", "4-8pm", "12-9pm", "12-9pm"] },
+        "LONG LIVE BEERWORKS": { lat: 41.8094, lng: -71.4260, url: "https://www.longlivebeerworks.com/", tapListUrl: "https://untappd.com/v/long-live-beerworks/4174253#:~:text=Tap%20List", logo: "/logos/longlive.png", hours: ["12-6pm", "3-10pm", "Closed", "3-10pm", "3-10pm", "1-10pm", "12-10pm"] },
+        "PIVOTAL BREWING COMPANY": { lat: 41.6729, lng: -71.2709, url: "https://pivotalbrewing.com/", tapListUrl: "https://pivotalbrewing.com/bristol-pivotal-brewing-company-beer-menu#:~:text=Bristol%20Taproom%20Pours", logo: "/logos/pivotal.png", hours: ["12-6pm", "Closed", "Closed", "4-9pm", "4-9pm", "2-10pm", "12-10pm"] },
+        
+        "CROOKED CURRENT BREWERY": { lat: 41.8728, lng: -71.4057, url: "http://www.crookedcurrentbreweryri.com/", logo: "/logos/crookedcurrent.png", hours: ["Closed", "Closed", "Closed", "Closed", "5-8pm", "5-9pm", "1-6pm"] },
+       
+       "REJECTS BEER CO.": { lat: 41.4938, lng: -71.2809, url: "https://www.rejectsbeerco.com/", tapListUrl: "https://www.rejectsbeerco.com/beers-on-tap#:~:text=NOW%20POURING%20AT%20REJECTS",logo: "/logos/rejects.png", hours: ["12-8pm", "Closed", "4-8pm", "4-8pm", "4-8pm", "4-9pm", "12-9pm"] },
+       "TAPROOT BREWING COMPANY": { lat: 41.5309, lng: -71.2667, url: "https://www.taprootbeer.com/", tapListUrl: "https://taprootbeer.com/whats-on-tap/",logo: "/logos/taproot.png", hours: ["10-7pm", "11-7pm", "11-9pm", "11-9pm", "11-9pm", "11-9pm", "11-9pm"] },
+      "TRAGMAR ALE WORKS": { lat: 41.6941, lng: -71.2692, url: "https://www.tragmar.com/", tapListUrl: "https://www.tragmar.com/draftlist",logo: "/logos/tragmar.png", hours: ["12-5pm", "Closed", "Closed", "3-8pm", "3-8pm", "12-9pm", "12-5pm"] },
+       "VIGILANT BREWING": { lat: 41.7028, lng: -71.2682, url: "https://vigilantbrewing.com/", tapListUrl: "https://untappd.com/v/vigilant-brewing/11374511#:~:text=VIGILANT%20MENU",logo: "/logos/vigilant.png", hours: ["1-6pm", "4-8pm", "Closed", "4-8pm", "3-8pm", "1-10pm", "1-10pm"] },
+       "CRAFTED HOPE BREWING": { lat: 41.6563, lng: -71.4975, url: "https://www.craftedhopebrewing.com/?utm_source=ig&utm_medium=social&utm_content=link_in_bio&fbclid=PAZXh0bgNhZW0CMTEAc3J0YwZhcHBfaWQMMjU2MjgxMDQwNTU4AAGnW4nyCuhC8JvVnkekvOITpQi-NaP7s26xt-6CdvFeCwFMgTu3qT1-ARzy9u4_aem_7vbIk_PciZ7nc9Vw3mujRw", tapListUrl: "https://www.craftedhopebrewing.com/on-tap#:~:text=Currently%20Available%20on%20Tap", logo: "/logos/craftedhope.png", hours: ["12-6pm", "Closed", "Closed", "Closed", "3-9pm", "12-9pm", "12-9pm"] },
+        "TILTED BARN BREWERY": { lat: 41.5707, lng: -71.5192, url: "https://www.tiltedbarnbrewery.com/",tapListUrl: "https://www.tiltedbarnbrewery.com/on-tap-to-go#:~:text=Beers%20on%20Tap", logo: "/logos/tiltedbarn.png", hours: ["12-5pm", "Closed", "Closed", "4-8pm", "12-8pm", "12-8pm", "12-8pm"] },
+        "THE GUILD PAWTUCKET": { lat: 41.8705, lng: -71.3917, url: "https://www.theguildpawtucket.com/#food", tapListUrl: "https://www.theguildpawtucket.com/#:~:text=What's%20on%20Tap", logo: "/logos/theguildpawt.png", hours: ["12-6pm", "Closed", "4-8pm", "4-8pm", "4-8pm", "12-10pm", "12-10pm"], hasKitchen: true },
+        "UNION STATION BREWERY": { lat: 41.8268, lng: -71.4144, url: "https://unionstationpvd.com/", tapListUrl: "https://unionstationpvd.com/providence-union-station-brewery-our-beer#:~:text=Rotating%20Drafts", logo: "/logos/unionstation.png", hours: ["11:30am-9pm", "11:30am-10pm", "11:30am-10pm", "11:30am-10pm", "11:30am-10pm", "11:30am-11pm", "11:30am-11pm"], hasKitchen: true },
+        "APPONAUG BREWING": { lat: 41.7028, lng: -71.4475, url: "https://apponaugbrewing.com/", tapListUrl: "https://apponaugbrewing.com/warwick-apponaug-brewing-menus#:~:text=On%20Tap%20Today",logo: "/logos/apponaug.png", hours: ["12-8pm", "Closed", "4-10pm", "4-10pm", "4-10pm", "4-11pm", "12-11pm"], hasKitchen: true }
+        
+    };
+// Example logic for your "View Tap List" button
+const showMenu = (breweryName) => {
+    if (breweryName === "UNCOMMON PAIR BREWING") {
+        // Fetch the data from your new JSON file
+        const menu = require('./data/uncommon-pair-menu.json');
+        alert("On Tap: " + menu.beers.join(", "));
+    }
+};
+
+    // --- HELPERS ---
+    const normalize = (d) => {
+        if (!d) return "";
+        const match = d.trim().match(/(\d{1,2})\/(\d{1,2})/);
+        return match ? `${parseInt(match[1])}/${parseInt(match[2])}` : "";
+    };
+
+    function getDistance(lat1, lon1, lat2, lon2) {
+        const R = 3958.8;
+        const dLat = (lat2 - lat1) * Math.PI / 180;
+        const dLon = (lon2 - lon1) * Math.PI / 180;
+        const a = Math.sin(dLat / 2) * Math.sin(dLat / 2) + Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) * Math.sin(dLon / 2) * Math.sin(dLon / 2);
+        return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+    }
+
+    function checkIfOpen(hoursString) {
+        if (!hoursString || hoursString.toLowerCase() === "closed") return false;
+        const now = new Date();
+        const currentTimeInMinutes = (now.getHours() * 60) + now.getMinutes();
+        const parts = hoursString.toLowerCase().replace(/\s+/g, '').split('-');
+        if (parts.length !== 2) return false;
+
+        function parseToMinutes(t) {
+            const match = t.match(/(\d+)(?::(\d+))?\s*(am|pm)?/);
+            if (!match) return 0;
+            let hours = parseInt(match[1]);
+            let minutes = match[2] ? parseInt(match[2]) : 0;
+            let ampm = match[3] || (hours >= 11 && hours < 12 ? 'am' : 'pm'); // Smarter am/pm guess
+            if (ampm === 'pm' && hours < 12) hours += 12;
+            if (ampm === 'am' && hours === 12) hours = 0;
+            return (hours * 60) + minutes;
+        }
+        return currentTimeInMinutes >= parseToMinutes(parts[0]) && currentTimeInMinutes < parseToMinutes(parts[1]);
+    }
+
+    // --- APP LOGIC ---
+    function switchTab(type) {
+        currentTab = type;
+        document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+        document.getElementById(`${type}-tab`).classList.add('active');
+        const activePill = document.querySelector('.date-pill.active');
+        if (activePill) renderDate(activePill.dataset.date);
+    }
+
+    async function initApp() {
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(position => {
+                userCoords = { lat: position.coords.latitude, lng: position.coords.longitude };
+                const activeDate = document.querySelector('.date-pill.active')?.dataset.date || `${new Date().getMonth() + 1}/${new Date().getDate()}`;
+                renderDate(activeDate);
+            });
+        }
+        try {
+            const mainRes = await fetch('/api/trucks');
+            const mainData = await mainRes.json();
+            const phantomRes = await fetch('phantom-data.json');
+            const phantomData = await phantomRes.json();
+            allTruckData = [...mainData, ...phantomData];
+        } catch (err) { 
+            console.warn("API load failed, using fallback empty data.");
+            allTruckData = []; 
+        }
+
+        generateDatePicker();
+        const today = new Date();
+        renderDate(`${today.getMonth() + 1}/${today.getDate()}`);
+    }
+
+    function generateDatePicker() {
+        const picker = document.getElementById('date-picker');
+        picker.innerHTML = '';
+        const months = ["", "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+        for (let i = 0; i < 7; i++) {
+            const d = new Date();
+            d.setDate(d.getDate() + i);
+            const norm = `${d.getMonth() + 1}/${d.getDate()}`;
+            const pill = document.createElement('div');
+            pill.className = `date-pill ${i === 0 ? 'active' : ''}`;
+            pill.dataset.date = norm;
+            pill.innerHTML = `<span>${months[d.getMonth() + 1]}</span><strong>${d.getDate()}</strong>`;
+            pill.onclick = () => {
+                document.querySelectorAll('.date-pill').forEach(p => p.classList.remove('active'));
+                pill.classList.add('active');
+                renderDate(norm);
+            };
+            picker.appendChild(pill);
+        }
+    }
+
+    function renderDate(selectedNormDate) {
+        const container = document.getElementById('truck-container');
+        container.innerHTML = '';
+        const [m, d] = selectedNormDate.split('/');
+        const selectedDay = new Date(new Date().getFullYear(), parseInt(m) - 1, parseInt(d)).getDay();
+        const isActuallyToday = selectedNormDate === `${new Date().getMonth() + 1}/${new Date().getDate()}`;
+
+        let listToRender = [];
+
+        if (currentTab === 'food') {
+            let filtered = allTruckData
+                .filter(item => normalize(item.start) === selectedNormDate)
+                .map(item => {
+                    const nameInJson = item.brewery.toUpperCase().trim();
+                    const matchKey = Object.keys(breweryData).find(key => nameInJson.includes(key.split(' ')[0]) || key.includes(nameInJson));
+                    const info = breweryData[matchKey];
+                    if (!info) return null;
+                    let dist = userCoords ? getDistance(userCoords.lat, userCoords.lng, info.lat, info.lng) : Infinity;
+                    return { ...item, brewery: matchKey, distance: dist, url: info.url, hasKitchen: false };
+                })
+                .filter(item => item !== null);
+
+            Object.keys(breweryData).forEach(name => {
+                const info = breweryData[name];
+                if (info.hasKitchen && info.hours[selectedDay].toLowerCase() !== "closed" && !filtered.some(f => f.brewery === name)) {
+                    const dist = userCoords ? getDistance(userCoords.lat, userCoords.lng, info.lat, info.lng) : Infinity;
+                    filtered.push({ brewery: name, truck: "In-House Kitchen", distance: dist, url: info.url, hasKitchen: true });
+                }
+            });
+            listToRender = filtered;
+        } else {
+            Object.keys(breweryData).forEach(name => {
+                const info = breweryData[name];
+                const todayHours = info.hours[selectedDay];
+                if (todayHours.toLowerCase() !== "closed") {
+                    const dist = userCoords ? getDistance(userCoords.lat, userCoords.lng, info.lat, info.lng) : Infinity;
+                    listToRender.push({
+                        brewery: name,
+                        truck: "Taproom Open",
+                        distance: dist,
+                        url: info.url,
+                        hours: todayHours,
+                        isOpenNow: isActuallyToday ? checkIfOpen(todayHours) : false
+                    });
+                }
+            });
+        }
+
+        listToRender.sort((a, b) => a.distance - b.distance);
+        if (listToRender.length === 0) {
+            container.innerHTML = `<p style="text-align:center; color:#666; margin-top:20px;">No ${currentTab} available today.</p>`;
+            return;
+        }
+
+        listToRender.forEach(item => {
+            const info = breweryData[item.brewery];
+            const card = document.createElement('div');
+            card.className = 'card';
+            const statusText = currentTab === 'beer' ? (item.isOpenNow ? 'Open Now' : 'Scheduled') : (item.hasKitchen ? 'Full Kitchen' : 'Scheduled');
+            const statusColor = currentTab === 'beer' ? (item.isOpenNow ? '#2e7d32' : '#444') : (item.hasKitchen ? '#0277bd' : '#2e7d32');
+            const mainLabel = currentTab === 'beer' ? "Taproom Hours" : item.truck;
+            const tapListHtml = (currentTab === 'beer' && info.tapListUrl) ? `<a href="${info.tapListUrl}" target="_blank" class="tap-list-btn">📝 View Tap List</a>` : '';
+
+            card.innerHTML = `
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+                    <a href="${item.url}" target="_blank" class="brewery-link">
+                        <img src="${info.logo}" alt="${item.brewery}" class="brewery-logo">
+                    </a>
+                    <span class="distance-tag">${item.distance !== Infinity ? item.distance.toFixed(1) + ' mi' : ''}</span>
+                </div>
+                <div style="font-size: 0.7rem; color: #888; margin-bottom: 10px;">Taproom: ${info.hours[selectedDay]}</div>
+                <span class="truck-name">${mainLabel}</span>
+                <div style="display: flex; align-items: center; gap: 10px;">
+                    <span class="status-badge" style="background: ${statusColor};">${statusText}</span>
+                </div>
+                ${tapListHtml}
+            `;
+            container.appendChild(card);
+        });
+    }
+
+    initApp();
+</script>
+</body>
+</html>
