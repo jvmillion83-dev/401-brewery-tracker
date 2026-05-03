@@ -138,16 +138,17 @@
         if (activePill) renderDate(activePill.dataset.date);
     }
 
-    async function initApp() {
+   async function initApp() {
     generateDatePicker();
     try {
         const [mainRes, manualRes] = await Promise.all([
             fetch('/api/trucks').catch(() => ({ json: () => [] })),
-            fetch('manual-trucks.json').catch(() => ({ json: () => [] })) // Matches image_e1fb04.png
+            fetch('manual-trucks.json').catch(() => ({ json: () => [] })) // No leading slash
         ]);
         const mainData = await mainRes.json();
         const manualData = await manualRes.json();
         allTruckData = [...mainData, ...manualData];
+        console.log("Total Truck Entries:", allTruckData.length); // Check if this logs a number > 0
     } catch (err) {
         console.error("Data load error:", err);
     }
