@@ -96,11 +96,15 @@
     };
 
    const normalize = (d) => {
-        if (!d) return "";
-        const match = d.trim().match(/^(\d{1,2})\/(\d{1,2})/);
-        if (match) return `${Number(match[1])}/${Number(match[2])}`;
-        return "";
-    };
+    if (!d) return "";
+    // This regex looks for the M/D pattern at the start of the string
+    const match = d.trim().match(/^(\d{1,2})\/(\d{1,2})/);
+    if (match) {
+        // Number() turns "05" into 5 and "03" into 3
+        return `${Number(match[1])}/${Number(match[2])}`;
+    }
+    return "";
+};
 
     function getDistance(lat1, lon1, lat2, lon2) {
         const R = 3958.8;
@@ -147,6 +151,7 @@
         ]);
         const mainData = await mainRes.json();
         const manualData = await manualRes.json();
+console.log("Manual Data Loaded:", manualData); // Add this line
         allTruckData = [...mainData, ...manualData];
         console.log("Total Truck Entries:", allTruckData.length); // Check if this logs a number > 0
     } catch (err) {
