@@ -139,30 +139,32 @@
     }
 
     async function initApp() {
-        generateDatePicker();
-        try {
-            const [mainRes, phantomRes] = await Promise.all([
-                fetch('/api/trucks').catch(() => ({ json: () => [] })),
-                fetch('manual-trucks.json').catch(() => ({ json: () => [] }))
-            ]);
-            const mainData = await mainRes.json();
-            const manualData = await phantomRes.json();
-            allTruckData = [...mainData, ...manualData];
-        } catch (err) {
-            console.error("Data load error:", err);
-        }
-
-        const today = new Date();
-        const dateString = `${today.getMonth() + 1}/${today.getDate()}`;
-        renderDate(dateString);
-
-        if (navigator.geolocation) {
-            navigator.geolocation.getCurrentPosition(position => {
-                userCoords = { lat: position.coords.latitude, lng: position.coords.longitude };
-                renderDate(dateString);
-            });
-        }
+    generateDatePicker();
+    try {
+        const [mainRes, manualRes] = await Promise.all([
+            fetch('/api/trucks').catch(() => ({ json: () => [] })),
+            fetch('manual-trucks.json').catch(() => ({ json: () => [] })) // Matches image_e1fb04.png
+        ]);
+        const mainData = await mainRes.json();
+        const manualData = await manualRes.json();
+        allTruckData = [...mainData, ...manualData];
+    } catch (err) {
+        console.error("Data load error:", err);
     }
+
+    const today = new Date();
+    const dateString = `${today.getMonth() + 1}/${today.getDate()}`;
+    renderDate(dateString);
+
+    if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(position => {
+            userCoords = { lat: position.coords.latitude, lng: position.coords.longitude };
+            renderDate(dateString);
+        }, (error) => {
+            console.log("Location access denied or unavailable.");
+        });
+    }
+}
 
     function generateDatePicker() {
         const picker = document.getElementById('date-picker');
