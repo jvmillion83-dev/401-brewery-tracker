@@ -151,7 +151,7 @@ const showMenu = (breweryName) => {
         try {
             const [mainRes, phantomRes] = await Promise.all([
                 fetch('/api/trucks').catch(() => ({ json: () => [] })),
-                fetch('phantom-data.json').catch(() => ({ json: () => [] }))
+                fetch('manual-trucks.json').catch(() => ({ json: () => [] }))
             ]);
             const mainData = await mainRes.json();
             const phantomData = await phantomRes.json();
