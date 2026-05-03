@@ -1,7 +1,7 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
-
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Brew 401</title>
@@ -28,28 +28,14 @@
         .tab { flex: 1; text-align: center; padding: 10px; cursor: pointer; border-radius: 10px; font-size: 0.9rem; font-weight: bold; transition: 0.3s; color: #888; }
         .tab.active { background: #ffcc00; color: #121212; }
         .tap-list-btn { display: block; margin-top: 12px; padding: 8px; background: #ffcc00; color: #121212; text-align: center; border-radius: 8px; text-decoration: none; font-size: 0.8rem; font-weight: bold; text-transform: uppercase; }
-.app-header {
-    width: 100%;
-    display: flex;
-    justify-content: center;
-    padding: 10px 0;
-}
-
-.main-logo {
-    max-width: 160px; /* Slightly smaller looks a bit more "app-like" */
-    height: auto;
-    margin-top: 10px;
-    filter: drop-shadow(0 2px 8px rgba(0,0,0,0.6)); /* Makes the gold pop against the black */
-    animation: fadeIn 0.8s ease-in;
-}
-
-@keyframes fadeIn {
-    from { opacity: 0; transform: translateY(-5px); }
-    to { opacity: 1; transform: translateY(0); }
-}
-
+        
+        .app-header { width: 100%; display: flex; justify-content: center; padding: 10px 0; }
+        .main-logo { max-width: 160px; height: auto; margin-top: 10px; filter: drop-shadow(0 2px 8px rgba(0,0,0,0.6)); animation: fadeIn 0.8s ease-in; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(-5px); } to { opacity: 1; transform: translateY(0); } }
     </style>
 </head>
+
+
 <body>
 <header>
     <h1>🍺 Brew 401</h1>
@@ -117,17 +103,12 @@ const showMenu = (breweryName) => {
     }
 };
 
-    // --- HELPERS ---
-    const normalize = (d) => {
-    if (!d) return "";
-    // This regex looks for Month/Day and ignores anything after it (like /2026)
-    const match = d.trim().match(/^(\d{1,2})\/(\d{1,2})/);
-    if (match) {
-        // Returns "5/3" even if the input was "5/3/2026"
-        return `${parseInt(match[1])}/${parseInt(match[2])}`;
-    }
-    return "";
-};
+   const normalize = (d) => {
+        if (!d) return "";
+        const match = d.trim().match(/^(\d{1,2})\/(\d{1,2})/);
+        if (match) return `${Number(match[1])}/${Number(match[2])}`;
+        return "";
+    };
 
     function getDistance(lat1, lon1, lat2, lon2) {
         const R = 3958.8;
@@ -149,7 +130,7 @@ const showMenu = (breweryName) => {
             if (!match) return 0;
             let hours = parseInt(match[1]);
             let minutes = match[2] ? parseInt(match[2]) : 0;
-            let ampm = match[3] || (hours >= 11 && hours < 12 ? 'am' : 'pm'); // Smarter am/pm guess
+            let ampm = match[3] || (hours >= 11 && hours < 12 ? 'am' : 'pm');
             if (ampm === 'pm' && hours < 12) hours += 12;
             if (ampm === 'am' && hours === 12) hours = 0;
             return (hours * 60) + minutes;
@@ -157,7 +138,6 @@ const showMenu = (breweryName) => {
         return currentTimeInMinutes >= parseToMinutes(parts[0]) && currentTimeInMinutes < parseToMinutes(parts[1]);
     }
 
-    // --- APP LOGIC ---
     function switchTab(type) {
         currentTab = type;
         document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
@@ -166,38 +146,31 @@ const showMenu = (breweryName) => {
         if (activePill) renderDate(activePill.dataset.date);
     }
 
-   async function initApp() {
-    console.log("Initializing Brew 401...");
-    generateDatePicker(); // Ensure the date bar actually shows up!
-    
-    // 1. Fetch data
-    try {
-        const [mainRes, phantomRes] = await Promise.all([
-            fetch('/api/trucks'),
-            fetch('phantom-data.json')
-        ]);
-        
-        const mainData = await mainRes.json();
-        const phantomData = await phantomRes.json();
-        
-        allTruckData = [...mainData, ...phantomData];
-    } catch (err) { 
-        console.error("Data load error:", err);
-    }
+    async function initApp() {
+        generateDatePicker();
+        try {
+            const [mainRes, phantomRes] = await Promise.all([
+                fetch('/api/trucks').catch(() => ({ json: () => [] })),
+                fetch('phantom-data.json').catch(() => ({ json: () => [] }))
+            ]);
+            const mainData = await mainRes.json();
+            const phantomData = await phantomRes.json();
+            allTruckData = [...mainData, ...phantomData];
+        } catch (err) {
+            console.error("Data load error:", err);
+        }
 
-    // 2. Initial Render (so the user isn't looking at a blank screen)
-    const today = new Date();
-    const dateString = `${today.getMonth() + 1}/${today.getDate()}`;
-    renderDate(dateString);
+        const today = new Date();
+        const dateString = `${today.getMonth() + 1}/${today.getDate()}`;
+        renderDate(dateString);
 
-    // 3. Update with Location if available
-    if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition(position => {
-            userCoords = { lat: position.coords.latitude, lng: position.coords.longitude };
-            renderDate(dateString); // Re-render to sort by distance
-        });
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(position => {
+                userCoords = { lat: position.coords.latitude, lng: position.coords.longitude };
+                renderDate(dateString);
+            });
+        }
     }
-}
 
     function generateDatePicker() {
         const picker = document.getElementById('date-picker');
@@ -234,10 +207,13 @@ const showMenu = (breweryName) => {
                 .filter(item => normalize(item.start) === selectedNormDate)
                 .map(item => {
                     const nameInJson = item.brewery.toUpperCase().trim();
-                    const matchKey = Object.keys(breweryData).find(key => nameInJson.includes(key.split(' ')[0]) || key.includes(nameInJson));
+                    const matchKey = Object.keys(breweryData).find(key => 
+                        nameInJson.includes(key.toUpperCase().trim()) || 
+                        key.toUpperCase().trim().includes(nameInJson)
+                    );
                     const info = breweryData[matchKey];
                     if (!info) return null;
-                    let dist = userCoords ? getDistance(userCoords.lat, userCoords.lng, info.lat, info.lng) : Infinity;
+                    const dist = userCoords ? getDistance(userCoords.lat, userCoords.lng, info.lat, info.lng) : Infinity;
                     return { ...item, brewery: matchKey, distance: dist, url: info.url, hasKitchen: false };
                 })
                 .filter(item => item !== null);
