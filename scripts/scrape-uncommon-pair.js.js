@@ -1,5 +1,6 @@
 const puppeteer = require('puppeteer');
 const fs = require('fs');
+const path = require('path');
 
 async function scrapeUncommon() {
     console.log("Launching browser...");
@@ -68,12 +69,12 @@ async function scrapeUncommon() {
             beers: beerData
         };
 
-        const dataPath = '../data'; 
-        const filePath = '../data/uncommon-pair-menu.json';
+        const dataPath = path.join(__dirname, '..', 'public', 'data'); 
+        const filePath = path.join(dataPath, 'uncommon-pair-menu.json');
 
-        if (!fs.existsSync(dataPath)) { 
-            fs.mkdirSync(dataPath); 
-        }
+       if (!fs.existsSync(dataPath)) { 
+        fs.mkdirSync(dataPath, { recursive: true }); 
+}
         
         fs.writeFileSync(filePath, JSON.stringify(output, null, 2));
         
