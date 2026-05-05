@@ -259,7 +259,7 @@ console.log("Manual Data Loaded:", manualData); // Add this line
             const mainLabel = currentTab === 'beer' ? "Taproom Hours" : item.truck;
     let tapListHtml = '';
 
-if (item.brewery === 'Uncommon Pair') {
+if (item.brewery === 'Uncommon') {
     // This points to the fresh 6-beer list you just scraped
     tapListHtml = `<a href="/data/uncommon-pair-menu.json" target="_blank" class="tap-list-btn">📝 View Tap List</a>`;
 } else if (currentTab === 'beer' && item.url) {
