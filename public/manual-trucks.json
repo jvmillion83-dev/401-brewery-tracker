@@ -58,11 +58,18 @@
     "end": "5/3/2026 8:00PM"
   },
 {
-    "brewery": "UNCOMMON PAIR BREWING",
-    "truck": "Test",
-    "start": "05/07/2026 4:00PM",
-    "end": "05/07/2026 9:00PM"
+    "brewery": "PHANTOM FARMS",
+    "truck": "Rocket Food Truck",
+    "start": "5/6/2026 5:00PM",
+    "end": "5/6/2026 8:00PM"
   },
+{
+    "brewery": "PHANTOM FARMS",
+    "truck": "Rocket Food Truck",
+    "start": "5/7/2026 5:00PM",
+    "end": "5/7/2026 8:00PM"
+  },
+
 {
     "brewery": "UNCOMMON PAIR BREWING",
     "truck": "ABCD Brothers Kitchen",
@@ -70,10 +77,28 @@
     "end": "05/08/2026 9:00PM"
   },
 {
+    "brewery": "PHANTOM FARMS",
+    "truck": "Farm To Sandwich",
+    "start": "5/8/2026 5:00PM",
+    "end": "5/8/2026 8:00PM"
+  },
+{
     "brewery": "UNCOMMON PAIR BREWING",
     "truck": "ABCD Brothers Kitchen",
     "start": "05/09/2026 12:00PM",
     "end": "05/09/2026 4:30PM"
+  },
+{
+    "brewery": "PHANTOM FARMS",
+    "truck": "W's Wood Fire Pizza",
+    "start": "5/9/2026 2:00PM",
+    "end": "5/9/2026 8:00PM"
+  },
+{
+    "brewery": "PHANTOM FARMS",
+    "truck": "Nanu Burmese Fusion",
+    "start": "5/9/2026 12:00PM",
+    "end": "5/9/2026 6:00PM"
   },
 {
     "brewery": "UNCOMMON PAIR BREWING",
