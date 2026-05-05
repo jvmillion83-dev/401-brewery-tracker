@@ -257,7 +257,15 @@ console.log("Manual Data Loaded:", manualData); // Add this line
             const statusText = currentTab === 'beer' ? (item.isOpenNow ? 'Open Now' : 'Scheduled') : (item.hasKitchen ? 'Full Kitchen' : 'Scheduled');
             const statusColor = currentTab === 'beer' ? (item.isOpenNow ? '#2e7d32' : '#444') : (item.hasKitchen ? '#0277bd' : '#2e7d32');
             const mainLabel = currentTab === 'beer' ? "Taproom Hours" : item.truck;
-            const tapListHtml = (currentTab === 'beer' && info.tapListUrl) ? `<a href="${info.tapListUrl}" target="_blank" class="tap-list-btn">📝 View Tap List</a>` : '';
+    let tapListHtml = '';
+
+if (item.brewery === 'Uncommon Pair') {
+    // This points to the fresh 6-beer list you just scraped
+    tapListHtml = `<a href="/data/uncommon-pair-menu.json" target="_blank" class="tap-list-btn">📝 View Tap List</a>`;
+} else if (currentTab === 'beer' && item.url) {
+    // Standard behavior for other breweries
+    tapListHtml = `<a href="${item.url}" target="_blank" class="tap-list-btn">📝 View Tap List</a>`;
+}
 
             card.innerHTML = `
                 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
