@@ -308,7 +308,7 @@
         try {
             const [mainRes, manualRes] = await Promise.all([
                 fetch('/api/trucks').catch(() => ({ json: () => [] })),
-                fetch('/public/manual-trucks.json').catch(() => ({ json: () => [] })) 
+                fetch('/manual-trucks.json').catch(() => ({ json: () => [] })) 
             ]);
             allTruckData = [...await mainRes.json(), ...await manualRes.json()];
         } catch (err) { console.error("Data load error:", err); }
