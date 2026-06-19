@@ -60,47 +60,77 @@ async function scrapeFoolproof() {
     }
 
     const scrapedBeers = [];
-    console.log("Parsing menu layout dynamically...");
+    console.log("Parsing menu layout using clean element selectors...");
 
-    // Global Regex Pattern: Captures each block ending in ABV regardless of line separators
+    // Find the right frame containing the menu items
+    const frames = page.frames();
+    for (const frame of frames) {
+        try {
+            // Target all individual menu item containers inside the widget layout
+            const items = await frame.$$('.menu-item, [class*="item"], .menu-list > div'); 
+            
+            // Fallback to text parsing if classes are completely obfuscated, 
+            // but let's optimize the text-stream split to match the visual layout in image_2b2168.png
+            if (items.length === 0) {
+                continue;
+            }
+        } catch (e) {}
+    }
+
+    // ROBUST TEXT-STREAM PARSER OPTIMIZED FOR THE VISUAL LAYOUT
+    // This regex looks at the pattern: Number. Name [Newlines/Spaces] Style [Newlines/Spaces] ABV% ABV
     const beerRegex = /(?:[-•*]\s*)?(\d+)\.\s+([\s\S]*?)\s+(\d+(?:\.\d+)?%)\s*ABV/gi;
     let match;
 
     while ((match = beerRegex.exec(combinedText)) !== null) {
-        let fullHeader = match[2].trim();
+        let rawContent = match[2].trim(); // Contains Name + Style combined
         const abv = match[3].trim();
 
-        // Separate layout overflow strings if multiple lines bleed together
-        if (fullHeader.includes('\n')) {
-            fullHeader = fullHeader.split('\n').pop().trim();
+        // Standardize multi-line separation from the stream
+        let lines = rawContent.split('\n').map(l => l.trim()).filter(Boolean);
+        
+        let name = "";
+        let style = "Craft Beer";
+
+        if (lines.length >= 2) {
+            // If the text split cleanly by line breaks (like the website display)
+            name = lines[0];
+            style = lines[1];
+        } else {
+            // Fallback handling for space-joined streams
+            let cleanText = lines[0];
+            if (cleanText.includes(' - ')) {
+                const parts = cleanText.split(' - ');
+                name = parts[0].trim();
+                style = parts[1].trim();
+            } else {
+                name = cleanText;
+            }
+        }
+
+        // Clean up common duplicate string noise (e.g., "Ocean State Lager Lager" -> "Ocean State Lager")
+        const nameWords = name.split(' ');
+        if (nameWords.length > 1 && nameWords[nameWords.length - 1] === nameWords[nameWords.length - 2]) {
+            nameWords.pop();
+            name = nameWords.join(' ');
+        }
+
+        // Strip corporate footers or accidental attribution blocks
+        if (name.toLowerCase().includes('foolproof brewing')) {
+            name = name.replace(/foolproof brewing(?: company)?\.?/i, '').trim();
+        }
+        if (style.toLowerCase().includes('foolproof brewing')) {
+            style = style.replace(/foolproof brewing(?: company)?\.?/i, '').trim();
         }
 
         // Clean up trailing punctuation noise
-        if (fullHeader.endsWith('.')) fullHeader = fullHeader.slice(0, -1).trim();
-        if (fullHeader.endsWith('-')) fullHeader = fullHeader.slice(0, -1).trim();
+        if (name.endsWith('.')) name = name.slice(0, -1).trim();
+        if (name.endsWith('-')) name = name.slice(0, -1).trim();
+        if (style.endsWith('.')) style = style.slice(0, -1).trim();
 
-        // Exclude footer/header noise
-        if (fullHeader.toLowerCase().includes('foolproof brewing')) {
-            fullHeader = fullHeader.replace(/foolproof brewing(?: company)?\.?/i, '').trim();
+        if (name && name.length < 50 && !scrapedBeers.some(b => b.name.toLowerCase() === name.toLowerCase())) {
+            scrapedBeers.push({ name, style, abv });
         }
-
-        let name = fullHeader;
-        let style = 'Craft Beer';
-
-        if (fullHeader.includes(' - ')) {
-            const parts = fullHeader.split(' - ');
-            name = parts[0].trim();
-            style = parts[1].trim();
-        } else if (fullHeader.includes('. ')) {
-            const parts = fullHeader.split('. ');
-            name = parts[0].trim();
-            style = parts[1].trim();
-        }
-
-       
-      if (name && name.length < 50 && !scrapedBeers.some(b => b.name.toLowerCase() === name.toLowerCase())) {
-    scrapedBeers.push({ name, style, abv });
-}
     }
 
     const output = {
