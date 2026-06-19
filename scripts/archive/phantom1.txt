@@ -1,0 +1,155 @@
+const puppeteer = require('puppeteer');
+const fs = require('fs');
+const path = require('path');
+
+const scrapePhantomFarms = async () => {
+  const browser = await puppeteer.launch({ 
+    headless: false, 
+    defaultViewport: null,
+    args: [
+      '--start-maximized',
+      '--disable-web-security',
+      '--disable-features=IsolateOrigins,site-per-process'
+    ] 
+  });
+  
+  const page = await browser.newPage();
+  await page.setUserAgent('Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36');
+
+  try {
+    console.log("Navigating to Phantom Farms...");
+    await page.goto('https://phantomfarmsbrewing.com/pages/beers-on-tap', { 
+        waitUntil: 'networkidle2', 
+        timeout: 60000 
+    });
+try {
+        // Look for the "not right now" text or the close button class
+        const closeButton = await page.$('span:text("not right now")'); 
+        if (closeButton) {
+            await closeButton.click();
+            console.log("Dismissed the email popup.");
+        }
+    } catch (e) {
+        console.log("No popup appeared or already closed.");
+    }
+
+
+    // --- INSERT SCROLLING LOGIC HERE ---
+    console.log("Waking up all widgets...");
+    // Scroll to the middle (activates first widget)
+    await page.evaluate(() => window.scrollTo(0, 800));
+    await new Promise(r => setTimeout(r, 2000));
+    
+    // Scroll further (activates second widget / On Tap list)
+    await page.evaluate(() => window.scrollTo(0, 2500));
+    
+    // Give them a generous 15 seconds to "hydrate" (load the Shadow DOM)
+    await new Promise(r => setTimeout(r, 15000)); 
+
+    let allBeers = [];
+    const frames = page.frames();
+
+
+    for (const frame of frames) {
+      
+      try {
+        const frameBeers = await frame.evaluate(() => {
+          const results = [];
+          function query(root) {
+            root.querySelectorAll('*').forEach(el => {
+              if (el.innerText && /(\d+(\.\d+)?%)/.test(el.innerText) && el.innerText.length < 500) {
+                const lines = el.innerText.split('\n').filter(l => l.trim().length > 0);
+                results.push({ 
+                    name: lines[0], 
+                    text: el.innerText 
+                });
+              }
+              if (el.shadowRoot) query(el.shadowRoot);
+            });
+          }
+          query(document);
+          return results;
+        });
+
+        if (frameBeers && frameBeers.length > 0) {
+          const beerMap = new Map();
+
+          frameBeers.forEach(b => {
+	    // 1. HARD FILTER: Skip "More Info", CSS code, and non-beer text
+            const bannedPhrases = ["More Info", "{", "margin-top", "Serving Sizes"];
+            if (!b.name || bannedPhrases.some(phrase => b.name.includes(phrase))) return;
+            
+            // 2. STYLE REFINEMENT
+            // If the name was pulled as "Glacier Pilsner - Other", split it.
+            let cleanName = b.name;
+            let detectedStyle = "Craft Beer";
+
+            const styleKeywords = ["Pilsner", "IPA", "Lager", "Saison", "Farmhouse", "Cider", "Ale", "Stout"];
+            
+            styleKeywords.forEach(keyword => {
+                if (b.name.includes(keyword)) {
+                    // Splits "Glacier Pilsner - Other" into ["Glacier", "Pilsner - Other"]
+                    const parts = b.name.split(new RegExp(`(${keyword}.*)`, 'i'));
+                    if (parts.length > 1) {
+                        cleanName = parts[0].trim();
+                        detectedStyle = parts[1].trim();
+                    }
+                }
+            });	
+            // 1. HARD BLOCK: Skip CSS code, ABV-only badges, and Empty names
+            if (!b.name || b.name.includes('{') || b.name.includes('%') || b.name.includes('margin-top')) return;
+            
+            const lines = b.text.split('\n').map(l => l.trim()).filter(l => l.length > 0);
+            if (lines.length < 2) return;
+
+            // 2. PARSE: Identify the Style line
+            // We look for common beer keywords to find the style line
+            let name = lines[0];
+            let style = lines.find(l => /IPA|Lager|Pilsner|Ale|Stout|Saison|Barleywine|Cider/i.test(l)) || "Craft Beer";
+            
+            // If the name is just the style (happens sometimes in frames), skip it
+            if (name === style) return;
+
+            // 3. DEDUPLICATE: Map by clean name
+            if (!beerMap.has(name)) {
+              beerMap.set(name, {
+                name: name,
+                style: style,
+                abv: b.text.match(/(\d+(\.\d+)?%)/)?.[0] || "N/A",
+                description: b.text
+                  .split('\n')
+                  .filter(l => !l.includes('Info') && !l.includes(name))
+                  .join(' ')
+                  .replace(/\s\s+/g, ' ') // Clean up extra spaces
+                  .trim()
+              });
+            }
+          });
+
+          allBeers = Array.from(beerMap.values());
+          if (allBeers.length > 5) break; // If we found more than 5, we likely got the main list
+        }
+      } catch (e) { continue; }
+    }
+
+    await browser.close();
+    return { beers: allBeers, lastUpdated: new Date().toLocaleString() };
+
+  } catch (error) {
+        console.error("Scrape failed:", error);
+    } finally {
+        await browser.close();
+    }
+};
+
+(async () => {
+  const data = await scrapePhantomFarms();
+  if (data && data.beers.length > 0) {
+    const filePath = path.join(__dirname, '..', 'public', 'data', 'phantom-menu.json');
+    fs.mkdirSync(path.dirname(filePath), { recursive: true });
+    fs.writeFileSync(filePath, JSON.stringify(data, null, 2));
+    console.log(`\n✅ SUCCESS! Saved ${data.beers.length} clean beer entries.`);
+  } else {
+    console.log("\n❌ Failed to capture clean beer data.");
+  }
+})();
