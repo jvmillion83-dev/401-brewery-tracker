@@ -113,6 +113,18 @@
     "end": "05/29/2026 9:00PM"
   },
 {
+    "brewery": "LONG LIVE BEERWORKS",
+    "truck": "Habibi's MIddle Eastern Kitchen",
+    "start": "06/19/2026 5:00PM",
+    "end": "06/19/2026 9:00PM"
+  },
+{
+    "brewery": "LONG LIVE BEERWORKS",
+    "truck": "La Gatta Salata",
+    "start": "06/20/2026 2:00PM",
+    "end": "06/20/2026 8:00PM"
+  },
+{
     "brewery": "TILTED BARN BREWERY",
     "truck": "Tolia",
     "start": "06/20/2026 12:00PM",
@@ -129,5 +141,59 @@
     "truck": "Pa'l Monte Food Truck",
     "start": "06/20/2026 4:00PM",
     "end": "06/20/2026 9:00PM"
+  },
+{
+    "brewery": "PHANTOM FARMS",
+    "truck": "Fyr Grill",
+    "start": "06/21/2026 12:00PM",
+    "end": "06/21/2026 6:00PM"
+  },
+{
+    "brewery": "LONG LIVE BEERWORKS",
+    "truck": "Brother & Moffat",
+    "start": "06/21/2026 2:00PM",
+    "end": "06/21/2026 8:00PM"
+  },
+{
+    "brewery": "TRAGMAR ALE WORKS",
+    "truck": "SEB's Wood Fire Oven",
+    "start": "06/21/2026 12:00PM",
+    "end": "06/21/2026 6:00PM"
+  },
+{
+    "brewery": "LONG LIVE BEERWORKS",
+    "truck": "Nanu Burmese Fusion",
+    "start": "06/24/2026 4:00PM",
+    "end": "06/24/2026 8:00PM"
+  },
+{
+    "brewery": "PHANTOM FARMS",
+    "truck": "Benji's Seafood",
+    "start": "06/24/2026 12:00PM",
+    "end": "06/24/2026 6:00PM"
+  },
+{
+    "brewery": "LONG LIVE BEERWORKS",
+    "truck": "Brother & Moffat",
+    "start": "06/25/2026 5:00PM",
+    "end": "06/25/2026 9:00PM"
+  },
+{
+    "brewery": "LONG LIVE BEERWORKS",
+    "truck": "La Gatta Salata",
+    "start": "06/26/2026 5:00PM",
+    "end": "06/26/2026 9:00PM"
+  },
+{
+    "brewery": "LONG LIVE BEERWORKS",
+    "truck": "La Gatta Salata",
+    "start": "06/27/2026 2:00PM",
+    "end": "06/27/2026 8:00PM"
+  },
+{
+    "brewery": "LONG LIVE BEERWORKS",
+    "truck": "Pal Monte",
+    "start": "06/28/2026 12:00PM",
+    "end": "06/28/2026 5:00PM"
   }
 ]
