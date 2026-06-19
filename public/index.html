@@ -251,9 +251,11 @@
 if (item.brewery.toLowerCase().includes('uncommon')) {
     tapListHtml = `<button onclick="openTapList('/data/uncommon-pair-menu.json', 'Uncommon Pair')" class="tap-list-btn">📝 VIEW TAP LIST</button>`;
 } else if (item.brewery.toLowerCase().includes('phantom')) {
-    // Dynamically hooks up your phantom JSON to the local modal!
     tapListHtml = `<button onclick="openTapList('/data/phantom-menu.json', 'Phantom Farms')" class="tap-list-btn">📝 VIEW TAP LIST</button>`;
-} else if (info.tapListUrl) {
+} else if (item.brewery.toLowerCase().includes('foolproof')) {
+    // Maps the new foolproof script output straight to your dynamic front-end layout
+    tapListHtml = `<button onclick="openTapList('/data/foolproof-menu.json', 'Foolproof Brewing')" class="tap-list-btn">📝 VIEW TAP LIST</button>`;
+} else if (info.tapListUrl){
     tapListHtml = `<a href="${info.tapListUrl}" target="_blank" class="tap-list-btn">📝 View Tap List</a>`;
 }
 

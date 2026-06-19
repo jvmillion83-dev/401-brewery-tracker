@@ -1,0 +1,131 @@
+{
+  "Beer on tap": [
+    {
+      "name": "Black Cab (Nitro) Stout",
+      "style": "Milk",
+      "abv": "5.6%",
+      "description": "A premium selection fresh from Foolproof's Pawtucket brewery floor."
+    },
+    {
+      "name": "Water Crew Brew IPA",
+      "style": "Rye",
+      "abv": "4.8%",
+      "description": "A premium selection fresh from Foolproof's Pawtucket brewery floor."
+    },
+    {
+      "name": "Ocean State Lager Lager",
+      "style": "American",
+      "abv": "4.8%",
+      "description": "A premium selection fresh from Foolproof's Pawtucket brewery floor."
+    },
+    {
+      "name": "Main Squeeze Wheat Beer",
+      "style": "American Pale Wheat",
+      "abv": "5%",
+      "description": "A premium selection fresh from Foolproof's Pawtucket brewery floor."
+    },
+    {
+      "name": "Ocean State IPA IPA",
+      "style": "American",
+      "abv": "4.6%",
+      "description": "A premium selection fresh from Foolproof's Pawtucket brewery floor."
+    },
+    {
+      "name": "Watermelon Vango Sour",
+      "style": "Fruited",
+      "abv": "5%",
+      "description": "A premium selection fresh from Foolproof's Pawtucket brewery floor."
+    },
+    {
+      "name": "Ocean State Amber Red Ale",
+      "style": "American Amber",
+      "abv": "4.8%",
+      "description": "A premium selection fresh from Foolproof's Pawtucket brewery floor."
+    },
+    {
+      "name": "Flying Buttress Kölsch",
+      "style": "Craft Beer",
+      "abv": "4.7%",
+      "description": "A premium selection fresh from Foolproof's Pawtucket brewery floor."
+    },
+    {
+      "name": "Pawtucket Patriot IPA",
+      "style": "New England",
+      "abv": "7%",
+      "description": "A premium selection fresh from Foolproof's Pawtucket brewery floor."
+    },
+    {
+      "name": "Bōsōzoku Lager",
+      "style": "Japanese Rice",
+      "abv": "4.6%",
+      "description": "A premium selection fresh from Foolproof's Pawtucket brewery floor."
+    },
+    {
+      "name": "High Jinx Seltzer Hard Seltzer",
+      "style": "Craft Beer",
+      "abv": "5%",
+      "description": "A premium selection fresh from Foolproof's Pawtucket brewery floor."
+    },
+    {
+      "name": "Mansions IPA",
+      "style": "Imperial",
+      "abv": "8.4%",
+      "description": "A premium selection fresh from Foolproof's Pawtucket brewery floor."
+    },
+    {
+      "name": "Backyahd IPA",
+      "style": "American",
+      "abv": "6%",
+      "description": "A premium selection fresh from Foolproof's Pawtucket brewery floor."
+    },
+    {
+      "name": "PCH Lager",
+      "style": "IPL (India Pale Lager)",
+      "abv": "5.6%",
+      "description": "A premium selection fresh from Foolproof's Pawtucket brewery floor."
+    },
+    {
+      "name": "Three All the Way IPA",
+      "style": "New England",
+      "abv": "7.5%",
+      "description": "A premium selection fresh from Foolproof's Pawtucket brewery floor."
+    },
+    {
+      "name": "Revery Stout",
+      "style": "Russian Imperial",
+      "abv": "9%",
+      "description": "A premium selection fresh from Foolproof's Pawtucket brewery floor."
+    },
+    {
+      "name": "Blueberry Vango Sour",
+      "style": "Fruited",
+      "abv": "5%",
+      "description": "A premium selection fresh from Foolproof's Pawtucket brewery floor."
+    },
+    {
+      "name": "Kyalami Lager",
+      "style": "IPL (India Pale Lager)",
+      "abv": "5.8%",
+      "description": "A premium selection fresh from Foolproof's Pawtucket brewery floor."
+    },
+    {
+      "name": "Pickleodeon Sour",
+      "style": "Other Gose",
+      "abv": "5%",
+      "description": "A premium selection fresh from Foolproof's Pawtucket brewery floor."
+    },
+    {
+      "name": "La Ferme Urbaine Farmhouse Ale",
+      "style": "Saison",
+      "abv": "7.8%",
+      "description": "A premium selection fresh from Foolproof's Pawtucket brewery floor."
+    },
+    {
+      "name": "Peach Vango Sour",
+      "style": "Fruited",
+      "abv": "5%",
+      "description": "A premium selection fresh from Foolproof's Pawtucket brewery floor."
+    }
+  ],
+  "lastUpdated": "6/19/2026, 12:58:57 PM"
+}
