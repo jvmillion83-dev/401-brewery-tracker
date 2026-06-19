@@ -1,5 +1,5 @@
 {
-  "Beer On Tap": [
+  "beers": [
     {
       "name": "Swirl",
       "style": "IPA- New England",
@@ -112,7 +112,7 @@
       "abv": "4.7%",
       "description": 
 "Strata + Nelson Sauvin hops"
-    }
+    },
 {
       "name": "Warp And Weft (Can Pours 16oz)",
       "style": "IPA- Black",
