@@ -1,21 +1,21 @@
 {
-  "lastUpdated": "5/4/2026, 8:09:22 PM",
-  "count": 6,
+  "lastUpdated": "6/18/2026, 8:58:04 PM",
+  "count": 5,
   "beers": [
     {
-      "name": "GOOSEBERRY DRIFT",
-      "abv": "ABV 6.0%",
-      "description": "Gooseberry puree, sea salt, toasted oak spirals, and chamomile"
+      "name": "KOLSCH ENOUGH",
+      "abv": "ABV 4.2%",
+      "description": "Our Uncommon take on a German favorite"
     },
     {
-      "name": "#CZECHTOO",
+      "name": "RARE AIR",
+      "abv": "ABV 5.3%",
+      "description": "Passionfruit Pale Ale"
+    },
+    {
+      "name": "GIRLS TRIP (SOURSOP)",
       "abv": "ABV 5.8%",
-      "description": "Our take on a dark czech lager with poblano peppers"
-    },
-    {
-      "name": "THA GOVNAH",
-      "abv": "ABV 6%",
-      "description": "Brown ale with toasted oak spirals & 20Year Panamanian rum"
+      "description": "NO! It's not a sour! Banana/Guava(ish) Sweet & Tangy Hef Ale"
     },
     {
       "name": "DEEPER FIVE",
@@ -23,14 +23,9 @@
       "description": "Our 5 grain stout with an English twist"
     },
     {
-      "name": "COMMON GROUND",
-      "abv": "ABV 6%",
-      "description": "American Pale Ale"
-    },
-    {
-      "name": "TEA PARTY",
+      "name": "MIX TAPE",
       "abv": "ABV 5%",
-      "description": "More than a tea infused hard seltzer - Stage Your Rebellion - galaxy|pine|lavender|lemon| lime|raspberry|peach| watermelon|hibiscus|vanilla| cherry|orange|jalapeño"
+      "description": "Hard Seltzer, Light Citrus Flavor Pick your track - galaxy|pine|lavender|lemon| lime|raspberry|peach| watermelon|hibiscus|vanilla| cherry|orange|jalapeño"
     }
   ]
 }
