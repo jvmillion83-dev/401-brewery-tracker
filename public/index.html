@@ -279,7 +279,7 @@ if (item.brewery.toLowerCase().includes('uncommon')) {
 
 
 
-   async function openTapList(url, breweryName) {
+  async function openTapList(url, breweryName) {
     const modal = document.getElementById('tapListModal');
     const content = document.getElementById('modalContent');
     const title = document.getElementById('modalTitle');
@@ -289,7 +289,11 @@ if (item.brewery.toLowerCase().includes('uncommon')) {
 
     try {
         const response = await fetch(url);
-        const data = await response.json();
+        const rawText = await response.text();
+        
+        // Sanitize the raw text string to remove illegal line breaks inside JSON
+        const sanitizedText = rawText.replace(/\n/g, ' ').replace(/\r/g, ' ');
+        const data = JSON.parse(sanitizedText);
         
         // Dynamic fallback: Uses 'beers' if it exists, otherwise falls back to 'Beer On Tap'
         const beerList = data.beers || data["Beer On Tap"] || [];
