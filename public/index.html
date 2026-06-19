@@ -60,8 +60,8 @@
     let allTruckData = [];
     let userCoords = null;
     let currentTab = 'beer';
-    const breweryData = {
 
+    const breweryData = {
         "BRAVO BREWING COMPANY": { lat: 41.9565, lng: -71.7017, url: "https://bravobrewingcompany.com/", tapListUrl: "https://bravobrewingcompany.com/#:~:text=BRAVO%20ON%20TAP", logo: "logos/bravo.png", hours: ["12-6pm", "5-9pm", "Closed", "5-9pm", "5-10pm", "11am-10pm", "12-10pm"], hasKitchen: true },
         "NARRAGANSETT BREWERY": { lat: 41.8190, lng: -71.4050, url: "https://www.narragansettbeer.com/pages/providence-brewery", tapListUrl: "https://www.narragansettbeer.com/pages/providence-brewery#:~:text=WHAT'S%20ON%20TAP%3F", logo: "logos/gansett.png", hours: ["12-9pm", "4-10pm", "4-10pm", "4-10pm", "12-10pm", "12pm-10pm", "12-9pm"], hasKitchen: true },
         "PHANTOM FARMS": { lat: 41.9744, lng: -71.4556, url: "https://phantomfarmsbrewing.com/", tapListUrl: "https://phantomfarmsbrewing.com/pages/beers-on-tap", logo: "logos/phantom.png", hours: ["12-8pm", "5-9pm", "Closed", "4-9pm", "4-9pm", "12-10pm", "12-10pm"] },
@@ -92,7 +92,7 @@
     };
 
     function getDistance(lat1, lon1, lat2, lon2) {
-        const R = 3958.8;
+        const R = 3958.8; // Radius of Earth in miles
         const dLat = (lat2 - lat1) * Math.PI / 180;
         const dLon = (lon2 - lon1) * Math.PI / 180;
         const a = Math.sin(dLat / 2) * Math.sin(dLat / 2) + Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) * Math.sin(dLon / 2) * Math.sin(dLon / 2);
@@ -127,62 +127,16 @@
         if (activePill) renderDate(activePill.dataset.date);
     }
 
-    function closeModal() { document.getElementById('tapListModal').style.display = "none"; }
-
-    // --- Modal Handler ---
-    async function openTapList(jsonPath, breweryName) {
-        const modal = document.getElementById('tapListModal');
-        const content = document.getElementById('modalContent');
-        document.getElementById('modalTitle').innerText = `${breweryName} Tap List`;
-        modal.style.display = 'block';
-        content.innerHTML = 'Loading...';
-
-        try {
-            const response = await fetch(jsonPath);
-            const data = await response.json();
-            if (data.isImageMenu) {
-                content.innerHTML = `<img src="${data.menuImageUrl}" style="width:100%; border-radius:8px;">`;
-            } else {
-                const beerList = data.beers || data["Beer on tap"] || [];
-                content.innerHTML = beerList.map(b => `<div style="padding:10px; border-bottom:1px solid #333;"><strong>${b.name}</strong> - ${b.abv}<br>${b.style}</div>`).join('');
-            }
-        } catch(e) { content.innerHTML = "Error loading list."; }
-    }
-
-    // --- Core Rendering ---
-    function renderDate(selectedNormDate) {
-        const container = document.getElementById('truck-container');
-        container.innerHTML = '';
-        const [m, d] = selectedNormDate.split('/');
-        const selectedDay = new Date(new Date().getFullYear(), parseInt(m) - 1, parseInt(d)).getDay();
-
-        // (Use your filter/map logic here to generate listToRender)
-        let listToRender = allTruckData.filter(t => normalize(t.start) === selectedNormDate);
-
-        listToRender.forEach(item => {
-            const info = breweryData[item.brewery];
-            const card = document.createElement('div');
-            card.className = 'card';
-            
-            let tapListHtml = '';
-            if (item.brewery.toLowerCase().includes('moniker')) {
-                tapListHtml = `<button onclick="openTapList('/data/moniker-menu.json', 'Moniker Brewery')" class="tap-list-btn">📝 VIEW TAP LIST</button>`;
-            } else if (info && info.tapListUrl) {
-                tapListHtml = `<a href="${info.tapListUrl}" target="_blank" class="tap-list-btn">📝 View Tap List</a>`;
-            }
-            
-            card.innerHTML = `<span class="truck-name">${item.brewery}</span>${tapListHtml}`;
-            container.appendChild(card);
-        });
-    }
-
     function generateDatePicker() {
         const picker = document.getElementById('date-picker');
         const today = new Date();
         for (let i = 0; i < 7; i++) {
             const d = new Date();
             d.setDate(today.getDate() + i);
-            const normDate = `${d.getMonth() + 1}/${d.getDate()}`;
+            const dayName = d.toLocaleDateString('en-US', { weekday: 'short' });
+            const dateNum = d.getDate();
+            const normDate = `${d.getMonth() + 1}/${dateNum}`;
+            
             const pill = document.createElement('div');
             pill.className = `date-pill ${i === 0 ? 'active' : ''}`;
             pill.dataset.date = normDate;
@@ -191,12 +145,260 @@
                 pill.classList.add('active');
                 renderDate(normDate);
             };
-            pill.innerHTML = `<span>${d.toLocaleDateString('en-US', { weekday: 'short' })}</span><strong>${d.getDate()}</strong>`;
+            pill.innerHTML = `<span>${dayName}</span><strong>${dateNum}</strong>`;
             picker.appendChild(pill);
         }
     }
 
-    // --- Init ---
+    function renderDate(selectedNormDate) {
+    const container = document.getElementById('truck-container');
+    container.innerHTML = '';
+    const [m, d] = selectedNormDate.split('/');
+    const selectedDay = new Date(new Date().getFullYear(), parseInt(m) - 1, parseInt(d)).getDay();
+    const isActuallyToday = selectedNormDate === `${new Date().getMonth() + 1}/${new Date().getDate()}`;
+
+    // 1. Initial filter for trucks scheduled on this specific date
+    let listToRender = allTruckData
+        .filter(t => normalize(t.start) === selectedNormDate)
+        .map(t => {
+            const info = breweryData[t.brewery];
+            let dist = Infinity;
+            if (userCoords && info) dist = getDistance(userCoords.lat, userCoords.lng, info.lat, info.lng);
+            return { 
+                ...t, 
+                distance: dist, 
+                isOpenNow: info ? checkIfOpen(info.hours[selectedDay]) : false,
+                hasKitchen: info ? info.hasKitchen : false,
+                rawHours: info ? info.hours[selectedDay] : "Closed"
+            };
+        });
+
+    if (currentTab === 'beer') {
+        // 2. BEER TAB LOGIC: Show all breweries scheduled OR not scheduled, but NOT if they are closed today
+        const scheduledBreweryNames = new Set(listToRender.map(t => t.brewery));
+        
+        Object.keys(breweryData).forEach(bName => {
+            const info = breweryData[bName];
+            const todayHours = info.hours[selectedDay];
+
+            // Only add if brewery isn't already in list AND isn't "Closed"
+            if (!scheduledBreweryNames.has(bName) && todayHours.toLowerCase() !== "closed") {
+                let dist = Infinity;
+                if (userCoords) dist = getDistance(userCoords.lat, userCoords.lng, info.lat, info.lng);
+                listToRender.push({
+                    brewery: bName,
+                    truck: "Taproom Hours",
+                    distance: dist,
+                    isOpenNow: checkIfOpen(todayHours),
+                    hasKitchen: info.hasKitchen,
+                    rawHours: todayHours
+                });
+            }
+        });
+
+        // Final Beer Tab cleanup: Remove anything that ended up in the list but is closed
+        listToRender = listToRender.filter(item => item.rawHours.toLowerCase() !== "closed");
+
+    } else {
+        // 3. FOOD TAB LOGIC: Show scheduled trucks AND breweries with kitchens
+        const kitchenBreweries = Object.keys(breweryData)
+            .filter(bName => {
+                const info = breweryData[bName];
+                return info.hasKitchen && info.hours[selectedDay].toLowerCase() !== "closed";
+            })
+            .map(bName => {
+                const info = breweryData[bName];
+                let dist = Infinity;
+                if (userCoords) dist = getDistance(userCoords.lat, userCoords.lng, info.lat, info.lng);
+                return {
+                    brewery: bName,
+                    truck: "Full Kitchen On-Site",
+                    distance: dist,
+                    isOpenNow: checkIfOpen(info.hours[selectedDay]),
+                    hasKitchen: true,
+                    rawHours: info.hours[selectedDay]
+                };
+            });
+
+        // Combine both sources and remove duplicates (preferring scheduled trucks over generic "Kitchen" label)
+        const combined = [...listToRender, ...kitchenBreweries];
+        listToRender = Array.from(new Map(combined.map(item => [item.brewery, item])).values());
+        
+        // Ensure we only show items with food
+        listToRender = listToRender.filter(t => t.hasKitchen || (t.truck && t.truck !== "No Truck Scheduled" && t.truck !== "Taproom Hours"));
+    }
+
+    // Sort by distance and render
+    listToRender.sort((a, b) => a.distance - b.distance);
+
+    if (listToRender.length === 0) {
+        container.innerHTML = `<p style="text-align:center; color:#888; margin-top:40px;">No options found for this date.</p>`;
+        return;
+    }
+
+    listToRender.forEach(item => {
+        const info = breweryData[item.brewery];
+        const card = document.createElement('div');
+        card.className = 'card';
+        
+        const statusText = item.isOpenNow ? 'Open Now' : 'Scheduled';
+        const statusColor = item.isOpenNow ? '#2e7d32' : '#444';
+        
+        // Determine label: If it's the beer tab, show "Taproom Hours". If food, show the truck name or kitchen info.
+        const mainLabel = currentTab === 'beer' ? "Taproom Hours" : item.truck;
+
+       let tapListHtml = '';
+if (item.brewery.toLowerCase().includes('uncommon')) {
+    tapListHtml = `<button onclick="openTapList('/data/uncommon-pair-menu.json', 'Uncommon Pair')" class="tap-list-btn">📝 VIEW TAP LIST</button>`;
+} else if (item.brewery.toLowerCase().includes('phantom')) {
+    tapListHtml = `<button onclick="openTapList('/data/phantom-menu.json', 'Phantom Farms')" class="tap-list-btn">📝 VIEW TAP LIST</button>`;
+} else if (item.brewery.toLowerCase().includes('foolproof')) {
+    tapListHtml = `<button onclick="openTapList('/data/foolproof-menu.json', 'Foolproof Brewing')" class="tap-list-btn">📝 VIEW TAP LIST</button>`;
+// Add this new block for Moniker:
+} else if (item.brewery.toLowerCase().includes('moniker')) {
+    tapListHtml = `<button onclick="openTapList('/data/moniker-menu.json', 'Moniker Brewery')" class="tap-list-btn">📝 VIEW TAP LIST</button>`;
+} else if (info.tapListUrl){
+    tapListHtml = `<a href="${info.tapListUrl}" target="_blank" class="tap-list-btn">📝 View Tap List</a>`;
+}
+
+        card.innerHTML = `
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+                <a href="${info.url}" target="_blank" class="brewery-link">
+                    <img src="${info.logo}" alt="${item.brewery}" class="brewery-logo">
+                </a>
+                <span class="distance-tag">${item.distance !== Infinity ? item.distance.toFixed(1) + ' mi' : ''}</span>
+            </div>
+            <div style="font-size: 0.7rem; color: #888; margin-bottom: 10px;">Hours: ${item.rawHours}</div>
+            <span class="truck-name">${mainLabel}</span>
+            <div style="display: flex; align-items: center; gap: 10px;">
+                <span class="status-badge" style="background: ${statusColor};">${statusText}</span>
+                ${item.hasKitchen ? '<span class="status-badge" style="background: #0277bd;">Food On-Site</span>' : ''}
+            </div>
+            ${tapListHtml}
+        `;
+        container.appendChild(card);
+    });
+}
+
+
+
+
+  async function openTapList(jsonPath, breweryName) {
+    const modal = document.getElementById('tapListModal');
+    const content = document.getElementById('modalContent');
+    const title = document.getElementById('modalTitle');
+document.getElementById('modalTitle').innerText = `${breweryName} Tap List`;
+    modal.style.display = "block";
+    title.innerText = `${breweryName} Tap List`;
+    content.innerHTML = "Loading...";
+
+    try {
+        const response = await fetch(jsonPath);
+        const data = await response.json();
+
+if (data.isImageMenu) {
+            content.innerHTML = `<img src="${data.menuImageUrl}" style="width:100%; border-radius:8px; display:block;">`;
+        } else {
+            // Otherwise, render as a standard list
+            const beerList = data.beers || data["Beer on tap"] || [];
+            if (beerList.length === 0) {
+                content.innerHTML = "No beers currently on tap.";
+            } else {
+                content.innerHTML = beerList.map(b => `
+                    <div style="padding:10px; border-bottom:1px solid #333;">
+                        <strong>${b.name}</strong><br>
+                        <span style="color:#aaa; font-size: 0.8rem;">${b.style} | ${b.abv}</span>
+                    </div>
+                `).join('');
+            }
+        }
+    } catch(e) { 
+        content.innerHTML = "Error loading list."; 
+        console.error(e);
+    }
+}
+        
+        // Sanitize the raw text string to remove illegal line breaks inside JSON
+        const sanitizedText = rawText.replace(/\n/g, ' ').replace(/\r/g, ' ');
+        const data = JSON.parse(sanitizedText);
+        
+        // FIXED CASE SENSITIVITY: Added data["Beer on tap"] with lowercase 'on tap'
+        const beerList = data.beers || data["Beer on tap"] || data["Beer On Tap"] || [];
+
+        if (beerList.length === 0) {
+            content.innerHTML = "<p style='text-align:center;'>No beers currently on tap.</p>";
+            return;
+        }
+
+        // CLEANED UP TEMPLATE: Completely removed the <p> description element
+        content.innerHTML = beerList.map(beer => {
+    // 1. Clean up lettering inconsistency in the ABV badge (e.g., "ABV 4.2%" -> "4.2%")
+    let cleanAbv = beer.abv ? beer.abv.replace(/abv\s*/i, '').trim() : '';
+
+    // 2. Decide dynamically whether to render a description block
+    // If it's Foolproof, or if there is no description, or if it matches the style title, hide it.
+    const hasValidDescription = beer.description && 
+                                !breweryName.toLowerCase().includes('foolproof') && 
+                                beer.description.trim() !== '' &&
+                                beer.description.toLowerCase() !== (beer.style || '').toLowerCase();
+
+
+
+    const descriptionHtml = hasValidDescription 
+        ? `<p style="font-size:0.9rem; color:#eee; margin-top:5px; padding-left:2px;">${beer.description}</p>` 
+        : '';
+
+    return `
+        <div style="margin-bottom: 20px; border-bottom: 1px solid #333; padding-bottom: 12px;">
+            <div style="display:flex; justify-content:space-between; align-items:center;">
+                <strong style="color:#ffcc00; font-size:1.1rem; letter-spacing: 0.3px;">${beer.name}</strong>
+                <span style="background:#444; padding:3px 8px; border-radius:5px; font-size:0.8rem; font-weight:bold; color:#fff; min-width:42px; text-align:center;">
+                    ${cleanAbv}
+                </span>
+            </div>
+            <div style="font-size:0.85rem; color:#888; margin-top:4px; font-style:italic; padding-left:2px;">${beer.style || ''}</div>
+            ${descriptionHtml}
+        </div>
+    `;
+}).join('') + `<p style="font-size:0.7rem; color:#666; text-align:center; margin-top: 15px;">Last updated: ${data.lastUpdated}</p>`;
+        
+    } catch (err) {
+        console.error("Error rendering modal:", err);
+        content.innerHTML = "Failed to load tap list. Please try again later.";
+    }
+}
+    function closeModal() {
+        document.getElementById('tapListModal').style.display = "none";
+    }
+
+async function renderTapList(containerId, jsonFile) {
+    const response = await fetch(`./public/data/${jsonFile}`);
+    const data = await response.json();
+    const container = document.getElementById(containerId);
+
+    // 1. Check if the data indicates this is an image-based menu
+    if (data.isImageMenu) {
+        container.innerHTML = `
+            <div class="menu-image-container" style="text-align:center; padding: 20px;">
+                <img src="${data.menuImageUrl}" 
+                     style="width:100%; max-width:600px; border-radius:8px; border: 1px solid #444;" 
+                     alt="Current Draft Menu" />
+                <p style="font-size:0.8rem; color:#888; margin-top:10px;">
+                    Last updated: ${data.lastUpdated}
+                </p>
+            </div>
+        `;
+    } else {
+        // 2. Existing logic for text-based menus (like Foolproof)
+        container.innerHTML = data["Beer on tap"].map(beer => `
+            <div class="beer-item">
+                <h3>${beer.name} <span class="abv">${beer.abv}</span></h3>
+                <p>${beer.style}</p>
+            </div>
+        `).join('');
+    }
+}
+
     async function initApp() {
         generateDatePicker();
         try {
@@ -206,7 +408,20 @@
             ]);
             allTruckData = [...await mainRes.json(), ...await manualRes.json()];
         } catch (err) { console.error("Data load error:", err); }
-        renderDate(`${new Date().getMonth() + 1}/${new Date().getDate()}`);
+
+        const today = new Date();
+        const dateString = `${today.getMonth() + 1}/${today.getDate()}`;
+        renderDate(dateString);
+
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(pos => {
+                userCoords = { lat: pos.coords.latitude, lng: pos.coords.longitude };
+                renderDate(dateString);
+            });
+        }
     }
 
     initApp();
+</script>
+</body>
+</html>
