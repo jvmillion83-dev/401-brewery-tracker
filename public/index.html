@@ -249,11 +249,11 @@
 
        let tapListHtml = '';
 if (item.brewery.toLowerCase().includes('uncommon')) {
-    tapListHtml = `<button onclick="openTapList('/public/data/uncommon-pair-menu.json', 'Uncommon Pair')" class="tap-list-btn">📝 VIEW TAP LIST</button>`;
+    tapListHtml = `<button onclick="openTapList('/data/uncommon-pair-menu.json', 'Uncommon Pair')" class="tap-list-btn">📝 VIEW TAP LIST</button>`;
 } else if (item.brewery.toLowerCase().includes('phantom')) {
-    tapListHtml = `<button onclick="openTapList('/public/data/phantom-menu.json', 'Phantom Farms')" class="tap-list-btn">📝 VIEW TAP LIST</button>`;
+    tapListHtml = `<button onclick="openTapList('/data/phantom-menu.json', 'Phantom Farms')" class="tap-list-btn">📝 VIEW TAP LIST</button>`;
 } else if (item.brewery.toLowerCase().includes('foolproof')) {
-    tapListHtml = `<button onclick="openTapList('/public/data/foolproof-menu.json', 'Foolproof Brewing')" class="tap-list-btn">📝 VIEW TAP LIST</button>`;
+    tapListHtml = `<button onclick="openTapList('/data/foolproof-menu.json', 'Foolproof Brewing')" class="tap-list-btn">📝 VIEW TAP LIST</button>`;
 // Add this new block for Moniker:
 } else if (item.brewery.toLowerCase().includes('moniker')) {
     tapListHtml = `<button onclick="openTapList('/data/moniker-menu.json', 'Moniker Brewery')" class="tap-list-btn">📝 VIEW TAP LIST</button>`;
