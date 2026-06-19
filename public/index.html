@@ -279,31 +279,42 @@ if (item.brewery.toLowerCase().includes('uncommon')) {
 
 
 
-    async function openTapList(url, breweryName) {
-        const modal = document.getElementById('tapListModal');
-        const content = document.getElementById('modalContent');
-        const title = document.getElementById('modalTitle');
-        modal.style.display = "block";
-        title.innerText = `${breweryName} Tap List`;
-        content.innerHTML = "Loading...";
+   async function openTapList(url, breweryName) {
+    const modal = document.getElementById('tapListModal');
+    const content = document.getElementById('modalContent');
+    const title = document.getElementById('modalTitle');
+    modal.style.display = "block";
+    title.innerText = `${breweryName} Tap List`;
+    content.innerHTML = "Loading...";
 
-        try {
-            const response = await fetch(url);
-            const data = await response.json();
-            content.innerHTML = data.beers.map(beer => `
-                <div style="margin-bottom: 20px; border-bottom: 1px solid #333; padding-bottom: 10px;">
-                    <div style="display:flex; justify-content:space-between; align-items:center;">
-                        <strong style="color:#ffcc00; font-size:1.1rem;">${beer.name}</strong>
-                        <span style="background:#444; padding:2px 6px; border-radius:5px; font-size:0.8rem;">${beer.abv}</span>
-                    </div>
-                    <p style="font-size:0.9rem; color:#ccc; margin-top:5px;">${beer.description}</p>
-                </div>
-            `).join('') + `<p style="font-size:0.7rem; color:#666; text-align:center;">Last updated: ${data.lastUpdated}</p>`;
-        } catch (err) {
-            content.innerHTML = "Failed to load tap list. Please try again later.";
+    try {
+        const response = await fetch(url);
+        const data = await response.json();
+        
+        // Dynamic fallback: Uses 'beers' if it exists, otherwise falls back to 'Beer On Tap'
+        const beerList = data.beers || data["Beer On Tap"] || [];
+
+        if (beerList.length === 0) {
+            content.innerHTML = "<p style='text-align:center;'>No beers currently on tap.</p>";
+            return;
         }
-    }
 
+        content.innerHTML = beerList.map(beer => `
+            <div style="margin-bottom: 20px; border-bottom: 1px solid #333; padding-bottom: 10px;">
+                <div style="display:flex; justify-content:space-between; align-items:center;">
+                    <strong style="color:#ffcc00; font-size:1.1rem;">${beer.name}</strong>
+                    <span style="background:#444; padding:2px 6px; border-radius:5px; font-size:0.8rem;">${beer.abv}</span>
+                </div>
+                <div style="font-size:0.85rem; color:#888; margin-top:3px; font-style:italic;">${beer.style || ''}</div>
+                <p style="font-size:0.9rem; color:#eee; margin-top:5px;">${beer.description || 'No description available.'}</p>
+            </div>
+        `).join('') + `<p style="font-size:0.7rem; color:#666; text-align:center;">Last updated: ${data.lastUpdated}</p>`;
+        
+    } catch (err) {
+        console.error("Error rendering modal:", err);
+        content.innerHTML = "Failed to load tap list. Please try again later.";
+    }
+}
     function closeModal() {
         document.getElementById('tapListModal').style.display = "none";
     }
