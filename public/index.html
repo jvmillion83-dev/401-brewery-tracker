@@ -288,9 +288,7 @@ if (item.brewery.toLowerCase().includes('uncommon')) {
     const content = document.getElementById('modalContent');
     const title = document.getElementById('modalTitle');
     
-    // Set title once
     title.innerText = `${breweryName} Tap List`;
-    
     modal.style.display = "block";
     content.innerHTML = "Loading...";
 
@@ -298,89 +296,38 @@ if (item.brewery.toLowerCase().includes('uncommon')) {
         const response = await fetch(jsonPath);
         const data = await response.json();
 
+        // 1. Handle Image Menus (Moniker)
         if (data.isImageMenu) {
             content.innerHTML = `<img src="${data.menuImageUrl}" style="width:100%; border-radius:8px; display:block;">`;
-        } else {
-            const beerList = data.beers || data["Beer on tap"] || [];
-            if (beerList.length === 0) {
-                content.innerHTML = "No beers currently on tap.";
-            } else {
-                content.innerHTML = beerList.map(b => `
-                    <div style="padding:10px; border-bottom:1px solid #333;">
-                        <strong>${b.name}</strong><br>
-                        <span style="color:#aaa; font-size: 0.8rem;">${b.style} | ${b.abv}</span>
-                    </div>
-                `).join('');
-            }
+            return; // Exit after rendering image
         }
-    } catch(e) { 
-        content.innerHTML = "Error loading list."; 
-        console.error(e);
-    }
-}
-try {
-    const response = await fetch(jsonPath);
-    const data = await response.json();
-    
-    // ADD THIS LINE TO DEBUG:
-    console.log("Data received:", data); 
 
-    if (data.isImageMenu) {
-        content.innerHTML = `<img src="${data.menuImageUrl}" style="width:100%; border-radius:8px;">`;
-    }
-        
-        // Sanitize the raw text string to remove illegal line breaks inside JSON
-        const sanitizedText = rawText.replace(/\n/g, ' ').replace(/\r/g, ' ');
-        const data = JSON.parse(sanitizedText);
-        
-        // FIXED CASE SENSITIVITY: Added data["Beer on tap"] with lowercase 'on tap'
+        // 2. Handle Text Menus
         const beerList = data.beers || data["Beer on tap"] || data["Beer On Tap"] || [];
-
+        
         if (beerList.length === 0) {
             content.innerHTML = "<p style='text-align:center;'>No beers currently on tap.</p>";
             return;
         }
 
-        // CLEANED UP TEMPLATE: Completely removed the <p> description element
         content.innerHTML = beerList.map(beer => {
-    // 1. Clean up lettering inconsistency in the ABV badge (e.g., "ABV 4.2%" -> "4.2%")
-    let cleanAbv = beer.abv ? beer.abv.replace(/abv\s*/i, '').trim() : '';
+            let cleanAbv = beer.abv ? beer.abv.replace(/abv\s*/i, '').trim() : '';
+            return `
+                <div style="margin-bottom: 20px; border-bottom: 1px solid #333; padding-bottom: 12px;">
+                    <div style="display:flex; justify-content:space-between; align-items:center;">
+                        <strong style="color:#ffcc00; font-size:1.1rem;">${beer.name}</strong>
+                        <span style="background:#444; padding:3px 8px; border-radius:5px; font-size:0.8rem; font-weight:bold; color:#fff;">${cleanAbv}</span>
+                    </div>
+                    <div style="font-size:0.85rem; color:#888; font-style:italic;">${beer.style || ''}</div>
+                </div>
+            `;
+        }).join('') + `<p style="font-size:0.7rem; color:#666; text-align:center;">Last updated: ${data.lastUpdated || ''}</p>`;
 
-    // 2. Decide dynamically whether to render a description block
-    // If it's Foolproof, or if there is no description, or if it matches the style title, hide it.
-    const hasValidDescription = beer.description && 
-                                !breweryName.toLowerCase().includes('foolproof') && 
-                                beer.description.trim() !== '' &&
-                                beer.description.toLowerCase() !== (beer.style || '').toLowerCase();
-
-
-
-    const descriptionHtml = hasValidDescription 
-        ? `<p style="font-size:0.9rem; color:#eee; margin-top:5px; padding-left:2px;">${beer.description}</p>` 
-        : '';
-
-    return `
-        <div style="margin-bottom: 20px; border-bottom: 1px solid #333; padding-bottom: 12px;">
-            <div style="display:flex; justify-content:space-between; align-items:center;">
-                <strong style="color:#ffcc00; font-size:1.1rem; letter-spacing: 0.3px;">${beer.name}</strong>
-                <span style="background:#444; padding:3px 8px; border-radius:5px; font-size:0.8rem; font-weight:bold; color:#fff; min-width:42px; text-align:center;">
-                    ${cleanAbv}
-                </span>
-            </div>
-            <div style="font-size:0.85rem; color:#888; margin-top:4px; font-style:italic; padding-left:2px;">${beer.style || ''}</div>
-            ${descriptionHtml}
-        </div>
-    `;
-}).join('') + `<p style="font-size:0.7rem; color:#666; text-align:center; margin-top: 15px;">Last updated: ${data.lastUpdated}</p>`;
-        
     } catch (err) {
-        console.error("Error rendering modal:", err);
-        content.innerHTML = "Failed to load tap list. Please try again later.";
+        console.error("Error loading tap list:", err);
+        content.innerHTML = "Failed to load tap list. Please check the JSON path.";
     }
 }
-    function closeModal() {
-        document.getElementById('tapListModal').style.display = "none";
-    }
 
 async function renderTapList(containerId, jsonFile) {
     const response = await fetch(`./public/data/${jsonFile}`);
