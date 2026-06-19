@@ -1,0 +1,25 @@
+{
+  "Beer on tap": [
+    {
+      "name": "Peach & Apricot Pale Ale",
+      "style": "Pale Ale",
+      "abv": "",
+      "description": ""
+    },
+    {
+      "name": "Jalapeño Peach & Apricot Pale Ale ",
+     "style": "Pale Ale",
+      "abv": "",
+      "description": ""
+    },
+    {
+      "name": "Strawberry Pale Ale (On Tap 6/20)",
+      "style": "Pale Ale",
+      "abv": "%",
+      "description": " "
+    }
+    
+  
+  ],
+  "lastUpdated": "6/19/2026, 7:32:05 PM"
+}
