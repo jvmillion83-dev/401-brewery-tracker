@@ -97,12 +97,10 @@ async function scrapeFoolproof() {
             style = parts[1].trim();
         }
 
-        if (name.endsWith('-')) name = name.slice(0, -1).trim();
-        const description = `A premium selection fresh from Foolproof's Pawtucket brewery floor.`;
-
-        if (name && name.length < 50 && !scrapedBeers.some(b => b.name.toLowerCase() === name.toLowerCase())) {
-            scrapedBeers.push({ name, style, abv, description });
-        }
+       
+      if (name && name.length < 50 && !scrapedBeers.some(b => b.name.toLowerCase() === name.toLowerCase())) {
+    scrapedBeers.push({ name, style, abv });
+}
     }
 
     const output = {
