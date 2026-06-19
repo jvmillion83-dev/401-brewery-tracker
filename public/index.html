@@ -253,8 +253,10 @@ if (item.brewery.toLowerCase().includes('uncommon')) {
 } else if (item.brewery.toLowerCase().includes('phantom')) {
     tapListHtml = `<button onclick="openTapList('/data/phantom-menu.json', 'Phantom Farms')" class="tap-list-btn">📝 VIEW TAP LIST</button>`;
 } else if (item.brewery.toLowerCase().includes('foolproof')) {
-    // Maps the new foolproof script output straight to your dynamic front-end layout
     tapListHtml = `<button onclick="openTapList('/data/foolproof-menu.json', 'Foolproof Brewing')" class="tap-list-btn">📝 VIEW TAP LIST</button>`;
+// Add this new block for Moniker:
+} else if (item.brewery.toLowerCase().includes('moniker')) {
+    tapListHtml = `<button onclick="openTapList('/data/moniker-menu.json', 'Moniker Brewery')" class="tap-list-btn">📝 VIEW TAP LIST</button>`;
 } else if (info.tapListUrl){
     tapListHtml = `<a href="${info.tapListUrl}" target="_blank" class="tap-list-btn">📝 View Tap List</a>`;
 }
