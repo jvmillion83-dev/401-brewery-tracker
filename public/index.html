@@ -287,19 +287,20 @@ if (item.brewery.toLowerCase().includes('uncommon')) {
     const modal = document.getElementById('tapListModal');
     const content = document.getElementById('modalContent');
     const title = document.getElementById('modalTitle');
-document.getElementById('modalTitle').innerText = `${breweryName} Tap List`;
-    modal.style.display = "block";
+    
+    // Set title once
     title.innerText = `${breweryName} Tap List`;
+    
+    modal.style.display = "block";
     content.innerHTML = "Loading...";
 
     try {
         const response = await fetch(jsonPath);
         const data = await response.json();
 
-if (data.isImageMenu) {
+        if (data.isImageMenu) {
             content.innerHTML = `<img src="${data.menuImageUrl}" style="width:100%; border-radius:8px; display:block;">`;
         } else {
-            // Otherwise, render as a standard list
             const beerList = data.beers || data["Beer on tap"] || [];
             if (beerList.length === 0) {
                 content.innerHTML = "No beers currently on tap.";
