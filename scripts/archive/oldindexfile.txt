@@ -1,0 +1,404 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Brew 401</title>
+    <link rel="manifest" href="/manifest.json">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <style>
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background-color: #121212; color: white; margin: 0; padding: 15px; display: flex; flex-direction: column; align-items: center; }
+        h1 { color: #ffcc00; font-size: 1.8rem; margin: 20px 0 5px 0; text-align: center; font-family: Georgia, serif; text-transform: uppercase; letter-spacing: 2px; }
+        #date-picker { display: flex; overflow-x: auto; width: 100%; max-width: 400px; padding: 15px 5px; gap: 12px; scroll-snap-type: x mandatory; -webkit-overflow-scrolling: touch; scrollbar-width: none; }
+        #date-picker::-webkit-scrollbar { display: none; }
+        .date-pill { min-width: 65px; padding: 12px 8px; background: #1e1e1e; border: 1px solid #333; border-radius: 12px; text-align: center; cursor: pointer; flex-shrink: 0; transition: 0.2s; scroll-snap-align: center; }
+        .date-pill.active { background: #ffcc00; color: #121212; border-color: #ffcc00; font-weight: bold; transform: scale(1.1); }
+        .date-pill span { display: block; font-size: 0.7rem; text-transform: uppercase; opacity: 0.8; }
+        .date-pill strong { font-size: 1.2rem; display: block; margin-top: 2px; }
+        #truck-container { width: 100%; max-width: 400px; }
+        .card { background: #1e1e1e; margin: 12px 0; padding: 18px; border-radius: 15px; border: 1px solid #333; box-shadow: 0 4px 12px rgba(0,0,0,0.5); }
+        .truck-name { font-size: 1.2rem; font-weight: bold; color: #ffcc00; margin-bottom: 8px; display: block; }
+        .status-badge { color: white; font-size: 0.7rem; padding: 4px 8px; border-radius: 5px; text-transform: uppercase; margin-top: 10px; display: inline-block; }
+        .distance-tag { font-size: 0.65rem; color: #aaa; margin-left: 8px; }
+        .brewery-link { text-decoration: none; display: inline-block; transition: 0.2s; }
+        .brewery-logo { width: 100px; height: 50px; object-fit: contain; object-position: left; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3)); }
+        .tab-container { display: flex; width: 100%; max-width: 400px; background: #1e1e1e; border-radius: 12px; margin-bottom: 10px; padding: 4px; }
+        .tab { flex: 1; text-align: center; padding: 10px; cursor: pointer; border-radius: 10px; font-size: 0.9rem; font-weight: bold; transition: 0.3s; color: #888; }
+        .tab.active { background: #ffcc00; color: #121212; }
+        .tap-list-btn { display: block; margin-top: 12px; padding: 10px; background: #ffcc00; color: #121212; text-align: center; border-radius: 8px; text-decoration: none; font-size: 0.8rem; font-weight: bold; text-transform: uppercase; border: none; width: 100%; cursor: pointer; }
+    </style>
+</head>
+<body>
+
+    <h1>🍺 Brew 401</h1>
+    <p style="margin-top: 0; color:#aaa; text-align: center; font-size: 0.9rem; letter-spacing: 1px; margin-bottom: 20px;">
+        Ultimate RI Brewery Food Truck Tracker
+    </p>
+
+    <div class="tab-container">
+        <div class="tab active" id="beer-tab" onclick="switchTab('beer')">🍺 Beer</div>
+        <div class="tab" id="food-tab" onclick="switchTab('food')">🍔 Food</div>
+    </div>
+    
+    <div id="date-picker"></div>
+    <div id="truck-container"></div>
+
+    <!-- Tap List Modal -->
+    <div id="tapListModal" style="display:none; position:fixed; z-index:100; left:0; top:0; width:100%; height:100%; background-color: rgba(0,0,0,0.9); overflow-y: auto;">
+        <div style="background:#222; margin: 10% auto; padding: 20px; width: 90%; max-width: 500px; border-radius: 15px; border: 1px solid #ffcc00;">
+            <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #444; padding-bottom: 10px;">
+                <h2 id="modalTitle" style="color: #ffcc00; margin:0;">Tap List</h2>
+                <span onclick="closeModal()" style="color: #fff; font-size: 28px; font-weight: bold; cursor: pointer;">&times;</span>
+            </div>
+            <div id="modalContent" style="color: #eee; margin-top: 20px;"></div>
+        </div>
+    </div>
+
+<script>
+    let allTruckData = [];
+    let userCoords = null;
+    let currentTab = 'beer';
+
+    const breweryData = {
+        "BRAVO BREWING COMPANY": { lat: 41.9565, lng: -71.7017, url: "https://bravobrewingcompany.com/", tapListUrl: "https://bravobrewingcompany.com/#:~:text=BRAVO%20ON%20TAP", logo: "logos/bravo.png", hours: ["12-6pm", "5-9pm", "Closed", "5-9pm", "5-10pm", "11am-10pm", "12-10pm"], hasKitchen: true },
+        "NARRAGANSETT BREWERY": { lat: 41.8190, lng: -71.4050, url: "https://www.narragansettbeer.com/pages/providence-brewery", tapListUrl: "https://www.narragansettbeer.com/pages/providence-brewery#:~:text=WHAT'S%20ON%20TAP%3F", logo: "logos/gansett.png", hours: ["12-9pm", "4-10pm", "4-10pm", "4-10pm", "12-10pm", "12pm-10pm", "12-9pm"], hasKitchen: true },
+        "PHANTOM FARMS": { lat: 41.9744, lng: -71.4556, url: "https://phantomfarmsbrewing.com/", tapListUrl: "https://phantomfarmsbrewing.com/pages/beers-on-tap", logo: "logos/phantom.png", hours: ["12-8pm", "5-9pm", "Closed", "4-9pm", "4-9pm", "12-10pm", "12-10pm"] },
+        "RAGGED ISLAND": { lat: 41.6163, lng: -71.2569, url: "https://www.raggedislandbrewing.com/", tapListUrl: "https://raggedislandbrewing.com/our-beer#:~:text=Current%20Beers%20on%20Tap", logo: "logos/raggedisland.png", hours: ["12-9pm", "12-9pm", "12-9pm", "12-9pm", "12-9pm", "12-9pm", "12-9pm"] },
+        "UNCOMMON PAIR BREWING": { lat: 41.8706, lng: -71.5219, url: "https://www.uncommonpairbrewing.com/", logo: "logos/uncommon.png", hours: ["12-6pm", "Closed", "Closed", "Closed", "4-10pm", "12-9pm", "12-9pm"] },
+        "MONIKER BREWERY": { lat: 41.8185, lng: -71.4238, url: "https://www.monikerbrewery.com/", tapListUrl: "https://www.monikerbrewery.com/providencebeer", logo: "logos/moniker.png", hours: ["12-6pm", "4-9pm", "4-9pm", "4-9pm", "4-9pm", "2-10pm", "12-10pm"] },
+        "BUTTONWOODS BREWERY": { lat: 41.8273, lng: -71.4302, url: "https://www.buttonwoodsbrewery.com/", tapListUrl: "https://www.buttonwoodsbrewery.com/#whatwebrew#:~:text=our%20beer", logo: "logos/buttonwoods.png", hours: ["12-8pm", "4-8pm", "Closed", "4-9pm", "4-9pm", "12-10pm", "12-10pm"], hasKitchen: true },
+        "CROOK POINT BREWING COMPANY": { lat: 41.8273, lng: -71.3754, url: "https://crookpointbrewing.com/", tapListUrl: "https://crookpointbrewing.com/beer-food/", logo: "logos/crookpoint.png", hours: ["12-6pm", "Closed", "Closed", "4-9pm", "4-9pm", "4-10pm", "12-10pm"] },
+        "FOOLPROOF BREWERY": { lat: 41.8704, lng: -71.4082, url: "https://www.foolproofbrewing.com/pawtucket/pawtucket-home/", tapListUrl: "https://www.foolproofbrewing.com/pawtucket/on-tap#:~:text=Pawtucket%20Taproom", logo: "logos/foolproof.png", hours: ["2-8pm", "Closed", "2-9pm", "12-9pm", "12-9pm", "12-9pm", "12-9pm"] },
+        "LOPS BREWERY": { lat: 42.0073, lng: -71.5130, url: "https://www.lopsbrewing.com/", tapListUrl: "https://www.lopsbrewing.com/tasting-room-menu", logo: "logos/lops.png", hours: ["12-6pm", "4-8pm", "4-8pm", "4-8pm", "4-8pm", "12-9pm", "12-9pm"] },
+        "LONG LIVE BEERWORKS": { lat: 41.8094, lng: -71.4260, url: "https://www.longlivebeerworks.com/", tapListUrl: "https://untappd.com/v/long-live-beerworks/4174253", logo: "logos/longlive.png", hours: ["12-6pm", "3-10pm", "Closed", "3-10pm", "3-10pm", "1-10pm", "12-10pm"] },
+        "PIVOTAL BREWING COMPANY": { lat: 41.6729, lng: -71.2709, url: "https://pivotalbrewing.com/", tapListUrl: "https://pivotalbrewing.com/bristol-pivotal-brewing-company-beer-menu", logo: "logos/pivotal.png", hours: ["12-6pm", "Closed", "Closed", "4-9pm", "4-9pm", "2-10pm", "12-10pm"] },
+        "CROOKED CURRENT BREWERY": { lat: 41.8728, lng: -71.4057, url: "http://www.crookedcurrentbreweryri.com/", logo: "logos/crookedcurrent.png", hours: ["Closed", "Closed", "Closed", "Closed", "5-8pm", "5-9pm", "1-6pm"] },
+        "REJECTS BEER CO.": { lat: 41.4938, lng: -71.2809, url: "https://www.rejectsbeerco.com/", tapListUrl: "https://www.rejectsbeerco.com/beers-on-tap", logo: "logos/rejects.png", hours: ["12-8pm", "Closed", "4-8pm", "4-8pm", "4-8pm", "4-9pm", "12-9pm"] },
+        "TAPROOT BREWING COMPANY": { lat: 41.5309, lng: -71.2667, url: "https://www.taprootbeer.com/", tapListUrl: "https://taprootbeer.com/whats-on-tap/", logo: "logos/taproot.png", hours: ["10-7pm", "11-7pm", "11-9pm", "11-9pm", "11-9pm", "11-9pm", "11-9pm"] },
+        "TRAGMAR ALE WORKS": { lat: 41.6941, lng: -71.2692, url: "https://www.tragmar.com/", tapListUrl: "https://www.tragmar.com/draftlist", logo: "logos/tragmar.png", hours: ["12-5pm", "Closed", "Closed", "3-8pm", "3-8pm", "12-9pm", "12-5pm"] },
+        "VIGILANT BREWING": { lat: 41.7028, lng: -71.2682, url: "https://vigilantbrewing.com/", tapListUrl: "https://untappd.com/v/vigilant-brewing/11374511", logo: "logos/vigilant.png", hours: ["1-6pm", "4-8pm", "Closed", "4-8pm", "3-8pm", "1-10pm", "1-10pm"] },
+        "TILTED BARN BREWERY": { lat: 41.5707, lng: -71.5192, url: "https://www.tiltedbarnbrewery.com/", tapListUrl: "https://www.tiltedbarnbrewery.com/on-tap-to-go", logo: "logos/tiltedbarn.png", hours: ["12-5pm", "Closed", "Closed", "4-8pm", "12-8pm", "12-8pm", "12-8pm"] },
+        "THE GUILD PAWTUCKET": { lat: 41.8705, lng: -71.3917, url: "https://www.theguildpawtucket.com/", tapListUrl: "https://www.theguildpawtucket.com/#food", logo: "logos/theguildpawt.png", hours: ["12-6pm", "Closed", "4-8pm", "4-8pm", "4-8pm", "12-10pm", "12-10pm"], hasKitchen: true },
+        "UNION STATION BREWERY": { lat: 41.8268, lng: -71.4144, url: "https://unionstationpvd.com/", tapListUrl: "https://unionstationpvd.com/providence-union-station-brewery-our-beer", logo: "logos/unionstation.png", hours: ["11:30am-9pm", "11:30am-10pm", "11:30am-10pm", "11:30am-10pm", "11:30am-10pm", "11:30am-11pm", "11:30am-11pm"], hasKitchen: true },
+        "APPONAUG BREWING": { lat: 41.7028, lng: -71.4475, url: "https://apponaugbrewing.com/", tapListUrl: "https://apponaugbrewing.com/warwick-apponaug-brewing-menus", logo: "logos/apponaug.png", hours: ["12-8pm", "Closed", "4-10pm", "4-10pm", "4-10pm", "4-11pm", "12-11pm"], hasKitchen: true }
+    };
+
+    const normalize = (d) => {
+        if (!d) return "";
+        const match = d.trim().match(/^(\d{1,2})\/(\d{1,2})/);
+        return match ? `${Number(match[1])}/${Number(match[2])}` : "";
+    };
+
+    function getDistance(lat1, lon1, lat2, lon2) {
+        const R = 3958.8; // Radius of Earth in miles
+        const dLat = (lat2 - lat1) * Math.PI / 180;
+        const dLon = (lon2 - lon1) * Math.PI / 180;
+        const a = Math.sin(dLat / 2) * Math.sin(dLat / 2) + Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) * Math.sin(dLon / 2) * Math.sin(dLon / 2);
+        return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+    }
+
+    function checkIfOpen(hoursString) {
+        if (!hoursString || hoursString.toLowerCase() === "closed") return false;
+        const now = new Date();
+        const currentTimeInMinutes = (now.getHours() * 60) + now.getMinutes();
+        const parts = hoursString.toLowerCase().replace(/\s+/g, '').split('-');
+        if (parts.length !== 2) return false;
+
+        function parseToMinutes(t) {
+            const match = t.match(/(\d+)(?::(\d+))?\s*(am|pm)?/);
+            if (!match) return 0;
+            let hours = parseInt(match[1]);
+            let minutes = match[2] ? parseInt(match[2]) : 0;
+            let ampm = match[3] || (hours >= 11 && hours < 12 ? 'am' : 'pm');
+            if (ampm === 'pm' && hours < 12) hours += 12;
+            if (ampm === 'am' && hours === 12) hours = 0;
+            return (hours * 60) + minutes;
+        }
+        return currentTimeInMinutes >= parseToMinutes(parts[0]) && currentTimeInMinutes < parseToMinutes(parts[1]);
+    }
+
+    function switchTab(type) {
+        currentTab = type;
+        document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+        document.getElementById(`${type}-tab`).classList.add('active');
+        const activePill = document.querySelector('.date-pill.active');
+        if (activePill) renderDate(activePill.dataset.date);
+    }
+
+    function generateDatePicker() {
+        const picker = document.getElementById('date-picker');
+        const today = new Date();
+        for (let i = 0; i < 7; i++) {
+            const d = new Date();
+            d.setDate(today.getDate() + i);
+            const dayName = d.toLocaleDateString('en-US', { weekday: 'short' });
+            const dateNum = d.getDate();
+            const normDate = `${d.getMonth() + 1}/${dateNum}`;
+            
+            const pill = document.createElement('div');
+            pill.className = `date-pill ${i === 0 ? 'active' : ''}`;
+            pill.dataset.date = normDate;
+            pill.onclick = () => {
+                document.querySelectorAll('.date-pill').forEach(p => p.classList.remove('active'));
+                pill.classList.add('active');
+                renderDate(normDate);
+            };
+            pill.innerHTML = `<span>${dayName}</span><strong>${dateNum}</strong>`;
+            picker.appendChild(pill);
+        }
+    }
+
+    function renderDate(selectedNormDate) {
+    const container = document.getElementById('truck-container');
+    container.innerHTML = '';
+    const [m, d] = selectedNormDate.split('/');
+    const selectedDay = new Date(new Date().getFullYear(), parseInt(m) - 1, parseInt(d)).getDay();
+    const isActuallyToday = selectedNormDate === `${new Date().getMonth() + 1}/${new Date().getDate()}`;
+
+    // 1. Initial filter for trucks scheduled on this specific date
+    let listToRender = allTruckData
+        .filter(t => normalize(t.start) === selectedNormDate)
+        .map(t => {
+            const info = breweryData[t.brewery];
+            let dist = Infinity;
+            if (userCoords && info) dist = getDistance(userCoords.lat, userCoords.lng, info.lat, info.lng);
+            return { 
+                ...t, 
+                distance: dist, 
+                isOpenNow: info ? checkIfOpen(info.hours[selectedDay]) : false,
+                hasKitchen: info ? info.hasKitchen : false,
+                rawHours: info ? info.hours[selectedDay] : "Closed"
+            };
+        });
+
+    if (currentTab === 'beer') {
+        // 2. BEER TAB LOGIC: Show all breweries scheduled OR not scheduled, but NOT if they are closed today
+        const scheduledBreweryNames = new Set(listToRender.map(t => t.brewery));
+        
+        Object.keys(breweryData).forEach(bName => {
+            const info = breweryData[bName];
+            const todayHours = info.hours[selectedDay];
+
+            // Only add if brewery isn't already in list AND isn't "Closed"
+            if (!scheduledBreweryNames.has(bName) && todayHours.toLowerCase() !== "closed") {
+                let dist = Infinity;
+                if (userCoords) dist = getDistance(userCoords.lat, userCoords.lng, info.lat, info.lng);
+                listToRender.push({
+                    brewery: bName,
+                    truck: "Taproom Hours",
+                    distance: dist,
+                    isOpenNow: checkIfOpen(todayHours),
+                    hasKitchen: info.hasKitchen,
+                    rawHours: todayHours
+                });
+            }
+        });
+
+        // Final Beer Tab cleanup: Remove anything that ended up in the list but is closed
+        listToRender = listToRender.filter(item => item.rawHours.toLowerCase() !== "closed");
+
+    } else {
+        // 3. FOOD TAB LOGIC: Show scheduled trucks AND breweries with kitchens
+        const kitchenBreweries = Object.keys(breweryData)
+            .filter(bName => {
+                const info = breweryData[bName];
+                return info.hasKitchen && info.hours[selectedDay].toLowerCase() !== "closed";
+            })
+            .map(bName => {
+                const info = breweryData[bName];
+                let dist = Infinity;
+                if (userCoords) dist = getDistance(userCoords.lat, userCoords.lng, info.lat, info.lng);
+                return {
+                    brewery: bName,
+                    truck: "Full Kitchen On-Site",
+                    distance: dist,
+                    isOpenNow: checkIfOpen(info.hours[selectedDay]),
+                    hasKitchen: true,
+                    rawHours: info.hours[selectedDay]
+                };
+            });
+
+        // Combine both sources and remove duplicates (preferring scheduled trucks over generic "Kitchen" label)
+        const combined = [...listToRender, ...kitchenBreweries];
+        listToRender = Array.from(new Map(combined.map(item => [item.brewery, item])).values());
+        
+        // Ensure we only show items with food
+        listToRender = listToRender.filter(t => t.hasKitchen || (t.truck && t.truck !== "No Truck Scheduled" && t.truck !== "Taproom Hours"));
+    }
+
+    // Sort by distance and render
+    listToRender.sort((a, b) => a.distance - b.distance);
+
+    if (listToRender.length === 0) {
+        container.innerHTML = `<p style="text-align:center; color:#888; margin-top:40px;">No options found for this date.</p>`;
+        return;
+    }
+
+    listToRender.forEach(item => {
+        const info = breweryData[item.brewery];
+        const card = document.createElement('div');
+        card.className = 'card';
+        
+        const statusText = item.isOpenNow ? 'Open Now' : 'Scheduled';
+        const statusColor = item.isOpenNow ? '#2e7d32' : '#444';
+        
+        // Determine label: If it's the beer tab, show "Taproom Hours". If food, show the truck name or kitchen info.
+        const mainLabel = currentTab === 'beer' ? "Taproom Hours" : item.truck;
+
+       let tapListHtml = '';
+if (item.brewery.toLowerCase().includes('uncommon')) {
+    tapListHtml = `<button onclick="openTapList('/data/uncommon-pair-menu.json', 'Uncommon Pair')" class="tap-list-btn">📝 VIEW TAP LIST</button>`;
+} else if (item.brewery.toLowerCase().includes('phantom')) {
+    tapListHtml = `<button onclick="openTapList('/data/phantom-menu.json', 'Phantom Farms')" class="tap-list-btn">📝 VIEW TAP LIST</button>`;
+} else if (item.brewery.toLowerCase().includes('foolproof')) {
+    tapListHtml = `<button onclick="openTapList('/data/foolproof-menu.json', 'Foolproof Brewing')" class="tap-list-btn">📝 VIEW TAP LIST</button>`;
+// Add this new block for Moniker:
+} else if (item.brewery.toLowerCase().includes('moniker')) {
+    tapListHtml = `<button onclick="openTapList('/data/moniker-menu.json', 'Moniker Brewery')" class="tap-list-btn">📝 VIEW TAP LIST</button>`;
+} else if (info.tapListUrl){
+    tapListHtml = `<a href="${info.tapListUrl}" target="_blank" class="tap-list-btn">📝 View Tap List</a>`;
+}
+
+        card.innerHTML = `
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+                <a href="${info.url}" target="_blank" class="brewery-link">
+                    <img src="${info.logo}" alt="${item.brewery}" class="brewery-logo">
+                </a>
+                <span class="distance-tag">${item.distance !== Infinity ? item.distance.toFixed(1) + ' mi' : ''}</span>
+            </div>
+            <div style="font-size: 0.7rem; color: #888; margin-bottom: 10px;">Hours: ${item.rawHours}</div>
+            <span class="truck-name">${mainLabel}</span>
+            <div style="display: flex; align-items: center; gap: 10px;">
+                <span class="status-badge" style="background: ${statusColor};">${statusText}</span>
+                ${item.hasKitchen ? '<span class="status-badge" style="background: #0277bd;">Food On-Site</span>' : ''}
+            </div>
+            ${tapListHtml}
+        `;
+        container.appendChild(card);
+    });
+}
+
+
+
+
+  async function openTapList(url, breweryName) {
+    const modal = document.getElementById('tapListModal');
+    const content = document.getElementById('modalContent');
+    const title = document.getElementById('modalTitle');
+    modal.style.display = "block";
+    title.innerText = `${breweryName} Tap List`;
+    content.innerHTML = "Loading...";
+
+    try {
+        const response = await fetch(url);
+        const rawText = await response.text();
+        
+        // Sanitize the raw text string to remove illegal line breaks inside JSON
+        const sanitizedText = rawText.replace(/\n/g, ' ').replace(/\r/g, ' ');
+        const data = JSON.parse(sanitizedText);
+        
+        // FIXED CASE SENSITIVITY: Added data["Beer on tap"] with lowercase 'on tap'
+        const beerList = data.beers || data["Beer on tap"] || data["Beer On Tap"] || [];
+
+        if (beerList.length === 0) {
+            content.innerHTML = "<p style='text-align:center;'>No beers currently on tap.</p>";
+            return;
+        }
+
+        // CLEANED UP TEMPLATE: Completely removed the <p> description element
+        content.innerHTML = beerList.map(beer => {
+    // 1. Clean up lettering inconsistency in the ABV badge (e.g., "ABV 4.2%" -> "4.2%")
+    let cleanAbv = beer.abv ? beer.abv.replace(/abv\s*/i, '').trim() : '';
+
+    // 2. Decide dynamically whether to render a description block
+    // If it's Foolproof, or if there is no description, or if it matches the style title, hide it.
+    const hasValidDescription = beer.description && 
+                                !breweryName.toLowerCase().includes('foolproof') && 
+                                beer.description.trim() !== '' &&
+                                beer.description.toLowerCase() !== (beer.style || '').toLowerCase();
+
+
+
+    const descriptionHtml = hasValidDescription 
+        ? `<p style="font-size:0.9rem; color:#eee; margin-top:5px; padding-left:2px;">${beer.description}</p>` 
+        : '';
+
+    return `
+        <div style="margin-bottom: 20px; border-bottom: 1px solid #333; padding-bottom: 12px;">
+            <div style="display:flex; justify-content:space-between; align-items:center;">
+                <strong style="color:#ffcc00; font-size:1.1rem; letter-spacing: 0.3px;">${beer.name}</strong>
+                <span style="background:#444; padding:3px 8px; border-radius:5px; font-size:0.8rem; font-weight:bold; color:#fff; min-width:42px; text-align:center;">
+                    ${cleanAbv}
+                </span>
+            </div>
+            <div style="font-size:0.85rem; color:#888; margin-top:4px; font-style:italic; padding-left:2px;">${beer.style || ''}</div>
+            ${descriptionHtml}
+        </div>
+    `;
+}).join('') + `<p style="font-size:0.7rem; color:#666; text-align:center; margin-top: 15px;">Last updated: ${data.lastUpdated}</p>`;
+        
+    } catch (err) {
+        console.error("Error rendering modal:", err);
+        content.innerHTML = "Failed to load tap list. Please try again later.";
+    }
+}
+    function closeModal() {
+        document.getElementById('tapListModal').style.display = "none";
+    }
+
+async function renderTapList(containerId, jsonFile) {
+    const response = await fetch(`./public/data/${jsonFile}`);
+    const data = await response.json();
+    const container = document.getElementById(containerId);
+
+    // 1. Check if the data indicates this is an image-based menu
+    if (data.isImageMenu) {
+        container.innerHTML = `
+            <div class="menu-image-container" style="text-align:center; padding: 20px;">
+                <img src="${data.menuImageUrl}" 
+                     style="width:100%; max-width:600px; border-radius:8px; border: 1px solid #444;" 
+                     alt="Current Draft Menu" />
+                <p style="font-size:0.8rem; color:#888; margin-top:10px;">
+                    Last updated: ${data.lastUpdated}
+                </p>
+            </div>
+        `;
+    } else {
+        // 2. Existing logic for text-based menus (like Foolproof)
+        container.innerHTML = data["Beer on tap"].map(beer => `
+            <div class="beer-item">
+                <h3>${beer.name} <span class="abv">${beer.abv}</span></h3>
+                <p>${beer.style}</p>
+            </div>
+        `).join('');
+    }
+}
+
+    async function initApp() {
+        generateDatePicker();
+        try {
+            const [mainRes, manualRes] = await Promise.all([
+                fetch('/api/trucks').catch(() => ({ json: () => [] })),
+                fetch('/manual-trucks.json').catch(() => ({ json: () => [] })) 
+            ]);
+            allTruckData = [...await mainRes.json(), ...await manualRes.json()];
+        } catch (err) { console.error("Data load error:", err); }
+
+        const today = new Date();
+        const dateString = `${today.getMonth() + 1}/${today.getDate()}`;
+        renderDate(dateString);
+
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(pos => {
+                userCoords = { lat: pos.coords.latitude, lng: pos.coords.longitude };
+                renderDate(dateString);
+            });
+        }
+    }
+
+    initApp();
+</script>
+</body>
+</html>

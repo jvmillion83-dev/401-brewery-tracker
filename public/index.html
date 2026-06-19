@@ -318,6 +318,16 @@ if (item.brewery.toLowerCase().includes('uncommon')) {
         console.error(e);
     }
 }
+try {
+    const response = await fetch(jsonPath);
+    const data = await response.json();
+    
+    // ADD THIS LINE TO DEBUG:
+    console.log("Data received:", data); 
+
+    if (data.isImageMenu) {
+        content.innerHTML = `<img src="${data.menuImageUrl}" style="width:100%; border-radius:8px;">`;
+    }
         
         // Sanitize the raw text string to remove illegal line breaks inside JSON
         const sanitizedText = rawText.replace(/\n/g, ' ').replace(/\r/g, ' ');
