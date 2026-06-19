@@ -283,54 +283,48 @@ if (item.brewery.toLowerCase().includes('uncommon')) {
 
 
 
-  async function openTapList(jsonPath, breweryName) {
+ async function openTapList(jsonPath, breweryName) {
     const modal = document.getElementById('tapListModal');
     const content = document.getElementById('modalContent');
     const title = document.getElementById('modalTitle');
     
+    // Set UI state
     title.innerText = `${breweryName} Tap List`;
     modal.style.display = "block";
     content.innerHTML = "Loading...";
 
     try {
         const response = await fetch(jsonPath);
+        if (!response.ok) throw new Error("HTTP error " + response.status);
+        
         const data = await response.json();
 
-        // 1. Handle Image Menus (Moniker)
+        // 1. Image Menu Logic
         if (data.isImageMenu) {
             content.innerHTML = `<img src="${data.menuImageUrl}" style="width:100%; border-radius:8px; display:block;">`;
-            return; // Exit after rendering image
-        }
-
-        // 2. Handle Text Menus
-        const beerList = data.beers || data["Beer on tap"] || data["Beer On Tap"] || [];
-        
-        if (beerList.length === 0) {
-            content.innerHTML = "<p style='text-align:center;'>No beers currently on tap.</p>";
-            return;
-        }
-
-        content.innerHTML = beerList.map(beer => {
-            let cleanAbv = beer.abv ? beer.abv.replace(/abv\s*/i, '').trim() : '';
-            return `
-                <div style="margin-bottom: 20px; border-bottom: 1px solid #333; padding-bottom: 12px;">
-                    <div style="display:flex; justify-content:space-between; align-items:center;">
-                        <strong style="color:#ffcc00; font-size:1.1rem;">${beer.name}</strong>
-                        <span style="background:#444; padding:3px 8px; border-radius:5px; font-size:0.8rem; font-weight:bold; color:#fff;">${cleanAbv}</span>
+        } 
+        // 2. Text Menu Logic
+        else {
+            const beerList = data.beers || data["Beer on tap"] || data["Beer On Tap"] || [];
+            if (beerList.length === 0) {
+                content.innerHTML = "<p style='text-align:center;'>No beers currently on tap.</p>";
+            } else {
+                content.innerHTML = beerList.map(b => `
+                    <div style="padding:10px; border-bottom:1px solid #333;">
+                        <strong>${b.name}</strong><br>
+                        <span style="color:#aaa; font-size: 0.8rem;">${b.style} | ${b.abv}</span>
                     </div>
-                    <div style="font-size:0.85rem; color:#888; font-style:italic;">${beer.style || ''}</div>
-                </div>
-            `;
-        }).join('') + `<p style="font-size:0.7rem; color:#666; text-align:center;">Last updated: ${data.lastUpdated || ''}</p>`;
-
-    } catch (err) {
-        console.error("Error loading tap list:", err);
-        content.innerHTML = "Failed to load tap list. Please check the JSON path.";
+                `).join('');
+            }
+        }
+    } catch (e) { 
+        console.error("Fetch/Parse Error:", e);
+        content.innerHTML = "Failed to load tap list. Please check the JSON path or file format.";
     }
 }
+
 function closeModal() {
-    const modal = document.getElementById('tapListModal');
-    modal.style.display = "none";
+    document.getElementById('tapListModal').style.display = "none";
 }
 
 async function renderTapList(containerId, jsonFile) {
