@@ -306,15 +306,34 @@ if (item.brewery.toLowerCase().includes('uncommon')) {
         }
 
         // CLEANED UP TEMPLATE: Completely removed the <p> description element
-        content.innerHTML = beerList.map(beer => `
-            <div style="margin-bottom: 20px; border-bottom: 1px solid #333; padding-bottom: 10px;">
-                <div style="display:flex; justify-content:space-between; align-items:center;">
-                    <strong style="color:#ffcc00; font-size:1.1rem;">${beer.name}</strong>
-                    <span style="background:#444; padding:2px 6px; border-radius:5px; font-size:0.8rem;">${beer.abv}</span>
-                </div>
-                <div style="font-size:0.85rem; color:#888; margin-top:3px; font-style:italic;">${beer.style || ''}</div>
+        content.innerHTML = beerList.map(beer => {
+    // 1. Clean up lettering inconsistency in the ABV badge (e.g., "ABV 4.2%" -> "4.2%")
+    let cleanAbv = beer.abv ? beer.abv.replace(/abv\s*/i, '').trim() : '';
+
+    // 2. Decide dynamically whether to render a description block
+    // If it's Foolproof, or if there is no description, or if it matches the style title, hide it.
+    const hasValidDescription = beer.description && 
+                                !breweryName.toLowerCase().includes('foolproof') && 
+                                beer.description.trim() !== '' &&
+                                beer.description.toLowerCase() !== (beer.style || '').toLowerCase();
+
+    const descriptionHtml = hasValidDescription 
+        ? `<p style="font-size:0.9rem; color:#eee; margin-top:5px; padding-left:2px;">${beer.description}</p>` 
+        : '';
+
+    return `
+        <div style="margin-bottom: 20px; border-bottom: 1px solid #333; padding-bottom: 12px;">
+            <div style="display:flex; justify-content:space-between; align-items:center;">
+                <strong style="color:#ffcc00; font-size:1.1rem; letter-spacing: 0.3px;">${beer.name}</strong>
+                <span style="background:#444; padding:3px 8px; border-radius:5px; font-size:0.8rem; font-weight:bold; color:#fff; min-width:42px; text-align:center;">
+                    ${cleanAbv}
+                </span>
             </div>
-        `).join('') + `<p style="font-size:0.7rem; color:#666; text-align:center;">Last updated: ${data.lastUpdated}</p>`;
+            <div style="font-size:0.85rem; color:#888; margin-top:4px; font-style:italic; padding-left:2px;">${beer.style || ''}</div>
+            ${descriptionHtml}
+        </div>
+    `;
+}).join('') + `<p style="font-size:0.7rem; color:#666; text-align:center; margin-top: 15px;">Last updated: ${data.lastUpdated}</p>`;
         
     } catch (err) {
         console.error("Error rendering modal:", err);
