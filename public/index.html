@@ -317,6 +317,15 @@ if (item.brewery.toLowerCase().includes('uncommon')) {
                                 beer.description.trim() !== '' &&
                                 beer.description.toLowerCase() !== (beer.style || '').toLowerCase();
 
+if (data.isImageMenu) {
+    content.innerHTML = `
+        <div style="text-align:center; padding: 10px;">
+            <img src="${data.menuImageUrl}" style="width:100%; max-width:600px; border-radius:8px; border: 1px solid #333;" alt="Moniker Menu" />
+            <p style="font-size:0.7rem; color:#666; margin-top:15px;">Last updated: ${data.lastUpdated}</p>
+        </div>
+    `;
+}
+
     const descriptionHtml = hasValidDescription 
         ? `<p style="font-size:0.9rem; color:#eee; margin-top:5px; padding-left:2px;">${beer.description}</p>` 
         : '';
