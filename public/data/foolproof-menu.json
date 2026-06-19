@@ -1,131 +1,110 @@
 {
-  "Beer On Tap": [
+  "Beer on tap": [
     {
       "name": "Black Cab (Nitro) Stout",
       "style": "Milk",
-      "abv": "5.6%",
-      "description": "A premium selection fresh from Foolproof's Pawtucket brewery floor."
+      "abv": "5.6%"
     },
     {
       "name": "Water Crew Brew IPA",
       "style": "Rye",
-      "abv": "4.8%",
-      "description": "A premium selection fresh from Foolproof's Pawtucket brewery floor."
+      "abv": "4.8%"
     },
     {
-      "name": "Ocean State Lager Lager",
+      "name": "Ocean State Lager",
       "style": "American",
-      "abv": "4.8%",
-      "description": "A premium selection fresh from Foolproof's Pawtucket brewery floor."
+      "abv": "4.8%"
     },
     {
       "name": "Main Squeeze Wheat Beer",
       "style": "American Pale Wheat",
-      "abv": "5%",
-      "description": "A premium selection fresh from Foolproof's Pawtucket brewery floor."
+      "abv": "5%"
     },
     {
-      "name": "Ocean State IPA IPA",
+      "name": "Ocean State IPA",
       "style": "American",
-      "abv": "4.6%",
-      "description": "A premium selection fresh from Foolproof's Pawtucket brewery floor."
+      "abv": "4.6%"
     },
     {
       "name": "Watermelon Vango Sour",
       "style": "Fruited",
-      "abv": "5%",
-      "description": "A premium selection fresh from Foolproof's Pawtucket brewery floor."
+      "abv": "5%"
     },
     {
       "name": "Ocean State Amber Red Ale",
       "style": "American Amber",
-      "abv": "4.8%",
-      "description": "A premium selection fresh from Foolproof's Pawtucket brewery floor."
+      "abv": "4.8%"
     },
     {
       "name": "Flying Buttress Kölsch",
       "style": "Craft Beer",
-      "abv": "4.7%",
-      "description": "A premium selection fresh from Foolproof's Pawtucket brewery floor."
+      "abv": "4.7%"
     },
     {
       "name": "Pawtucket Patriot IPA",
       "style": "New England",
-      "abv": "7%",
-      "description": "A premium selection fresh from Foolproof's Pawtucket brewery floor."
+      "abv": "7%"
     },
     {
       "name": "Bōsōzoku Lager",
       "style": "Japanese Rice",
-      "abv": "4.6%",
-      "description": "A premium selection fresh from Foolproof's Pawtucket brewery floor."
+      "abv": "4.6%"
     },
     {
       "name": "High Jinx Seltzer Hard Seltzer",
       "style": "Craft Beer",
-      "abv": "5%",
-      "description": "A premium selection fresh from Foolproof's Pawtucket brewery floor."
+      "abv": "5%"
     },
     {
       "name": "Mansions IPA",
       "style": "Imperial",
-      "abv": "8.4%",
-      "description": "A premium selection fresh from Foolproof's Pawtucket brewery floor."
+      "abv": "8.4%"
     },
     {
       "name": "Backyahd IPA",
       "style": "American",
-      "abv": "6%",
-      "description": "A premium selection fresh from Foolproof's Pawtucket brewery floor."
+      "abv": "6%"
     },
     {
       "name": "PCH Lager",
       "style": "IPL (India Pale Lager)",
-      "abv": "5.6%",
-      "description": "A premium selection fresh from Foolproof's Pawtucket brewery floor."
+      "abv": "5.6%"
     },
     {
       "name": "Three All the Way IPA",
       "style": "New England",
-      "abv": "7.5%",
-      "description": "A premium selection fresh from Foolproof's Pawtucket brewery floor."
+      "abv": "7.5%"
     },
     {
       "name": "Revery Stout",
       "style": "Russian Imperial",
-      "abv": "9%",
-      "description": "A premium selection fresh from Foolproof's Pawtucket brewery floor."
+      "abv": "9%"
     },
     {
       "name": "Blueberry Vango Sour",
       "style": "Fruited",
-      "abv": "5%",
-      "description": "A premium selection fresh from Foolproof's Pawtucket brewery floor."
+      "abv": "5%"
     },
     {
       "name": "Kyalami Lager",
       "style": "IPL (India Pale Lager)",
-      "abv": "5.8%",
-      "description": "A premium selection fresh from Foolproof's Pawtucket brewery floor."
+      "abv": "5.8%"
     },
     {
       "name": "Pickleodeon Sour",
       "style": "Other Gose",
-      "abv": "5%",
-      "description": "A premium selection fresh from Foolproof's Pawtucket brewery floor."
+      "abv": "5%"
     },
     {
       "name": "La Ferme Urbaine Farmhouse Ale",
       "style": "Saison",
-      "abv": "7.8%",
-      "description": "A premium selection fresh from Foolproof's Pawtucket brewery floor."
+      "abv": "7.8%"
     },
     {
       "name": "Peach Vango Sour",
       "style": "Fruited",
-      "abv": "5%",
-      "description": "A premium selection fresh from Foolproof's Pawtucket brewery floor."
+      "abv": "5%"
     }
   ],
-  "lastUpdated": "6/19/2026, 12:58:57 PM"
+  "lastUpdated": "6/19/2026, 1:18:02 PM"
 }
