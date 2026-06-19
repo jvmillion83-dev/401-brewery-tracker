@@ -83,21 +83,17 @@ async function scrapeFoolproof() {
     let match;
 
     while ((match = beerRegex.exec(combinedText)) !== null) {
-        let rawContent = match[2].trim(); // Contains Name + Style combined
+        let rawContent = match[2].trim(); // Contains Name + Style
         const abv = match[3].trim();
 
-        // Standardize multi-line separation from the stream
+        // Break lines apart and clean them up
         let lines = rawContent.split('\n').map(l => l.trim()).filter(Boolean);
         
         let name = "";
         let style = "Craft Beer";
 
-        if (lines.length >= 2) {
-            // If the text split cleanly by line breaks (like the website display)
-            name = lines[0];
-            style = lines[1];
-        } else {
-            // Fallback handling for space-joined streams
+        if (lines.length === 1) {
+            // Handle single-line space/dash layouts smoothly
             let cleanText = lines[0];
             if (cleanText.includes(' - ')) {
                 const parts = cleanText.split(' - ');
@@ -106,9 +102,14 @@ async function scrapeFoolproof() {
             } else {
                 name = cleanText;
             }
+        } else if (lines.length >= 2) {
+            // The first line is ALWAYS the name
+            name = lines[0];
+            // Combine any remaining lines (like "Stout" and "- Milk") into the style
+            style = lines.slice(1).join(' ').replace(/\s*-\s*/g, ' - ').trim();
         }
 
-        // Clean up common duplicate string noise (e.g., "Ocean State Lager Lager" -> "Ocean State Lager")
+        // Clean up common duplicate string noise (e.g., "Lager Lager" -> "Lager")
         const nameWords = name.split(' ');
         if (nameWords.length > 1 && nameWords[nameWords.length - 1] === nameWords[nameWords.length - 2]) {
             nameWords.pop();
@@ -127,6 +128,7 @@ async function scrapeFoolproof() {
         if (name.endsWith('.')) name = name.slice(0, -1).trim();
         if (name.endsWith('-')) name = name.slice(0, -1).trim();
         if (style.endsWith('.')) style = style.slice(0, -1).trim();
+        if (style.startsWith('-')) style = style.slice(1).trim();
 
         if (name && name.length < 50 && !scrapedBeers.some(b => b.name.toLowerCase() === name.toLowerCase())) {
             scrapedBeers.push({ name, style, abv });
