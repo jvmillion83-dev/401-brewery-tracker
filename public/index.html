@@ -305,8 +305,8 @@ if (item.brewery.toLowerCase().includes('uncommon')) {
         } 
         // 2. Text Menu Logic
         else {
-    // We look for 'Beer On Tap' exactly as it appears in your scraper output
-    const beerList = data["Beer On Tap"] || data.beers || [];
+    // We look for 'Beer on tap' exactly as it appears in your scraper output
+    const beerList = data["Beer on tap"] || data.beers || [];
     
     if (beerList.length === 0) {
         content.innerHTML = "<p style='text-align:center;'>No beers currently on tap.</p>";
