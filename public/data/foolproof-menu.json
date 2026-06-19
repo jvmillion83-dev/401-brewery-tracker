@@ -2,12 +2,12 @@
   "Beer on tap": [
     {
       "name": "Black Cab (Nitro) Stout",
-      "style": "Milk",
+      "style": "Stout - Milk",
       "abv": "5.6%"
     },
     {
       "name": "Water Crew Brew IPA",
-      "style": "Rye",
+      "style": "IPA - Rye",
       "abv": "4.8%"
     },
     {
@@ -36,8 +36,8 @@
       "abv": "4.8%"
     },
     {
-      "name": "Flying Buttress Kölsch",
-      "style": "Craft Beer",
+      "name": "Flying Buttress",
+      "style": "Kölsch",
       "abv": "4.7%"
     },
     {
@@ -51,8 +51,8 @@
       "abv": "4.6%"
     },
     {
-      "name": "High Jinx Seltzer Hard Seltzer",
-      "style": "Craft Beer",
+      "name": "High Jinx",
+      "style": "Seltzer Hard Seltzer",
       "abv": "5%"
     },
     {
@@ -106,5 +106,5 @@
       "abv": "5%"
     }
   ],
-  "lastUpdated": "6/19/2026, 1:27:44 PM"
+  "lastUpdated": "6/19/2026, 1:49:55 PM"
 }

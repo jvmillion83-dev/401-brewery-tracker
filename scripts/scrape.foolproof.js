@@ -60,53 +60,44 @@ async function scrapeFoolproof() {
     }
 
     const scrapedBeers = [];
-    console.log("Parsing menu layout using clean element selectors...");
+    console.log("Parsing menu layout using improved boundary line splitting...");
 
-    // Find the right frame containing the menu items
-    const frames = page.frames();
-    for (const frame of frames) {
-        try {
-            // Target all individual menu item containers inside the widget layout
-            const items = await frame.$$('.menu-item, [class*="item"], .menu-list > div'); 
-            
-            // Fallback to text parsing if classes are completely obfuscated, 
-            // but let's optimize the text-stream split to match the visual layout in image_2b2168.png
-            if (items.length === 0) {
-                continue;
-            }
-        } catch (e) {}
-    }
-
-    // ROBUST TEXT-STREAM PARSER OPTIMIZED FOR THE VISUAL LAYOUT
-    // This regex looks at the pattern: Number. Name [Newlines/Spaces] Style [Newlines/Spaces] ABV% ABV
+    // ROBUST TEXT-STREAM PARSER OPTIMIZED FOR VISUAL LINE TRANSITIONS
     const beerRegex = /(?:[-•*]\s*)?(\d+)\.\s+([\s\S]*?)\s+(\d+(?:\.\d+)?%)\s*ABV/gi;
     let match;
 
     while ((match = beerRegex.exec(combinedText)) !== null) {
-        let rawContent = match[2].trim(); // Contains Name + Style
+        let rawContent = match[2].trim(); 
         const abv = match[3].trim();
 
-        // Break lines apart and clean them up
+        // Standardize alternative divider characters to clear line indicators
+        rawContent = rawContent.replace(/\s+-\s+/g, '\n');
+
         let lines = rawContent.split('\n').map(l => l.trim()).filter(Boolean);
         
         let name = "";
         let style = "Craft Beer";
 
         if (lines.length === 1) {
-            // Handle single-line space/dash layouts smoothly
             let cleanText = lines[0];
-            if (cleanText.includes(' - ')) {
-                const parts = cleanText.split(' - ');
-                name = parts[0].trim();
-                style = parts[1].trim();
+            // Look for implicit capitalization or word changes to make a clean split
+            if (cleanText.match(/(IPA|Stout|Lager|Sour|Ale|Pilsner|Kölsch|Seltzer)/i)) {
+                const keywords = /(IPA|Stout|Lager|Sour|Ale|Pilsner|Kölsch|Seltzer)/i;
+                const parts = cleanText.split(keywords);
+                if (parts.length >= 2) {
+                    name = parts[0].trim();
+                    style = (parts[1] + parts.slice(2).join('')).trim();
+                } else {
+                    name = cleanText;
+                }
             } else {
                 name = cleanText;
             }
         } else if (lines.length >= 2) {
-            // The first line is ALWAYS the name
+            // Line 1 contains the True Name
             name = lines[0];
-            // Combine any remaining lines (like "Stout" and "- Milk") into the style
-            style = lines.slice(1).join(' ').replace(/\s*-\s*/g, ' - ').trim();
+            // Combine any overflow markers into the style description cleanly
+            style = lines.slice(1).join(' - ').replace(/\s*-\s*-\s*/g, ' - ').trim();
         }
 
         // Clean up common duplicate string noise (e.g., "Lager Lager" -> "Lager")
@@ -124,11 +115,16 @@ async function scrapeFoolproof() {
             style = style.replace(/foolproof brewing(?: company)?\.?/i, '').trim();
         }
 
-        // Clean up trailing punctuation noise
+        // Clean up trailing/leading punctuation noise
         if (name.endsWith('.')) name = name.slice(0, -1).trim();
         if (name.endsWith('-')) name = name.slice(0, -1).trim();
         if (style.endsWith('.')) style = style.slice(0, -1).trim();
         if (style.startsWith('-')) style = style.slice(1).trim();
+        style = style.trim();
+
+        // Format clean spacing rules for common sub-styles
+        if (style.toLowerCase() === "rye") style = "IPA - Rye";
+        if (style.toLowerCase() === "milk") style = "Stout - Milk";
 
         if (name && name.length < 50 && !scrapedBeers.some(b => b.name.toLowerCase() === name.toLowerCase())) {
             scrapedBeers.push({ name, style, abv });
