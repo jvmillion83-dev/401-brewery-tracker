@@ -283,21 +283,42 @@ if (item.brewery.toLowerCase().includes('uncommon')) {
 
 
 
-  async function openTapList(url, breweryName) {
-    const modal = document.getElementById('tapListModal');
-    const content = document.getElementById('modalContent');
-    const title = document.getElementById('modalTitle');
-    modal.style.display = "block";
-    title.innerText = `${breweryName} Tap List`;
-    content.innerHTML = "Loading...";
+  async function openTapList(jsonPath, breweryName) {
+    const modal = document.getElementById('tap-list-modal');
+    const content = document.getElementById('tap-list-content');
+    
+    // Set the title
+    document.getElementById('modal-title').innerText = `${breweryName} Tap List`;
+    modal.style.display = 'block';
+    content.innerHTML = 'Loading...';
 
     try {
-        const response = await fetch(url);
-        const rawText = await response.text();
-        
-        // Sanitize the raw text string to remove illegal line breaks inside JSON
-        const sanitizedText = rawText.replace(/\n/g, ' ').replace(/\r/g, ' ');
-        const data = JSON.parse(sanitizedText);
+        const response = await fetch(jsonPath);
+        const data = await response.json();
+
+        // Check if this menu is an image-based menu
+        if (data.isImageMenu) {
+            content.innerHTML = `
+                <div style="text-align:center;">
+                    <img src="${data.menuImageUrl}" style="width:100%; max-width:600px; border-radius:8px;" alt="Menu" />
+                    <p style="font-size:0.7rem; color:#888; margin-top:10px;">Updated: ${data.lastUpdated}</p>
+                </div>
+            `;
+        } 
+        // Handle standard text-based menus
+        else if (data["Beer on tap"] && data["Beer on tap"].length > 0) {
+            content.innerHTML = data["Beer on tap"].map(beer => `
+                <div class="beer-item">
+                    <strong>${beer.name}</strong> - ${beer.style} (${beer.abv})
+                </div>
+            `).join('');
+        } else {
+            content.innerHTML = '<p>No beers currently on tap.</p>';
+        }
+    } catch (error) {
+        content.innerHTML = '<p>Error loading tap list.</p>';
+    }
+}
         
         // FIXED CASE SENSITIVITY: Added data["Beer on tap"] with lowercase 'on tap'
         const beerList = data.beers || data["Beer on tap"] || data["Beer On Tap"] || [];
