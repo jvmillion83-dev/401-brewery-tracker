@@ -328,6 +328,10 @@ if (item.brewery.toLowerCase().includes('uncommon')) {
         content.innerHTML = "Failed to load tap list. Please check the JSON path.";
     }
 }
+function closeModal() {
+    const modal = document.getElementById('tapListModal');
+    modal.style.display = "none";
+}
 
 async function renderTapList(containerId, jsonFile) {
     const response = await fetch(`./public/data/${jsonFile}`);
