@@ -26,6 +26,11 @@
       "name": "MIX TAPE",
       "abv": "ABV 5%",
       "description": "Hard Seltzer, Light Citrus Flavor Pick your track - galaxy|pine|lavender|lemon| lime|raspberry|peach| watermelon|hibiscus|vanilla| cherry|orange|jalapeño"
+    },
+  {
+      "name": "SLOW DANCE",
+      "abv": "ABV 5.3%",
+      "description": "Dark sweet cherry marshmellow porter"
     }
   ]
 }
