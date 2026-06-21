@@ -254,9 +254,15 @@
 
     
 
-
 listToRender.forEach(item => {
     const info = breweryData[item.brewery];
+    
+    // Safety Check: If info is missing, skip this item so it doesn't crash the app
+    if (!info) {
+        console.warn(`Missing brewery data for: ${item.brewery}`);
+        return; 
+    }
+
     const card = document.createElement('div');
     card.className = 'card';
     
@@ -264,25 +270,21 @@ listToRender.forEach(item => {
     const statusColor = item.isOpenNow ? '#2e7d32' : '#444';
     const mainLabel = currentTab === 'beer' ? "Taproom Hours" : item.truck;
 
-    // --- CLEANED UP TAP LIST LOGIC ---
     let tapListHtml = '';
-    if (info) {
-        if (info.menus) {
-            // Data-driven approach: maps through menus defined in breweryData
-            tapListHtml = info.menus
-                .filter(menu => (currentTab === 'beer') ? menu.label.includes('TAP LIST') : true)
-                .map(menu => `
-                    <button onclick="openTapList('${menu.path}', '${item.brewery}')" 
-                            class="tap-list-btn" style="display:block; width:100%; margin-top:5px;">
-                        ${menu.label}
-                    </button>
-                `).join('');
-        } else if (info.tapListUrl) {
-            // Fallback for breweries not yet converted to the menu system
-            tapListHtml = `<a href="${info.tapListUrl}" target="_blank" class="tap-list-btn">📝 View Tap List</a>`;
-        }
+    
+    // Safe access to menus
+    if (info.menus) {
+        tapListHtml = info.menus
+            .filter(menu => (currentTab === 'beer') ? menu.label.includes('TAP LIST') : true)
+            .map(menu => `
+                <button onclick="openTapList('${menu.path}', '${item.brewery}')" 
+                        class="tap-list-btn" style="display:block; width:100%; margin-top:5px;">
+                    ${menu.label}
+                </button>
+            `).join('');
+    } else if (info.tapListUrl) {
+        tapListHtml = `<a href="${info.tapListUrl}" target="_blank" class="tap-list-btn">📝 View Tap List</a>`;
     }
-    // ---------------------------------
 
     card.innerHTML = `
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
@@ -301,7 +303,6 @@ listToRender.forEach(item => {
     `;
     container.appendChild(card);
 });
-
 
 
  async function openTapList(jsonPath, breweryName) {
