@@ -311,34 +311,55 @@ if (item.brewery.toLowerCase().includes('uncommon')) {
        if (data.isImageMenu) {
             content.innerHTML = `<img src="${data.menuImageUrl}" style="width:100%; border-radius:8px; display:block;">`;
         } 
-        // 2. Text Menu Logic
-        else { // <-- Removed the extra } that was here
-            const sections = data["Food on site"] || [];
+       
 
-if (sections.length === 0) {
-    content.innerHTML = "<p style='text-align:center;'>No menu items available.</p>";
-} else {
-    // 1. Loop through each section (e.g., Shareables, Pretzels)
-    content.innerHTML = sections.map(section => `
-        <div class="menu-section" style="margin-bottom: 20px;">
-            <h3 style="color: #ffc107; border-bottom: 1px solid #444; padding-bottom: 5px; margin-top: 20px;">
-                ${section.header}
-            </h3>
-            
-            ${section.items.map(item => `
-                <div style="padding:10px; border-bottom:1px solid #333;">
-                    <div style="display:flex; justify-content:space-between;">
-                        <strong>${item.name || 'N/A'}</strong>
-                        <span style="color: #fff;">${item.price || ''}</span>
+
+
+
+
+
+// 2. Text Menu Logic
+else {
+    // Determine the data format:
+    // If it has "Food on site", it's grouped. Otherwise, look for flat beer lists.
+    const isGrouped = !!data["Food on site"];
+    const displayData = data["Food on site"] || data["Beer on tap"] || data["Beer On Tap"] || data.beers || [];
+
+    if (displayData.length === 0) {
+        content.innerHTML = "<p style='text-align:center;'>No menu items available.</p>";
+    } else if (isGrouped) {
+        // RENDER GROUPED FOOD MENU
+        content.innerHTML = displayData.map(section => `
+            <div class="menu-section" style="margin-bottom: 20px;">
+                <h3 style="color: #ffc107; border-bottom: 1px solid #444; padding-bottom: 5px; margin-top: 20px;">
+                    ${section.header}
+                </h3>
+                ${section.items.map(item => `
+                    <div style="padding:10px; border-bottom:1px solid #333;">
+                        <div style="display:flex; justify-content:space-between;">
+                            <strong>${item.name || 'N/A'}</strong>
+                            <span style="color: #fff;">${item.price || ''}</span>
+                        </div>
+                        <div style="font-size:0.8rem; color:#aaa; margin-top:4px;">${item.description || ''}</div>
                     </div>
-                    <div style="font-size:0.8rem; color:#aaa; margin-top:4px;">
-                        ${item.description || ''}
-                    </div>
+                `).join('')}
+            </div>
+        `).join('');
+    } else {
+        // RENDER FLAT BEER MENU
+        content.innerHTML = displayData.map(b => `
+            <div style="padding:10px; border-bottom:1px solid #333;">
+                <div style="display:flex; justify-content:space-between;">
+                    <strong>${b.name || 'Unknown Beer'}</strong>
+                    <span style="background:#444; padding:2px 6px; border-radius:4px; font-size:0.75rem;">${b.abv || 'N/A'}</span>
                 </div>
-            `).join('')}
-        </div>
-    `).join('');
+                ${b.style && b.style !== 'N/A' && b.style !== 'undefined' ? `<div style="color:#aaa; font-size: 0.8rem; font-style: italic;">${b.style}</div>` : ''}
+                <div style="font-size:0.75rem; margin-top:5px; color:#ddd;">${b.description || ''}</div>
+            </div>
+        `).join('');
+    }
 }
+
         } // Ensure you have this closing brace to end the else block
     } catch (e) { 
         console.error("Fetch/Parse Error:", e);
