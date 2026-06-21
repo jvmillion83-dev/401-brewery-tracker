@@ -258,7 +258,7 @@ function renderDate(listToRender) {
     const container = document.getElementById('breweryContainer');
     container.innerHTML = ''; // Clear existing
 
-    listToRender.forEach(item => {
+listToRender.forEach(item => {
         const info = breweryData[item.brewery];
         const card = document.createElement('div');
         card.className = 'card';
@@ -278,8 +278,16 @@ if (item.brewery.toLowerCase().includes('uncommon')) {
     tapListHtml = `<button onclick="openTapList('/data/foolproof-menu.json', 'Foolproof Brewing')" class="tap-list-btn">📝 VIEW TAP LIST</button>`;
 } else if (item.brewery.toLowerCase().includes('lops')) {
     tapListHtml = `<button onclick="openTapList('/data/lops-menu.json', 'Lops Brewery')" class="tap-list-btn">📝 VIEW TAP LIST</button>`;
+
+
 } else if (item.brewery.toLowerCase().includes('guild')) {
-    tapListHtml = `<button onclick="openTapList('/data/guild-menu.json', 'The Guild Pawtucket')" class="tap-list-btn">📝 VIEW TAP LIST</button>`;
+    // Generate both buttons if the brewery is The Guild
+    tapListHtml = `	
+        <button onclick="openTapList('/data/guild-menu.json', 'The Guild Pawtucket')" class="tap-list-btn">📝 VIEW TAP LIST</button>
+        <button onclick="openTapList('/data/guild-food-menu.json', 'The Guild Pawtucket')" class="tap-list-btn" style="margin-top: 5px;">🍔 VIEW FOOD MENU</button>
+    `;
+
+
 } else if (item.brewery.toLowerCase().includes('crooked') && item.brewery.toLowerCase().includes('current')) {
     tapListHtml = `<button onclick="openTapList('/data/crookedcurrent-menu.json', 'Crooked Current Brewing')" class="tap-list-btn">📝 VIEW TAP LIST</button>`;
 // Add this new block for Moniker:
@@ -289,6 +297,22 @@ if (item.brewery.toLowerCase().includes('uncommon')) {
     tapListHtml = `<a href="${info.tapListUrl}" target="_blank" class="tap-list-btn">📝 View Tap List</a>`;
 }
 
+if (info && info.menus) {
+    tapListHtml = info.menus
+        .filter(menu => {
+            // If on 'beer' tab, only show tap list. If 'food' tab, show both.
+            if (currentTab === 'beer') return menu.label.includes('TAP LIST');
+            return true; // Show everything on 'food' tab
+        })
+        .map(menu => `
+            <button onclick="openTapList('${menu.path}', '${item.brewery}')" 
+                    class="tap-list-btn" style="display:block; width:100%; margin-top:5px;">
+                ${menu.label}
+            </button>
+        `).join('');
+} else if (info && info.tapListUrl) {
+    tapListHtml = `<a href="${info.tapListUrl}" target="_blank" class="tap-list-btn">📝 View Tap List</a>`;
+}
 
 
         card.innerHTML = `
