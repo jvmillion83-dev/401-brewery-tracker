@@ -265,6 +265,23 @@ if (item.brewery.toLowerCase().includes('uncommon')) {
     tapListHtml = `<a href="${info.tapListUrl}" target="_blank" class="tap-list-btn">📝 View Tap List</a>`;
 }
 
+// Replace your existing beer list rendering map with this:
+content.innerHTML = beerList.map(b => `
+    <div style="padding:10px; border-bottom:1px solid #333;">
+        <div style="display:flex; justify-content:space-between;">
+            <strong>${b.name || 'Unknown Beer'}</strong>
+            <span style="background:#444; padding:2px 6px; border-radius:4px; font-size:0.75rem;">${b.abv || 'N/A'}</span>
+        </div>
+        
+        ${b.style && b.style !== 'N/A' && b.style !== 'undefined' ? 
+            `<div style="color:#aaa; font-size: 0.8rem; font-style: italic;">${b.style}</div>` 
+            : ''
+        }
+        
+        <div style="font-size:0.75rem; margin-top:5px; color:#ddd;">${b.description || ''}</div>
+    </div>
+`).join('');
+
         card.innerHTML = `
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
                 <a href="${info.url}" target="_blank" class="brewery-link">
