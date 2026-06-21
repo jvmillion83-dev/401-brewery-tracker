@@ -89,5 +89,11 @@
     "truck": "Pal Monte",
     "start": "06/28/2026 12:00PM",
     "end": "06/28/2026 5:00PM"
+  },
+{
+    "brewery": "UNCOMMON PAIR BREWING",
+    "truck": "ABCD Brothers Kitchen",
+    "start": "07/03/2026 12:00PM",
+    "end": "07/03/2026 9:00PM"
   }
 ]

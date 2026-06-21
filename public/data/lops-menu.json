@@ -1,0 +1,46 @@
+{
+  "Beer on tap": [
+    {
+      "name": "JazzBerry Blonde Ale",
+      "style": "N/A",
+      "abv": "5.0%",
+      "description": "Light Blonde Ale full of raspberry color, aroma and flavor with a tart finish | Price: $8.00"
+    },
+    {
+      "name": "Jagged Little Dill Gose",
+      "style": "N/A",
+      "abv": "4.5%",
+      "description": "Light, tart ale, brewed with dill, coriander, salt, mustard seed and peppercorn to replicate pickle brine. Best enjoyed outside in the sun! | Price: $8.00"
+    },
+    {
+      "name": "Climb West Coast IPA",
+      "style": "N/A",
+      "abv": "6.3%",
+      "description": "Originally brewed as our 3rd Anniversary Beer in 2022. This 2026 batch is brewed and dry hopped in the west coast style with Centennial, Cascade & Cashmere. Crisp, clear with an upfront lemon/pine flavor and a clean, bitter finish. | Price: $8.00"
+    },
+    {
+      "name": "Apple Blossom Trail Hard Cider",
+      "style": "N/A",
+      "abv": "5.2%",
+      "description": "Made from locally grown apples from Jaswell's farm in Smithfield, RI, this cider is off dry, with a crisp, refreshing, apple finish. | Price: $8.00"
+    },
+    {
+      "name": "Station 3 Pilsner",
+      "style": "N/A",
+      "abv": "4.8%",
+      "description": "Crisp Czech Pilsner brewed with 100% Stonepath Pilsner malt and Saaz hops. Brewed in tribute to Woonsocket's Station 3 fire station, our neighbor on North Main Street. | Price: $7.50"
+    },
+    {
+      "name": "Flock Together Pale Ale",
+      "style": "N/A",
+      "abv": "6.3%",
+      "description": "This pale ale was dry hopped with Callista hops for a unique honey, berry, and passion fruit aroma. A portion of the proceeds from this beer will be going to local LGBTQ+ organization @hausofcodec, who work to create a safer and more accessible means to housing, care, and essential services for displaced youth ages 18-24. | Price: $7.75"
+    },
+    {
+      "name": "Star Hazing NEIPA",
+      "style": "N/A",
+      "abv": "6.5%",
+      "description": "Hazy New England IPA, generously dry hopped with Citra and Galaxy hops | Price: $8.00"
+    }
+  ]
+}
