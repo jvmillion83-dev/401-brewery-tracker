@@ -16,22 +16,27 @@ async function scrapeGuild() {
     // 4. Scrape the data
     
 const menuData = await page.evaluate(() => {
-    // Select all dynamic list wrappers
+    // 1. Find all sections
     const sections = Array.from(document.querySelectorAll('.w-dyn-list')); 
     
-    return sections.map(section => {
-        // Grab the header immediately preceding the list
-        const header = section.previousElementSibling?.innerText.trim() || "Menu";
-        
-        // Grab items within this section
-        const items = Array.from(section.querySelectorAll('.collection-item-8')).map(el => ({
-            name: el.querySelector('.food-menu-item')?.innerText.trim() || "N/A",
-            price: `$${el.querySelector('.food-price-3')?.innerText.trim() || "0"}`,
-            description: el.querySelector('.food-description')?.innerText.trim() || ""
-        }));
+    // 2. Filter out sections that don't have a meaningful header
+    return sections
+        .filter(section => {
+            const header = section.previousElementSibling?.innerText.trim();
+            // Only include if a header exists and it's not just "Menu"
+            return header && header.toLowerCase() !== "menu";
+        })
+        .map(section => {
+            const header = section.previousElementSibling.innerText.trim();
+            
+            const items = Array.from(section.querySelectorAll('.collection-item-8')).map(el => ({
+                name: el.querySelector('.food-menu-item')?.innerText.trim() || "N/A",
+                price: `$${el.querySelector('.food-price-3')?.innerText.trim() || "0"}`,
+                description: el.querySelector('.food-description')?.innerText.trim() || ""
+            }));
 
-        return { header, items };
-    });
+            return { header, items };
+        });
 });
 
     // 5. Save the grouped data to your data folder
