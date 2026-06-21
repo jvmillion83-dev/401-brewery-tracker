@@ -260,28 +260,36 @@ function renderDate(listToRender) {
 
     listToRender.forEach(item => {
         const info = breweryData[item.brewery];
-        if (!info) return; // Skip if no data
-
         const card = document.createElement('div');
         card.className = 'card';
         
         const statusText = item.isOpenNow ? 'Open Now' : 'Scheduled';
         const statusColor = item.isOpenNow ? '#2e7d32' : '#444';
+        
+        // Determine label: If it's the beer tab, show "Taproom Hours". If food, show the truck name or kitchen info.
         const mainLabel = currentTab === 'beer' ? "Taproom Hours" : item.truck;
 
-        let tapListHtml = '';
-        if (info.menus) {
-            tapListHtml = info.menus
-                .filter(menu => (currentTab === 'beer') ? menu.label.includes('TAP LIST') : true)
-                .map(menu => `
-                    <button onclick="openTapList('${menu.path}', '${item.brewery}')" 
-                            class="tap-list-btn" style="display:block; width:100%; margin-top:5px;">
-                        ${menu.label}
-                    </button>
-                `).join('');
-        } else if (info.tapListUrl) {
-            tapListHtml = `<a href="${info.tapListUrl}" target="_blank" class="tap-list-btn">📝 View Tap List</a>`;
-        }
+       let tapListHtml = '';
+if (item.brewery.toLowerCase().includes('uncommon')) {
+    tapListHtml = `<button onclick="openTapList('/data/uncommon-pair-menu.json', 'Uncommon Pair')" class="tap-list-btn">📝 VIEW TAP LIST</button>`;
+} else if (item.brewery.toLowerCase().includes('phantom')) {
+    tapListHtml = `<button onclick="openTapList('/data/phantom-menu.json', 'Phantom Farms')" class="tap-list-btn">📝 VIEW TAP LIST</button>`;
+} else if (item.brewery.toLowerCase().includes('foolproof')) {
+    tapListHtml = `<button onclick="openTapList('/data/foolproof-menu.json', 'Foolproof Brewing')" class="tap-list-btn">📝 VIEW TAP LIST</button>`;
+} else if (item.brewery.toLowerCase().includes('lops')) {
+    tapListHtml = `<button onclick="openTapList('/data/lops-menu.json', 'Lops Brewery')" class="tap-list-btn">📝 VIEW TAP LIST</button>`;
+} else if (item.brewery.toLowerCase().includes('guild')) {
+    tapListHtml = `<button onclick="openTapList('/data/guild-menu.json', 'The Guild Pawtucket')" class="tap-list-btn">📝 VIEW TAP LIST</button>`;
+} else if (item.brewery.toLowerCase().includes('crooked') && item.brewery.toLowerCase().includes('current')) {
+    tapListHtml = `<button onclick="openTapList('/data/crookedcurrent-menu.json', 'Crooked Current Brewing')" class="tap-list-btn">📝 VIEW TAP LIST</button>`;
+// Add this new block for Moniker:
+} else if (item.brewery.toLowerCase().includes('moniker')) {
+    tapListHtml = `<button onclick="openTapList('/data/moniker-menu.json', 'Moniker Brewery')" class="tap-list-btn">📝 VIEW TAP LIST</button>`;
+} else if (info.tapListUrl){
+    tapListHtml = `<a href="${info.tapListUrl}" target="_blank" class="tap-list-btn">📝 View Tap List</a>`;
+}
+
+
 
         card.innerHTML = `
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
@@ -299,8 +307,12 @@ function renderDate(listToRender) {
             ${tapListHtml}
         `;
         container.appendChild(card);
-    }); // Closes forEach
-} // Closes function
+    });
+}
+
+
+
+
 
 
  async function openTapList(jsonPath, breweryName) {
