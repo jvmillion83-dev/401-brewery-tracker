@@ -310,9 +310,9 @@ if (item.brewery.toLowerCase().includes('uncommon')) {
             content.innerHTML = `<img src="${data.menuImageUrl}" style="width:100%; border-radius:8px; display:block;">`;
         } 
         // 2. Text Menu Logic
-      } else {
-    // We look for 'Beer On Tap' exactly as it appears in your scraper output
-    const beerList = data["Beer On Tap"] || data.beers || [];
+        else {
+    // We look for 'Beer on tap' exactly as it appears in your scraper output
+    const beerList = data["Beer on tap"] || data.beers || [];
     
     if (beerList.length === 0) {
         content.innerHTML = "<p style='text-align:center;'>No beers currently on tap.</p>";
@@ -329,7 +329,6 @@ if (item.brewery.toLowerCase().includes('uncommon')) {
         `).join('');
     }
 }
-
     } catch (e) { 
         console.error("Fetch/Parse Error:", e);
         content.innerHTML = "Failed to load tap list. Please check the JSON path or file format.";
