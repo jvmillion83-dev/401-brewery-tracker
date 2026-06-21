@@ -276,7 +276,7 @@ if (item.brewery.toLowerCase().includes('uncommon')) {
 
 } else if (item.brewery.toLowerCase().includes('guild')) {
     // Generate both buttons if the brewery is The Guild
-    tapListHtml = `
+    tapListHtml = `	
         <button onclick="openTapList('/data/guild-menu.json', 'The Guild Pawtucket')" class="tap-list-btn">📝 VIEW TAP LIST</button>
         <button onclick="openTapList('/data/guild-food-menu.json', 'The Guild Pawtucket')" class="tap-list-btn" style="margin-top: 5px;">🍔 VIEW FOOD MENU</button>
     `;
@@ -343,6 +343,17 @@ if (info && info.menus) {
     try {
         const response = await fetch(jsonPath);
         const data = await response.json();
+
+// 1. ADD THIS: Check if this is an image-based menu
+        if (data.isImageMenu) {
+            content.innerHTML = `
+                <div style="text-align:center; padding: 20px;">
+                    <img src="${data.menuImageUrl}" style="width:100%; max-width:600px; border-radius:8px; border: 1px solid #444;" alt="Menu" />
+                    <p style="font-size:0.8rem; color:#888; margin-top:10px;">Last updated: ${data.lastUpdated}</p>
+                </div>
+            `;
+            return; // Exit after rendering the image
+        }
 
         // Check if this data is "Grouped" (Food) or "Flat" (Beer)
         // We do this by checking for the specific key created by your food scraper
