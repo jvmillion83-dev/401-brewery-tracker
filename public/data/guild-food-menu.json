@@ -1,0 +1,96 @@
+{
+  "Food on site": [
+    {
+      "header": "Menu",
+      "items": []
+    },
+    {
+      "header": "Menu",
+      "items": []
+    },
+    {
+      "header": "Menu",
+      "items": []
+    },
+    {
+      "header": "Shareables",
+      "items": [
+        {
+          "name": "Buffalo Chicken Dip",
+          "price": "$7",
+          "description": "served with crispy tortilla chips"
+        },
+        {
+          "name": "Charcuterie",
+          "price": "$16",
+          "description": "cured meats, assorted cheeses, candied pecans, marinated artichokes, dill pickle chips, marinated olives, sesame crackers and warm naan bread"
+        },
+        {
+          "name": "Chips & Salsa",
+          "price": "$5",
+          "description": "crispy tortilla chips, pico de gallo ADD guacamole ($4)"
+        },
+        {
+          "name": "Nachos",
+          "price": "$13",
+          "description": "tortilla chips, cheddar cheese, corn and black bean salsa, beer cheese sauce, lime crema, pico de gallo ADD guacamole ($4) ADD chicken ($5) ADD Pulled Pork ($5)"
+        }
+      ]
+    },
+    {
+      "header": "Pretzels",
+      "items": [
+        {
+          "name": "Salted",
+          "price": "$8",
+          "description": "choose between: pimento cheese spread, beer mustard, or beer cheese sauce"
+        },
+        {
+          "name": "Parmesan",
+          "price": "$9",
+          "description": "parmesan cheese, basil pesto dipping sauce"
+        },
+        {
+          "name": "Mozzarella",
+          "price": "$9",
+          "description": "mozzarella cheese, tomato basil dipping sauce"
+        },
+        {
+          "name": "Cinnamon Sugar",
+          "price": "$8",
+          "description": "Cinnamon sugar, Sea Salted Caramel and Chocolate Sauce"
+        }
+      ]
+    },
+    {
+      "header": "sub: gluten free crust $2",
+      "items": [
+        {
+          "name": "BBQ Pulled Pork",
+          "price": "$16",
+          "description": "BBQ Sauce, 6 Hour Braised Pulled Pork, Corn and Black Bean Salsa, Cheddar Jack Cheese"
+        },
+        {
+          "name": "Buffalo Chicken",
+          "price": "$15",
+          "description": "garlic & herb cream cheese, roasted chicken thighs, blue cheese, buffalo sauce, scallions"
+        },
+        {
+          "name": "Mozzarella",
+          "price": "$12",
+          "description": "tomato sauce, mozzarella cheese blend, fresh basil"
+        },
+        {
+          "name": "Pepperoni",
+          "price": "$14",
+          "description": "tomato sauce, pepperoni, mozzarella cheese blend fresh basil"
+        },
+        {
+          "name": "Sausage & Pepper",
+          "price": "$15",
+          "description": "Tomato sauce, sliced sausage, roasted red peppers, mozzarella, crushed red pepper flakes"
+        }
+      ]
+    }
+  ]
+}
