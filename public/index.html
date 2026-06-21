@@ -306,29 +306,30 @@ if (item.brewery.toLowerCase().includes('uncommon')) {
         const data = await response.json();
 
         // 1. Image Menu Logic
-        if (data.isImageMenu) {
+       if (data.isImageMenu) {
             content.innerHTML = `<img src="${data.menuImageUrl}" style="width:100%; border-radius:8px; display:block;">`;
         } 
         // 2. Text Menu Logic
-        else {
-    // We look for 'Beer on tap' exactly as it appears in your scraper output
-    const beerList = data["Beer on tap"] || data.beers || [];
-    
-    if (beerList.length === 0) {
-        content.innerHTML = "<p style='text-align:center;'>No beers currently on tap.</p>";
-    } else {
-        content.innerHTML = beerList.map(b => `
-            <div style="padding:10px; border-bottom:1px solid #333;">
-                <div style="display:flex; justify-content:space-between;">
-                    <strong>${b.name}</strong>
-                    <span style="background:#444; padding:2px 6px; border-radius:4px; font-size:0.75rem;">${b.abv}</span>
-                </div>
-                <div style="color:#aaa; font-size: 0.8rem; font-style: italic;">${b.style}</div>
-                <div style="font-size:0.75rem; margin-top:5px; color:#ddd;">${b.description || ''}</div>
-            </div>
-        `).join('');
-    }
-}
+        else { // <-- Removed the extra } that was here
+            const beerList = data["Beer on tap"] || data["Beer On Tap"] || data.beers || [];
+            
+            if (beerList.length === 0) {
+                content.innerHTML = "<p style='text-align:center;'>No beers currently on tap.</p>";
+            } else {
+                content.innerHTML = beerList.map(b => `
+                    <div style="padding:10px; border-bottom:1px solid #333;">
+                        <div style="display:flex; justify-content:space-between;">
+                            <strong>${b.name || 'Unknown Beer'}</strong>
+                            <span style="background:#444; padding:2px 6px; border-radius:4px; font-size:0.75rem;">${b.abv || 'N/A'}</span>
+                        </div>
+                        ${b.style && b.style !== 'N/A' && b.style !== 'undefined' ? 
+                            `<div style="color:#aaa; font-size: 0.8rem; font-style: italic;">${b.style}</div>` 
+                            : ''}
+                        <div style="font-size:0.75rem; margin-top:5px; color:#ddd;">${b.description || ''}</div>
+                    </div>
+                `).join('');
+            }
+        } // Ensure you have this closing brace to end the else block
     } catch (e) { 
         console.error("Fetch/Parse Error:", e);
         content.innerHTML = "Failed to load tap list. Please check the JSON path or file format.";
