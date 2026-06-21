@@ -254,55 +254,53 @@
 
     
 
-listToRender.forEach(item => {
-    const info = breweryData[item.brewery];
-    
-    // Safety Check: If info is missing, skip this item so it doesn't crash the app
-    if (!info) {
-        console.warn(`Missing brewery data for: ${item.brewery}`);
-        return; 
-    }
+function renderDate(listToRender) {
+    const container = document.getElementById('breweryContainer');
+    container.innerHTML = ''; // Clear existing
 
-    const card = document.createElement('div');
-    card.className = 'card';
-    
-    const statusText = item.isOpenNow ? 'Open Now' : 'Scheduled';
-    const statusColor = item.isOpenNow ? '#2e7d32' : '#444';
-    const mainLabel = currentTab === 'beer' ? "Taproom Hours" : item.truck;
+    listToRender.forEach(item => {
+        const info = breweryData[item.brewery];
+        if (!info) return; // Skip if no data
 
-    let tapListHtml = '';
-    
-    // Safe access to menus
-    if (info.menus) {
-        tapListHtml = info.menus
-            .filter(menu => (currentTab === 'beer') ? menu.label.includes('TAP LIST') : true)
-            .map(menu => `
-                <button onclick="openTapList('${menu.path}', '${item.brewery}')" 
-                        class="tap-list-btn" style="display:block; width:100%; margin-top:5px;">
-                    ${menu.label}
-                </button>
-            `).join('');
-    } else if (info.tapListUrl) {
-        tapListHtml = `<a href="${info.tapListUrl}" target="_blank" class="tap-list-btn">📝 View Tap List</a>`;
-    }
+        const card = document.createElement('div');
+        card.className = 'card';
+        
+        const statusText = item.isOpenNow ? 'Open Now' : 'Scheduled';
+        const statusColor = item.isOpenNow ? '#2e7d32' : '#444';
+        const mainLabel = currentTab === 'beer' ? "Taproom Hours" : item.truck;
 
-    card.innerHTML = `
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
-            <a href="${info.url}" target="_blank" class="brewery-link">
-                <img src="${info.logo}" alt="${item.brewery}" class="brewery-logo">
-            </a>
-            <span class="distance-tag">${item.distance !== Infinity ? item.distance.toFixed(1) + ' mi' : ''}</span>
-        </div>
-        <div style="font-size: 0.7rem; color: #888; margin-bottom: 10px;">Hours: ${item.rawHours}</div>
-        <span class="truck-name">${mainLabel}</span>
-        <div style="display: flex; align-items: center; gap: 10px;">
-            <span class="status-badge" style="background: ${statusColor};">${statusText}</span>
-            ${item.hasKitchen ? '<span class="status-badge" style="background: #0277bd;">Food On-Site</span>' : ''}
-        </div>
-        ${tapListHtml}
-    `;
-    container.appendChild(card);
-});
+        let tapListHtml = '';
+        if (info.menus) {
+            tapListHtml = info.menus
+                .filter(menu => (currentTab === 'beer') ? menu.label.includes('TAP LIST') : true)
+                .map(menu => `
+                    <button onclick="openTapList('${menu.path}', '${item.brewery}')" 
+                            class="tap-list-btn" style="display:block; width:100%; margin-top:5px;">
+                        ${menu.label}
+                    </button>
+                `).join('');
+        } else if (info.tapListUrl) {
+            tapListHtml = `<a href="${info.tapListUrl}" target="_blank" class="tap-list-btn">📝 View Tap List</a>`;
+        }
+
+        card.innerHTML = `
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+                <a href="${info.url}" target="_blank" class="brewery-link">
+                    <img src="${info.logo}" alt="${item.brewery}" class="brewery-logo">
+                </a>
+                <span class="distance-tag">${item.distance !== Infinity ? item.distance.toFixed(1) + ' mi' : ''}</span>
+            </div>
+            <div style="font-size: 0.7rem; color: #888; margin-bottom: 10px;">Hours: ${item.rawHours}</div>
+            <span class="truck-name">${mainLabel}</span>
+            <div style="display: flex; align-items: center; gap: 10px;">
+                <span class="status-badge" style="background: ${statusColor};">${statusText}</span>
+                ${item.hasKitchen ? '<span class="status-badge" style="background: #0277bd;">Food On-Site</span>' : ''}
+            </div>
+            ${tapListHtml}
+        `;
+        container.appendChild(card);
+    }); // Closes forEach
+} // Closes function
 
 
  async function openTapList(jsonPath, breweryName) {
