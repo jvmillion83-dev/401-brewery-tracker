@@ -80,7 +80,21 @@
         "TRAGMAR ALE WORKS": { lat: 41.6941, lng: -71.2692, url: "https://www.tragmar.com/", tapListUrl: "https://www.tragmar.com/draftlist", logo: "logos/tragmar.png", hours: ["12-5pm", "Closed", "Closed", "3-8pm", "3-8pm", "12-9pm", "12-5pm"] },
         "VIGILANT BREWING": { lat: 41.7028, lng: -71.2682, url: "https://vigilantbrewing.com/", tapListUrl: "https://untappd.com/v/vigilant-brewing/11374511", logo: "logos/vigilant.png", hours: ["1-6pm", "4-8pm", "Closed", "4-8pm", "3-8pm", "1-10pm", "1-10pm"] },
         "TILTED BARN BREWERY": { lat: 41.5707, lng: -71.5192, url: "https://www.tiltedbarnbrewery.com/", tapListUrl: "https://www.tiltedbarnbrewery.com/on-tap-to-go", logo: "logos/tiltedbarn.png", hours: ["12-5pm", "Closed", "Closed", "4-8pm", "12-8pm", "12-8pm", "12-8pm"] },
-        "THE GUILD PAWTUCKET": { lat: 41.8705, lng: -71.3917, url: "https://www.theguildpawtucket.com/", tapListUrl: "https://www.theguildpawtucket.com/#food", logo: "logos/theguildpawt.png", hours: ["12-6pm", "Closed", "4-8pm", "4-8pm", "4-8pm", "12-10pm", "12-10pm"], hasKitchen: true },
+
+"THE GUILD PAWTUCKET": {
+    lat: 41.8705, 
+    lng: -71.3917, 
+    url: "https://www.theguildpawtucket.com/", 
+    logo: "logos/theguildpawt.png", 
+    hours: ["12-6pm", "Closed", "4-8pm", "4-8pm", "4-8pm", "12-10pm", "12-10pm"], 
+    hasKitchen: true,
+    // Add the menus property here:
+    menus: [
+        { label: "📝 VIEW TAP LIST", path: "/data/guild-menu.json" },
+        { label: "🍔 VIEW FOOD MENU", path: "/data/guild-food-menu.json" }
+    ]
+},
+       	
         "UNION STATION BREWERY": { lat: 41.8268, lng: -71.4144, url: "https://unionstationpvd.com/", tapListUrl: "https://unionstationpvd.com/providence-union-station-brewery-our-beer", logo: "logos/unionstation.png", hours: ["11:30am-9pm", "11:30am-10pm", "11:30am-10pm", "11:30am-10pm", "11:30am-10pm", "11:30am-11pm", "11:30am-11pm"], hasKitchen: true },
         "APPONAUG BREWING": { lat: 41.7028, lng: -71.4475, url: "https://apponaugbrewing.com/", tapListUrl: "https://apponaugbrewing.com/warwick-apponaug-brewing-menus", logo: "logos/apponaug.png", hours: ["12-8pm", "Closed", "4-10pm", "4-10pm", "4-10pm", "4-11pm", "12-11pm"], hasKitchen: true }
     };
