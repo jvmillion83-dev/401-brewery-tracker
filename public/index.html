@@ -303,65 +303,48 @@ if (item.brewery.toLowerCase().includes('uncommon')) {
     const content = document.getElementById('modalContent');
     const title = document.getElementById('modalTitle');
     
-    // Set UI state
-    title.innerText = `${breweryName} Tap List`;
+    title.innerText = `${breweryName} Menu`;
     modal.style.display = "block";
     content.innerHTML = "Loading...";
 
     try {
         const response = await fetch(jsonPath);
-        if (!response.ok) throw new Error("HTTP error " + response.status);
-        
         const data = await response.json();
 
-        // 1. Image Menu Logic
-       if (data.isImageMenu) {
-            content.innerHTML = `<img src="${data.menuImageUrl}" style="width:100%; border-radius:8px; display:block;">`;
-        } 
-        // 2. Text Menu Logic
-        else {
-    // Determine the data format:
-    // If it has "Food on site", it's grouped. Otherwise, look for flat beer lists.
-    const isGrouped = !!data["Food on site"];
-    const displayData = data["Food on site"] || data["Beer on tap"] || data["Beer On Tap"] || data.beers || [];
+        // Check if this data is "Grouped" (Food) or "Flat" (Beer)
+        // We do this by checking for the specific key created by your food scraper
+        const isGrouped = data.hasOwnProperty("Food on site");
+        const displayData = data["Food on site"] || data["Beer on tap"] || data["Beer On Tap"] || data.beers || [];
 
-    if (displayData.length === 0) {
-        content.innerHTML = "<p style='text-align:center;'>No menu items available.</p>";
-    } else if (isGrouped) {
-        // RENDER GROUPED FOOD MENU
-        content.innerHTML = displayData.map(section => `
-            <div class="menu-section" style="margin-bottom: 20px;">
-                <h3 style="color: #ffc107; border-bottom: 1px solid #444; padding-bottom: 5px; margin-top: 20px;">
-                    ${section.header}
-                </h3>
-                ${section.items.map(item => `
-                    <div style="padding:10px; border-bottom:1px solid #333;">
-                        <div style="display:flex; justify-content:space-between;">
-                            <strong>${item.name || 'N/A'}</strong>
-                            <span style="color: #fff;">${item.price || ''}</span>
+        if (displayData.length === 0) {
+            content.innerHTML = "<p style='text-align:center;'>No items available.</p>";
+        } else if (isGrouped) {
+            // RENDER GROUPED (FOOD)
+            content.innerHTML = displayData.map(section => `
+                <div class="menu-section" style="margin-bottom: 20px;">
+                    <h3 style="color: #ffc107; border-bottom: 1px solid #444; margin-top: 20px;">${section.header}</h3>
+                    ${section.items.map(item => `
+                        <div style="padding:10px; border-bottom:1px solid #333;">
+                            <div style="display:flex; justify-content:space-between;">
+                                <strong>${item.name}</strong>
+                                <span>${item.price}</span>
+                            </div>
+                            <div style="font-size:0.8rem; color:#aaa;">${item.description}</div>
                         </div>
-                        <div style="font-size:0.8rem; color:#aaa; margin-top:4px;">${item.description || ''}</div>
-                    </div>
-                `).join('')}
-            </div>
-        `).join('');
-    } else {
-        // RENDER FLAT BEER MENU
-        content.innerHTML = displayData.map(b => `
-            <div style="padding:10px; border-bottom:1px solid #333;">
-                <div style="display:flex; justify-content:space-between;">
-                    <strong>${b.name || 'Unknown Beer'}</strong>
-                    <span style="background:#444; padding:2px 6px; border-radius:4px; font-size:0.75rem;">${b.abv || 'N/A'}</span>
+                    `).join('')}
                 </div>
-                ${b.style && b.style !== 'N/A' && b.style !== 'undefined' ? `<div style="color:#aaa; font-size: 0.8rem; font-style: italic;">${b.style}</div>` : ''}
-                <div style="font-size:0.75rem; margin-top:5px; color:#ddd;">${b.description || ''}</div>
-            </div>
-        `).join('');
-    }
-} // Ensure you have this closing brace to end the else block
-    } catch (e) { 
-        console.error("Fetch/Parse Error:", e);
-        content.innerHTML = "Failed to load tap list. Please check the JSON path or file format.";
+            `).join('');
+        } else {
+            // RENDER FLAT (BEER)
+            content.innerHTML = displayData.map(b => `
+                <div style="padding:10px; border-bottom:1px solid #333;">
+                    <strong>${b.name}</strong> - ${b.abv}
+                    <div style="font-size:0.8rem; color:#aaa;">${b.description}</div>
+                </div>
+            `).join('');
+        }
+    } catch (e) {
+        content.innerHTML = "Failed to load.";
     }
 }
 
