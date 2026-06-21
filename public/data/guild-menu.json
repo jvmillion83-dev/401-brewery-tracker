@@ -1,0 +1,100 @@
+{
+  "Beer on tap": [
+    {
+      "name": "AMBROSIA",
+      "style": "Hazy IPA",
+      "abv": "4.2%",
+      "description": " | IBU: 70"
+    },
+    {
+      "name": "C'MON GUY",
+      "style": "Peanut Butter Stout",
+      "abv": "5.7%",
+      "description": " | IBU: 20"
+    },
+    {
+      "name": "COMMON COURTESY",
+      "style": "Rhode Island Common Ale",
+      "abv": "5.1%",
+      "description": "Pours a deep amber color. Flavors of nuttiness, caramel and brown bread notes w/mild bitterness | IBU: 21"
+    },
+    {
+      "name": "FROM THE ISLE",
+      "style": "Irish Red",
+      "abv": "6.5%",
+      "description": "Pours ruby color w/ blend of Euro malts that give flavors of caramel, toffee, and dried fruit. | IBU: 23"
+    },
+    {
+      "name": "GRUMPY OLD MAN",
+      "style": "Brown Ale",
+      "abv": "5.5%",
+      "description": "Pronounced malt flavor w/ mild bitterness & a medium body. This classic style goes down smooth | IBU: 25"
+    },
+    {
+      "name": "HUX",
+      "style": "Hard Seltzer",
+      "abv": "4.2%",
+      "description": "Refreshing black cherry flavor. Made in collaboration with Providence College. | IBU: 0"
+    },
+    {
+      "name": "IRISH SOCIAL CLUB",
+      "style": "Irish Stout",
+      "abv": "4.2%",
+      "description": "unique Loughran Family Irish Ale malt blended w/ flaked barley, carafa, & chocolate malt | IBU: 25"
+    },
+    {
+      "name": "LOW RYEDER",
+      "style": "Rye Robust Porter",
+      "abv": "6.2%",
+      "description": "Flavors of black chocolate & espresso up front, with a dry rye spice and complexity. | IBU: 28"
+    },
+    {
+      "name": "NATE D",
+      "style": "Session NE IPA",
+      "abv": "4.0%",
+      "description": "Tropical fruit aromas of papaya, mango, & citrus zest lead into a mild bitterness & light body | IBU: 33"
+    },
+    {
+      "name": "RIFC",
+      "style": "American Pale Ale",
+      "abv": "5.0%",
+      "description": "A sessionable pale ale w/ a soft mouthfeel and moderate bitterness | IBU: 15"
+    },
+    {
+      "name": "SLATER",
+      "style": "Lager",
+      "abv": "5.0%",
+      "description": "Bready with a touch of sweetness; low bitterness with herbal/spicy hop character & clean finish | IBU: 15"
+    },
+    {
+      "name": "STRIKER",
+      "style": "Light Lager",
+      "abv": "4.3%",
+      "description": "Crisp & light w/ notes of cracker & white bread. | IBU: 15"
+    },
+    {
+      "name": "SUMMER SESH",
+      "style": "Fruited Sour",
+      "abv": "4.9%",
+      "description": "Fruited with mango and tangerine. | IBU: 7"
+    },
+    {
+      "name": "WARREN G",
+      "style": "NE DIPA",
+      "abv": "8.0%",
+      "description": "Very soft bitterness and bursting with bright tropical flavor | IBU: 64"
+    },
+    {
+      "name": "HANDLINE",
+      "style": "Kolsch",
+      "abv": "5.0%",
+      "description": " | IBU: 18"
+    },
+    {
+      "name": "SUMMER BERRY LEMONADE",
+      "style": "Vodka Lemonade",
+      "abv": "10.0%",
+      "description": ""
+    }
+  ]
+}
