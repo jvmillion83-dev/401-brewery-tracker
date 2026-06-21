@@ -289,6 +289,23 @@ if (item.brewery.toLowerCase().includes('uncommon')) {
     tapListHtml = `<a href="${info.tapListUrl}" target="_blank" class="tap-list-btn">📝 View Tap List</a>`;
 }
 
+if (info && info.menus) {
+    tapListHtml = info.menus
+        .filter(menu => {
+            // If on 'beer' tab, only show tap list. If 'food' tab, show both.
+            if (currentTab === 'beer') return menu.label.includes('TAP LIST');
+            return true; // Show everything on 'food' tab
+        })
+        .map(menu => `
+            <button onclick="openTapList('${menu.path}', '${item.brewery}')" 
+                    class="tap-list-btn" style="display:block; width:100%; margin-top:5px;">
+                ${menu.label}
+            </button>
+        `).join('');
+} else if (info && info.tapListUrl) {
+    tapListHtml = `<a href="${info.tapListUrl}" target="_blank" class="tap-list-btn">📝 View Tap List</a>`;
+}
+
 
         card.innerHTML = `
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
