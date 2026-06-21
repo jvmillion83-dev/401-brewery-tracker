@@ -256,11 +256,17 @@ if (item.brewery.toLowerCase().includes('uncommon')) {
     tapListHtml = `<button onclick="openTapList('/data/foolproof-menu.json', 'Foolproof Brewing')" class="tap-list-btn">📝 VIEW TAP LIST</button>`;
 } else if (item.brewery.toLowerCase().includes('lops')) {
     tapListHtml = `<button onclick="openTapList('/data/lops-menu.json', 'Lops Brewery')" class="tap-list-btn">📝 VIEW TAP LIST</button>`;
+
+
 } else if (item.brewery.toLowerCase().includes('guild')) {
-    tapListHtml = `<button onclick="openTapList('/data/guild-menu.json', 'The Guild Pawtucket')" class="tap-list-btn">📝 VIEW TAP LIST</button>`;
-} else if (item.brewery.toLowerCase().includes('guild') && item.brewery.toLowerCase().includes('current')) {
-  tapListHtml = `<button onclick="openTapList('/data/guild-food-menu.json', 'The Guild Pawtucket')" class="tap-list-btn">📝 VIEW FOOD MENU</button>`;
-} else if (item.brewery.toLowerCase().includes('guild') && item.brewery.toLowerCase().includes('current')) {
+    // Generate both buttons if the brewery is The Guild
+    tapListHtml = `
+        <button onclick="openTapList('/data/guild-menu.json', 'The Guild Pawtucket')" class="tap-list-btn">📝 VIEW TAP LIST</button>
+        <button onclick="openTapList('/data/guild-food-menu.json', 'The Guild Pawtucket')" class="tap-list-btn" style="margin-top: 5px;">🍔 VIEW FOOD MENU</button>
+    `;
+
+
+} else if (item.brewery.toLowerCase().includes('crooked') && item.brewery.toLowerCase().includes('current')) {
     tapListHtml = `<button onclick="openTapList('/data/crookedcurrent-menu.json', 'Crooked Current Brewing')" class="tap-list-btn">📝 VIEW TAP LIST</button>`;
 // Add this new block for Moniker:
 } else if (item.brewery.toLowerCase().includes('moniker')) {
@@ -268,7 +274,6 @@ if (item.brewery.toLowerCase().includes('uncommon')) {
 } else if (info.tapListUrl){
     tapListHtml = `<a href="${info.tapListUrl}" target="_blank" class="tap-list-btn">📝 View Tap List</a>`;
 }
-
 
 
         card.innerHTML = `
