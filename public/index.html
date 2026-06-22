@@ -414,54 +414,57 @@ function closeModal() {
     document.getElementById('tapListModal').style.display = "none";
 }
 
+
+
+
+
+
 async function renderTapList(containerId, jsonFile) {
     const response = await fetch(`./public/data/${jsonFile}`);
     const data = await response.json();
     const container = document.getElementById(containerId);
+    
+    // DEBUG: Open your browser console (F12) to see this output
+    console.log("Loaded Data Structure:", data);
 
-    // Check if the data is structured as sections (Header + Items)
-    const isSectioned = data["Beer on tap"] && 
-                        Array.isArray(data["Beer on tap"]) && 
-                        data["Beer on tap"][0].header;
+    // Updated check: verify "Beer on tap" exists and is an array
+    const beerData = data["Beer on tap"];
+    const isSectioned = Array.isArray(beerData) && beerData.length > 0 && beerData[0].hasOwnProperty('header');
 
     if (isSectioned) {
         // RENDER SECTIONED (HEADERS + ITEMS)
-        // Use 'container' instead of 'content'
-        container.innerHTML = data["Beer on tap"].map(section => `
+        container.innerHTML = beerData.map(section => `
             <div class="menu-section" style="margin-bottom: 20px;">
                 <h3 style="color: #ffc107; border-bottom: 1px solid #444; margin: 15px 0;">${section.header}</h3>
-                ${section.items.map(item => `
+                ${Array.isArray(section.items) ? section.items.map(item => `
                     <div style="padding:10px; border-bottom:1px solid #333;">
-                        <strong>${item.name}</strong> - ${item.abv}
-                        <div style="font-size:0.8rem; color:#aaa;">${item.description}</div>
+                        <strong>${item.name || 'Unnamed Item'}</strong> - ${item.abv || ''}
+                        <div style="font-size:0.8rem; color:#aaa;">${item.description || ''}</div>
                     </div>
-                `).join('')}
+                `).join('') : '<p>No items in this section</p>'}
             </div>
         `).join('');
-    } else {
-        // 1. Check if the data indicates this is an image-based menu
-        if (data.isImageMenu) {
-            container.innerHTML = `
-                <div class="menu-image-container" style="text-align:center; padding: 20px;">
-                    <img src="${data.menuImageUrl}" 
-                         style="width:100%; max-width:600px; border-radius:8px; border: 1px solid #444;" 
-                         alt="Current Draft Menu" />
-                    <p style="font-size:0.8rem; color:#888; margin-top:10px;">
-                        Last updated: ${data.lastUpdated}
-                    </p>
-                </div>
-            `;
-        } else {
-            // 2. Existing logic for text-based menus
-            container.innerHTML = data["Beer on tap"].map(beer => `
-                <div class="beer-item" style="padding:10px; border-bottom:1px solid #333;">
-                    <h3>${beer.name} <span class="abv">${beer.abv}</span></h3>
-                    <p>${beer.style}</p>
-                </div>
-            `).join('');
-        }
+    } 
+    else if (data.isImageMenu) {
+        // RENDER IMAGE MENU
+        container.innerHTML = `
+            <div class="menu-image-container" style="text-align:center; padding: 20px;">
+                <img src="${data.menuImageUrl}" style="width:100%; max-width:600px; border-radius:8px;" alt="Menu" />
+                <p style="font-size:0.8rem; color:#888;">Last updated: ${data.lastUpdated}</p>
+            </div>
+        `;
+    } 
+    else if (Array.isArray(beerData)) {
+        // RENDER OLD FLAT LIST
+        container.innerHTML = beerData.map(beer => `
+            <div class="beer-item" style="padding:10px; border-bottom:1px solid #333;">
+                <h3>${beer.name || 'Unnamed Beer'} <span class="abv">${beer.abv || ''}</span></h3>
+                <p>${beer.style || ''}</p>
+            </div>
+        `).join('');
     }
 }
+
 
     async function initApp() {
         generateDatePicker();
