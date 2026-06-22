@@ -356,34 +356,7 @@ if (info && info.menus) {
             let htmlContent = "";
             const beerSections = data["Beer on tap"];
 
-            // Loop through each category (On Tap, Can Pours)
-            for (const [category, items] of Object.entries(beerSections)) {
-                htmlContent += `<h3 style="color: #ffc107; margin-top: 15px; border-bottom: 1px solid #444;">${category}</h3>`;
-                
-                items.forEach(beer => {
-                    htmlContent += `
-                        <div style="margin-bottom: 15px;">
-                            <div style="font-size: 1.1rem; font-weight: bold;">${beer.name} - ${beer.abv}</div>
-                            <div style="font-size: 0.9rem; color: #ccc;">${beer.style}</div>
-                            <div style="font-size: 0.85rem; color: #888; margin-top: 4px;">${beer.description}</div>
-                        </div>
-                    `;
-                });
-            }
-            content.innerHTML = htmlContent;
-        } else {
-            // Handle older flat JSON files if necessary
-            content.innerHTML = "Menu format not recognized.";
-        }
-    } catch (e) {
-        content.innerHTML = "Failed to load.";
-        console.error(e);
-    }
-}
-
-
-
-
+            
 
 
 
