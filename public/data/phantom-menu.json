@@ -1,7 +1,7 @@
 {
   "Beer on tap": {
     "On Tap": [
-        {
+      {
       "name": "Swirl",
       "style": "IPA- New England",
       "abv": "5.8%",
@@ -79,8 +79,7 @@
 
 ],
     "Can Pours": [
-    
-{
+      {
       "name": "Elegant Viking (Can Pours 16oz)",
       "style": "IPA- New England",
       "abv": "6.5%",
@@ -123,8 +122,8 @@
       "abv": "7.0%",
       "description": 
 "Collaboration with Con es Puma! Layered with citrus, pine, white grapes, dank resin, and roasted coffee bean notes."
-    }
-
-  ],
+  }
+    ]
+  },
   "lastUpdated": "6/19/2026, 7:32:05 PM"
 }
