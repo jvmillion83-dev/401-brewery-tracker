@@ -2,127 +2,115 @@
   "Beer on tap": {
     "On Tap": [
       {
-      "name": "Swirl",
-      "style": "IPA- New England",
-      "abv": "5.8%",
-      "description": "Color - Golden yellow haze. Aroma - Citrus, cantaloupe, wine grapes, strawberry. Flavor - Smooth and tropical. Body - Medium. *Citra hops, and dry-hopped with Idaho 7, Nelson Sauvin"
-    },
-    {
-      "name": "The Presence",
-      "style": "IPA - Imperial",
-      "abv": "8.0%",
-      "description": "Double IPA with the addition of Phantasm from New Zealand. Superdelic and Simcoe dry hop"
-    },
-    {
-      "name": "Phantom Gose",
-      "style": "Sour - Traditional Gose",
-      "abv": "4.5%",
-      "description": " "
-    },
-    {
-      "name": "Mirage Royale",
-      "style": "Sour- Fruited",
-      "abv": "4.7%",
-      "description": "Mango and Pineapple sour"
-    },
-    {
-      "name": "Wanaka Willow",
-      "style": "Pilsner - New Zealand",
-      "abv": "4.8%",
-      "description": "The Wanaka tree stands alone in the calm waters of Lake Wanaka, personifying purity and natural beauty. New Zealand Pilsner: refreshing, clean, and simple in appearance, yet offering a complex blend of aromas and flavors in every sip."
-    },
-    {
-      "name": "Footloose",
-      "style": "Pilsner - Czech",
-      "abv": "5%",
-      "description": "Silver Medal - Aro Rojo Beer Cup Silver Medal - Rhode Worthy Immerse in the rich beer heritage of the Czech Republic with our Bohemian Pilsner, a homage to the Czech Lager tradition. "
-    },
-    {
-      "name": "Half-Dark",
-      "style": "Lager - Polotmavé (Czech Amber)",
-      "abv": "4.8%",
-      "description": "Czech Amber Lager - Aroma notes of biscuit, dried fruit, slight caramel, and a minimal spicy hop. Subtle malt flavors and earthiness present with a dry finish."
-    },
-    {
-      "name": "Glacier",
-      "style": "Pilsner - Other",
-      "abv": "4.8%",
-      "description": "Color - Straw. Aroma - Bread, grain. Flavor - Azahar flower (orange blossom), citrus. Body - Low-medium."
-    },
-    {
-      "name": "Blue Demon",
-      "style": "Lager - Mexican",
-      "abv": "5.5%",
-      "description": "Lager - Mexican 5.5% ABV Mexican Lager 5.5% abv."
-    },
-{
-      "name": "Alternate Continuum",
-      "style": "Farmhouse Ale - Saison",
-      "abv": "8.2%",
-      "description": "Aged in Chardonnay white wine barrels for 13 months. Wine character flavors, with notes of apricot and peach, pineapple, and white flowers. A gentle toast from the oak adds layers of vanilla, coconut, and a subtle spice."
-    },
-{
-      "name": "Hypernova",
-      "style": "Barleywine - American",
-      "abv": "11%",
-      "description": 
-"American Barleywine"
-    },
-{
-      "name": "Blushing Sky",
-      "style": "Cider - Other Fruit",
-      "abv": "6.2%",
-      "description": 
-"Cider with real raspberry puree, no artificial flavors. Gluten free. Pink hue of the cider evokes the serene, picturesque quality of a sunset or twilight sky. Evocative and calming—great for conveying the peaceful experience of enjoyment."
-    }
-
-
-],
+        "name": "Swirl",
+        "style": "IPA- New England",
+        "abv": "5.8%",
+        "description": "Color - Golden yellow haze. Aroma - Citrus, cantaloupe, wine grapes, strawberry. Flavor - Smooth and tropical. Body - Medium. *Citra hops, and dry-hopped with Idaho 7, Nelson Sauvin"
+      },
+      {
+        "name": "The Presence",
+        "style": "IPA - Imperial",
+        "abv": "8.0%",
+        "description": "Double IPA with the addition of Phantasm from New Zealand. Superdelic and Simcoe dry hop"
+      },
+      {
+        "name": "Phantom Gose",
+        "style": "Sour - Traditional Gose",
+        "abv": "4.5%",
+        "description": " "
+      },
+      {
+        "name": "Mirage Royale",
+        "style": "Sour- Fruited",
+        "abv": "4.7%",
+        "description": "Mango and Pineapple sour"
+      },
+      {
+        "name": "Wanaka Willow",
+        "style": "Pilsner - New Zealand",
+        "abv": "4.8%",
+        "description": "The Wanaka tree stands alone in the calm waters of Lake Wanaka, personifying purity and natural beauty. New Zealand Pilsner: refreshing, clean, and simple in appearance, yet offering a complex blend of aromas and flavors in every sip."
+      },
+      {
+        "name": "Footloose",
+        "style": "Pilsner - Czech",
+        "abv": "5%",
+        "description": "Silver Medal - Aro Rojo Beer Cup Silver Medal - Rhode Worthy Immerse in the rich beer heritage of the Czech Republic with our Bohemian Pilsner, a homage to the Czech Lager tradition. "
+      },
+      {
+        "name": "Half-Dark",
+        "style": "Lager - Polotmavé (Czech Amber)",
+        "abv": "4.8%",
+        "description": "Czech Amber Lager - Aroma notes of biscuit, dried fruit, slight caramel, and a minimal spicy hop. Subtle malt flavors and earthiness present with a dry finish."
+      },
+      {
+        "name": "Glacier",
+        "style": "Pilsner - Other",
+        "abv": "4.8%",
+        "description": "Color - Straw. Aroma - Bread, grain. Flavor - Azahar flower (orange blossom), citrus. Body - Low-medium."
+      },
+      {
+        "name": "Blue Demon",
+        "style": "Lager - Mexican",
+        "abv": "5.5%",
+        "description": "Lager - Mexican 5.5% ABV Mexican Lager 5.5% abv."
+      },
+      {
+        "name": "Alternate Continuum",
+        "style": "Farmhouse Ale - Saison",
+        "abv": "8.2%",
+        "description": "Aged in Chardonnay white wine barrels for 13 months. Wine character flavors, with notes of apricot and peach, pineapple, and white flowers. A gentle toast from the oak adds layers of vanilla, coconut, and a subtle spice."
+      },
+      {
+        "name": "Hypernova",
+        "style": "Barleywine - American",
+        "abv": "11%",
+        "description": "American Barleywine"
+      },
+      {
+        "name": "Blushing Sky",
+        "style": "Cider - Other Fruit",
+        "abv": "6.2%",
+        "description": "Cider with real raspberry puree, no artificial flavors. Gluten free. Pink hue of the cider evokes the serene, picturesque quality of a sunset or twilight sky. Evocative and calming—great for conveying the peaceful experience of enjoyment."
+      }
+    ],
     "Can Pours": [
       {
-      "name": "Elegant Viking (Can Pours 16oz)",
-      "style": "IPA- New England",
-      "abv": "6.5%",
-      "description": 
-"Color - Orange haze Aroma - Mango, citrus, peaches Body - Medium low Flavor - Orange, tangerine, mango, peach, medium high bitterness Dry-Hopped with Nectaron, Strata, Galaxy"
-    },
-{
-      "name": "Wander (Can Pours 16oz)",
-      "style": "Farmhouse Ale - Saison",
-      "abv": "7.3%",
-      "description": 
-"Brewed with Origin Beer Project from Providence, RI. Chosen hops in partnership with Yakima Chief Hops, Wander explores the partnership between the city and the valley, bringing fresh, earthy hop notes with some fruit undertones. Shaped by both place and process."
-    },
-{
-      "name": "Picknick (Can Pours 16oz)",
-      "style": "Pilsner - German",
-      "abv": "4.5%",
-      "description": 
-"A modern interpretation of the classic German beer, PickNick features new German hops alongside traditional grains and yeast. At 4.5% alcohol, its easy-drinking allure pairs perfectly with a picnic day, offering a crisp dryness while enjoying the outdoors."
-    },
-
-{
-      "name": "Mordax (Can Pours 16oz)",
-      "style": "IPA- New England",
-      "abv": "6.6%",
-      "description": 
-"Dry-hopped with Anchovy and Superdelic hops"
-    },
-
-{
-      "name": "Greenway (Can Pours 16oz)",
-      "style": "IPA- Session New England",
-      "abv": "4.7%",
-      "description": 
-"Strata + Nelson Sauvin hops"
-    },
-{
-      "name": "Warp And Weft (Can Pours 16oz)",
-      "style": "IPA- Black",
-      "abv": "7.0%",
-      "description": 
-"Collaboration with Con es Puma! Layered with citrus, pine, white grapes, dank resin, and roasted coffee bean notes."
-  }
+        "name": "Elegant Viking (Can Pours 16oz)",
+        "style": "IPA- New England",
+        "abv": "6.5%",
+        "description": "Color - Orange haze Aroma - Mango, citrus, peaches Body - Medium low Flavor - Orange, tangerine, mango, peach, medium high bitterness Dry-Hopped with Nectaron, Strata, Galaxy"
+      },
+      {
+        "name": "Wander (Can Pours 16oz)",
+        "style": "Farmhouse Ale - Saison",
+        "abv": "7.3%",
+        "description": "Brewed with Origin Beer Project from Providence, RI. Chosen hops in partnership with Yakima Chief Hops, Wander explores the partnership between the city and the valley, bringing fresh, earthy hop notes with some fruit undertones. Shaped by both place and process."
+      },
+      {
+        "name": "Picknick (Can Pours 16oz)",
+        "style": "Pilsner - German",
+        "abv": "4.5%",
+        "description": "A modern interpretation of the classic German beer, PickNick features new German hops alongside traditional grains and yeast. At 4.5% alcohol, its easy-drinking allure pairs perfectly with a picnic day, offering a crisp dryness while enjoying the outdoors."
+      },
+      {
+        "name": "Mordax (Can Pours 16oz)",
+        "style": "IPA- New England",
+        "abv": "6.6%",
+        "description": "Dry-hopped with Anchovy and Superdelic hops"
+      },
+      {
+        "name": "Greenway (Can Pours 16oz)",
+        "style": "IPA- Session New England",
+        "abv": "4.7%",
+        "description": "Strata + Nelson Sauvin hops"
+      },
+      {
+        "name": "Warp And Weft (Can Pours 16oz)",
+        "style": "IPA- Black",
+        "abv": "7.0%",
+        "description": "Collaboration with Con es Puma! Layered with citrus, pine, white grapes, dank resin, and roasted coffee bean notes."
+      }
     ]
   },
   "lastUpdated": "6/19/2026, 7:32:05 PM"
