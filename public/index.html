@@ -420,50 +420,57 @@ function closeModal() {
 
 
 async function renderTapList(containerId, jsonFile) {
-    const response = await fetch(`./public/data/${jsonFile}`);
-    const data = await response.json();
     const container = document.getElementById(containerId);
     
-    // DEBUG: Open your browser console (F12) to see this output
-    console.log("Loaded Data Structure:", data);
+    try {
+        const response = await fetch(`./public/data/${jsonFile}`);
+        const data = await response.json();
+        
+        // CRITICAL: Look at your console to see exactly what 'data' is!
+        console.log("Loaded JSON Data:", data);
 
-    // Updated check: verify "Beer on tap" exists and is an array
-    const beerData = data["Beer on tap"];
-    const isSectioned = Array.isArray(beerData) && beerData.length > 0 && beerData[0].hasOwnProperty('header');
+        // 1. Handle Image Menus
+        if (data.isImageMenu) {
+            container.innerHTML = `
+                <div style="text-align:center; padding: 20px;">
+                    <img src="${data.menuImageUrl}" style="width:100%; max-width:600px; border-radius:8px;" />
+                    <p>Last updated: ${data.lastUpdated}</p>
+                </div>
+            `;
+            return;
+        }
 
-    if (isSectioned) {
-        // RENDER SECTIONED (HEADERS + ITEMS)
-        container.innerHTML = beerData.map(section => `
-            <div class="menu-section" style="margin-bottom: 20px;">
-                <h3 style="color: #ffc107; border-bottom: 1px solid #444; margin: 15px 0;">${section.header}</h3>
-                ${Array.isArray(section.items) ? section.items.map(item => `
-                    <div style="padding:10px; border-bottom:1px solid #333;">
-                        <strong>${item.name || 'Unnamed Item'}</strong> - ${item.abv || ''}
-                        <div style="font-size:0.8rem; color:#aaa;">${item.description || ''}</div>
-                    </div>
-                `).join('') : '<p>No items in this section</p>'}
-            </div>
-        `).join('');
-    } 
-    else if (data.isImageMenu) {
-        // RENDER IMAGE MENU
-        container.innerHTML = `
-            <div class="menu-image-container" style="text-align:center; padding: 20px;">
-                <img src="${data.menuImageUrl}" style="width:100%; max-width:600px; border-radius:8px;" alt="Menu" />
-                <p style="font-size:0.8rem; color:#888;">Last updated: ${data.lastUpdated}</p>
-            </div>
-        `;
-    } 
-    else if (Array.isArray(beerData)) {
-        // RENDER OLD FLAT LIST
-        container.innerHTML = beerData.map(beer => `
-            <div class="beer-item" style="padding:10px; border-bottom:1px solid #333;">
-                <h3>${beer.name || 'Unnamed Beer'} <span class="abv">${beer.abv || ''}</span></h3>
-                <p>${beer.style || ''}</p>
-            </div>
-        `).join('');
+        // 2. Handle Sectioned Menu (Header + Items)
+        if (data["Beer on tap"] && Array.isArray(data["Beer on tap"]) && data["Beer on tap"][0]?.header) {
+            container.innerHTML = data["Beer on tap"].map(section => `
+                <div class="menu-section">
+                    <h3 style="color: #ffc107;">${section.header}</h3>
+                    ${section.items.map(item => `
+                        <div style="padding:10px; border-bottom:1px solid #333;">
+                            <strong>${item.name || 'N/A'}</strong> - ${item.abv || ''}
+                            <div style="font-size:0.8rem; color:#aaa;">${item.description || ''}</div>
+                        </div>
+                    `).join('')}
+                </div>
+            `).join('');
+        } 
+        // 3. Fallback: Handle Flat List
+        else if (Array.isArray(data["Beer on tap"])) {
+            container.innerHTML = data["Beer on tap"].map(beer => `
+                <div style="padding:10px; border-bottom:1px solid #333;">
+                    <strong>${beer.name || 'N/A'}</strong> - ${beer.abv || ''}
+                    <div style="font-size:0.8rem; color:#aaa;">${beer.style || ''}</div>
+                </div>
+            `).join('');
+        } else {
+            container.innerHTML = "<p>No items found or invalid data format.</p>";
+        }
+    } catch (error) {
+        console.error("Error loading menu:", error);
+        container.innerHTML = "<p>Error loading menu.</p>";
     }
 }
+
 
 
     async function initApp() {
