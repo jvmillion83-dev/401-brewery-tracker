@@ -1,9 +1,6 @@
 {
   "Beer on tap": [
     {
-      "header": "On Tap",
-      "items": [
-        {
           "name": "Swirl",
           "style": "IPA- New England",
           "abv": "5.8%",
@@ -74,12 +71,8 @@
           "style": "Cider - Other Fruit",
           "abv": "6.2%",
           "description": "Cider with real raspberry puree, no artificial flavors. Gluten free. Pink hue of the cider evokes the serene, picturesque quality of a sunset or twilight sky. Evocative and calming—great for conveying the peaceful experience of enjoyment."
-        }
-      ]
-    },
-    {
-      "header": "Can Pours",
-      "items": [
+        },
+  
         {
           "name": "Elegant Viking (Can Pours 16oz)",
           "style": "IPA- New England",
@@ -115,9 +108,9 @@
           "style": "IPA- Black",
           "abv": "7.0%",
           "description": "Collaboration with Con es Puma! Layered with citrus, pine, white grapes, dank resin, and roasted coffee bean notes."
-        }
-      ]
-    }
+     }
+    
+  
   ],
   "lastUpdated": "6/19/2026, 7:32:05 PM"
 }
