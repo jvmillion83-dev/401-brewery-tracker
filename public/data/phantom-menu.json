@@ -1,8 +1,6 @@
 {
-  "Beer on tap": [
-    {
- "header": "On Tap",
-"items": [
+  "Beer on tap": {
+    "On Tap": [
         {
       "name": "Swirl",
       "style": "IPA- New England",
@@ -79,11 +77,9 @@
     }
 
 
- ]
-    },
-    {
-      "header": "Can Pours",
-      "items": [
+],
+    "Can Pours": [
+    
 {
       "name": "Elegant Viking (Can Pours 16oz)",
       "style": "IPA- New England",
