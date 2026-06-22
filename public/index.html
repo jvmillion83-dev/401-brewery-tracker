@@ -351,16 +351,7 @@ if (info && info.menus) {
         const response = await fetch(jsonPath);
         const data = await response.json();
 
-// Check if data has the "Beer on tap" structure
-        if (data["Beer on tap"]) {
-            let htmlContent = "";
-            const beerSections = data["Beer on tap"];
-
-            
-
-
-
-// 1. ADD THIS: Check if this is an image-based menu
+        // 1. Handle Images
         if (data.isImageMenu) {
             content.innerHTML = `
                 <div style="text-align:center; padding: 20px;">
@@ -368,34 +359,44 @@ if (info && info.menus) {
                     <p style="font-size:0.8rem; color:#888; margin-top:10px;">Last updated: ${data.lastUpdated}</p>
                 </div>
             `;
-            return; // Exit after rendering the image
+            return;
         }
 
-        // Check if this data is "Grouped" (Food) or "Flat" (Beer)
-        // We do this by checking for the specific key created by your food scraper
+        // 2. Handle Nested Format (On Tap/Can Pours)
+        if (data["Beer on tap"] && typeof data["Beer on tap"] === 'object' && !Array.isArray(data["Beer on tap"])) {
+            let htmlContent = "";
+            for (const [category, items] of Object.entries(data["Beer on tap"])) {
+                htmlContent += `<h3 style="color: #ffc107; border-bottom: 1px solid #444; margin-top: 20px;">${category}</h3>`;
+                htmlContent += items.map(b => `
+                    <div style="padding:10px; border-bottom:1px solid #333;">
+                        <strong>${b.name}</strong> - ${b.abv}<br>
+                        <div style="font-size:0.8rem; color:#aaa;">${b.description}</div>
+                    </div>
+                `).join('');
+            }
+            content.innerHTML = htmlContent;
+            return;
+        }
+
+        // 3. Handle Grouped (Food) or Flat (Old Beer)
         const isGrouped = data.hasOwnProperty("Food on site");
         const displayData = data["Food on site"] || data["Beer on tap"] || data["Beer On Tap"] || data.beers || [];
 
         if (displayData.length === 0) {
             content.innerHTML = "<p style='text-align:center;'>No items available.</p>";
         } else if (isGrouped) {
-            // RENDER GROUPED (FOOD)
             content.innerHTML = displayData.map(section => `
-                <div class="menu-section" style="margin-bottom: 20px;">
+                <div style="margin-bottom: 20px;">
                     <h3 style="color: #ffc107; border-bottom: 1px solid #444; margin-top: 20px;">${section.header}</h3>
                     ${section.items.map(item => `
                         <div style="padding:10px; border-bottom:1px solid #333;">
-                            <div style="display:flex; justify-content:space-between;">
-                                <strong>${item.name}</strong>
-                                <span>${item.price}</span>
-                            </div>
+                            <div style="display:flex; justify-content:space-between;"><strong>${item.name}</strong><span>${item.price}</span></div>
                             <div style="font-size:0.8rem; color:#aaa;">${item.description}</div>
                         </div>
                     `).join('')}
                 </div>
             `).join('');
         } else {
-            // RENDER FLAT (BEER)
             content.innerHTML = displayData.map(b => `
                 <div style="padding:10px; border-bottom:1px solid #333;">
                     <strong>${b.name}</strong> - ${b.abv}
@@ -405,6 +406,7 @@ if (info && info.menus) {
         }
     } catch (e) {
         content.innerHTML = "Failed to load.";
+        console.error("Menu Load Error:", e);
     }
 }
 
