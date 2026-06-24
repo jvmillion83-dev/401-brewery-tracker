@@ -465,6 +465,15 @@ function renderTapList(data) {
             allTruckData = [...await mainRes.json(), ...await manualRes.json()];
         } catch (err) { console.error("Data load error:", err); }
 
+
+fetch('./data/phantom-menu.json') 
+  .then(response => response.json())
+  .then(data => {
+    renderTapList(data);
+  })
+  .catch(error => console.error("Error loading menu:", error));
+
+
         const today = new Date();
         const dateString = `${today.getMonth() + 1}/${today.getDate()}`;
         renderDate(dateString);
