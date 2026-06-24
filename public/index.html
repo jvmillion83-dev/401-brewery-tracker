@@ -416,60 +416,42 @@ function closeModal() {
 
 
 
+function renderTapList(data) {
+  const container = document.getElementById('menu-container');
+  container.innerHTML = ''; // Clear existing content
 
+  // Loop through each category (e.g., "On Tap", "Can Pours")
+  Object.keys(data).forEach(category => {
+    // Skip 'lastUpdated'
+    if (category === 'lastUpdated') return;
 
+    // 1. Create and append the category header
+    const header = document.createElement('h3');
+    header.textContent = category; // This sets the header to "On Tap" or "Can Pours"
+    container.appendChild(header);
 
-async function renderTapList(containerId, jsonFile) {
-    const container = document.getElementById(containerId);
-    
-    try {
-        const response = await fetch(`./public/data/${jsonFile}`);
-        const data = await response.json();
-        
-        // CRITICAL: Look at your console to see exactly what 'data' is!
-        console.log("Loaded JSON Data:", data);
-
-        // 1. Handle Image Menus
-        if (data.isImageMenu) {
-            container.innerHTML = `
-                <div style="text-align:center; padding: 20px;">
-                    <img src="${data.menuImageUrl}" style="width:100%; max-width:600px; border-radius:8px;" />
-                    <p>Last updated: ${data.lastUpdated}</p>
-                </div>
-            `;
-            return;
-        }
-
-        // 2. Handle Sectioned Menu (Header + Items)
-        if (data["Beer on tap"] && Array.isArray(data["Beer on tap"]) && data["Beer on tap"][0]?.header) {
-            container.innerHTML = data["Beer on tap"].map(section => `
-                <div class="menu-section">
-                    <h3 style="color: #ffc107;">${section.header}</h3>
-                    ${section.items.map(item => `
-                        <div style="padding:10px; border-bottom:1px solid #333;">
-                            <strong>${item.name || 'N/A'}</strong> - ${item.abv || ''}
-                            <div style="font-size:0.8rem; color:#aaa;">${item.description || ''}</div>
-                        </div>
-                    `).join('')}
-                </div>
-            `).join('');
-        } 
-        // 3. Fallback: Handle Flat List
-        else if (Array.isArray(data["Beer on tap"])) {
-            container.innerHTML = data["Beer on tap"].map(beer => `
-                <div style="padding:10px; border-bottom:1px solid #333;">
-                    <strong>${beer.name || 'N/A'}</strong> - ${beer.abv || ''}
-                    <div style="font-size:0.8rem; color:#aaa;">${beer.style || ''}</div>
-                </div>
-            `).join('');
-        } else {
-            container.innerHTML = "<p>No items found or invalid data format.</p>";
-        }
-    } catch (error) {
-        console.error("Error loading menu:", error);
-        container.innerHTML = "<p>Error loading menu.</p>";
-    }
+    // 2. Loop through items in that category
+    data[category].forEach(item => {
+      const itemDiv = document.createElement('div');
+      itemDiv.innerHTML = `
+        <div class="menu-item">
+          <strong>${item.name}</strong> - ${item.abv}<br>
+          <em>${item.style}</em><br>
+          <p>${item.description}</p>
+        </div>
+      `;
+      container.appendChild(itemDiv);
+    });
+  });
 }
+
+
+
+
+
+
+
+
 
 
 
