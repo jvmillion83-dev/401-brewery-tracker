@@ -418,19 +418,35 @@ function closeModal() {
 
 function renderTapList(data) {
   const container = document.getElementById('menu-container');
-  container.innerHTML = ''; 
+  
+  if (!container) {
+    console.error("Could not find element with id 'menu-container'. Check your HTML!");
+    return;
+  }
+  container.innerHTML = ''; // Clear existing content
 
-  // Just loop through the array directly if 'data' is the array itself
-  data.forEach(item => {
-    const itemDiv = document.createElement('div');
-    itemDiv.innerHTML = `
-      <div class="menu-item">
-        <strong>${item.name}</strong> - ${item.abv}<br>
-        <em>${item.style}</em><br>
-        <p>${item.description}</p>
-      </div>
-    `;
-    container.appendChild(itemDiv);
+  // Loop through each category (e.g., "On Tap", "Can Pours")
+  Object.keys(data).forEach(category => {
+    // Skip 'lastUpdated'
+    if (category === 'lastUpdated') return;
+
+    // 1. Create and append the category header
+    const header = document.createElement('h3');
+    header.textContent = category; // This sets the header to "On Tap" or "Can Pours"
+    container.appendChild(header);
+
+    // 2. Loop through items in that category
+    data[category].forEach(item => {
+      const itemDiv = document.createElement('div');
+      itemDiv.innerHTML = `
+        <div class="menu-item">
+          <strong>${item.name}</strong> - ${item.abv}<br>
+          <em>${item.style}</em><br>
+          <p>${item.description}</p>
+        </div>
+      `;
+      container.appendChild(itemDiv);
+    });
   });
 }
 
