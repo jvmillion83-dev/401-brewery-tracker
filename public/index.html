@@ -417,10 +417,11 @@ function closeModal() {
 
 
 function renderTapList(data) {
-  const container = document.getElementById('menu-container');
+  // Change 'menu-container' to 'modalContent' to match your HTML
+  const container = document.getElementById('modalContent');
   
   if (!container) {
-    console.error("Could not find element with id 'menu-container'. Check your HTML!");
+    console.error("Could not find element with id 'modalContent'.");
     return;
   }
   container.innerHTML = ''; // Clear existing content
