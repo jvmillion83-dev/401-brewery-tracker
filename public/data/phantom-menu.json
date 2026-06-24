@@ -13,10 +13,10 @@
       "description": "Double IPA with the addition of Phantasm from New Zealand. Superdelic and Simcoe dry hop"
     },
     {
-      "name": "Phantom Gose",
-      "style": "Sour - Traditional Gose",
-      "abv": "4.5%",
-      "description": " "
+      "name": "Time Off",
+      "style": "Wheat Beer - Witbier",
+      "abv": "5.0%",
+      "description": "Witbier brewed with orange zest and coriander seeds. Color: Straw hazy. Aroma: Coriander, pink peppercorns, orange, white flowers, bread. Flavor: Orange zest, coriander, peppercorns with medium-high intensity. Medium mouthfeel, creamy with a persistent orange flavor. "
     },
     {
       "name": "Mirage Royale",
@@ -24,54 +24,39 @@
       "abv": "4.7%",
       "description": "Mango and Pineapple sour"
     },
-    {
-      "name": "Wanaka Willow",
-      "style": "Pilsner - New Zealand",
-      "abv": "4.8%",
-      "description": "The Wanaka tree stands alone in the calm waters of Lake Wanaka, personifying purity and natural beauty. New Zealand Pilsner: refreshing, clean, and simple in appearance, yet offering a complex blend of aromas and flavors in every sip."
-    },
-    {
+{
       "name": "Footloose",
       "style": "Pilsner - Czech",
       "abv": "5%",
       "description": "Silver Medal - Aro Rojo Beer Cup Silver Medal - Rhode Worthy Immerse in the rich beer heritage of the Czech Republic with our Bohemian Pilsner, a homage to the Czech Lager tradition. "
     },
-    {
+{
       "name": "Half-Dark",
       "style": "Lager - Polotmavé (Czech Amber)",
       "abv": "4.8%",
       "description": "Czech Amber Lager - Aroma notes of biscuit, dried fruit, slight caramel, and a minimal spicy hop. Subtle malt flavors and earthiness present with a dry finish."
     },
     {
+      "name": "Wanaka Willow",
+      "style": "Pilsner - New Zealand",
+      "abv": "4.8%",
+      "description": "The Wanaka tree stands alone in the calm waters of Lake Wanaka, personifying purity and natural beauty. New Zealand Pilsner: refreshing, clean, and simple in appearance, yet offering a complex blend of aromas and flavors in every sip."
+    },
+    
+    {
       "name": "Glacier",
       "style": "Pilsner - Other",
       "abv": "4.8%",
       "description": "Color - Straw. Aroma - Bread, grain. Flavor - Azahar flower (orange blossom), citrus. Body - Low-medium."
     },
-    {
-      "name": "Blue Demon",
-      "style": "Lager - Mexican",
-      "abv": "5.5%",
-      "description": "Lager - Mexican 5.5% ABV Mexican Lager 5.5% abv."
-    },
+   
     {
       "name": "Alternate Continuum",
       "style": "Farmhouse Ale - Saison",
       "abv": "8.2%",
       "description": "Aged in Chardonnay white wine barrels for 13 months. Wine character flavors, with notes of apricot and peach, pineapple, and white flowers. A gentle toast from the oak adds layers of vanilla, coconut, and a subtle spice."
     },
-    {
-      "name": "Hypernova",
-      "style": "Barleywine - American",
-      "abv": "11%",
-      "description": "American Barleywine"
-    },
-    {
-      "name": "Blushing Sky",
-      "style": "Cider - Other Fruit",
-      "abv": "6.2%",
-      "description": "Cider with real raspberry puree, no artificial flavors. Gluten free. Pink hue of the cider evokes the serene, picturesque quality of a sunset or twilight sky. Evocative and calming—great for conveying the peaceful experience of enjoyment."
-    },
+   
   
     {
       "name": "Elegant Viking (Can Pours 16oz)",
