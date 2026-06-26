@@ -51,7 +51,7 @@ def scrape_menu():
     output_dir = os.path.join('..', 'public', 'data')
     os.makedirs(output_dir, exist_ok=True)
     
-    output_path = os.path.join(output_dir, 'bravo_menu.json')
+    output_path = os.path.join(output_dir, 'bravo-menu.json')
     
     with open(output_path, 'w') as f:
         json.dump({"On Tap": menu_items, "lastUpdated": "6/26/2026"}, f, indent=2)
