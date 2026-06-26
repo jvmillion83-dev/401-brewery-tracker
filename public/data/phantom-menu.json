@@ -1,28 +1,40 @@
 {
   "Beer on tap": [
-    {
+{
+      "name": "250 IPA",
+      "style": "IPA - New England",
+      "abv": "5.5%",
+      "description": "Born in New England and made exclusively with American-grown ingredients. Dry-hopped with Sabro, Idaho 7, Mosaic, and HBC 522. Celebrating America's 250th Anniversary."
+    },    
+{
+      "name": "The Day I Tried To Live",
+      "style": "IPA - American",
+      "abv": "7.0%",
+      "description": "Bold and unapologetic, this beer is a modern take on the classic West Coast IPA. It showcases the distinctive character of Nelson, Citra, and Simcoe hops, with dank aromas paired with vibrant citrus notes. The crisp, dry finish is balanced with a medium-high bitterness and a resinous hop bite that defines the style. Enjoy a moment that lingers long after the pour, it’s one you’ll want to relive."
+    },   
+{
+      "name": "Time Off",
+      "style": "Wheat Beer - Witbier",
+      "abv": "5.0%",
+      "description": "Witbier brewed with orange zest and coriander seeds. Color: Straw hazy. Aroma: Coriander, pink peppercorns, orange, white flowers, bread. Flavor: Orange zest, coriander, peppercorns with medium-high intensity. Medium mouthfeel, creamy with a persistent orange flavor. "
+    },
+{
       "name": "Swirl",
       "style": "IPA- New England",
       "abv": "5.8%",
       "description": "Color - Golden yellow haze. Aroma - Citrus, cantaloupe, wine grapes, strawberry. Flavor - Smooth and tropical. Body - Medium. *Citra hops, and dry-hopped with Idaho 7, Nelson Sauvin"
+    },
+{
+      "name": "Elegant Viking",
+      "style": "IPA - New England",
+      "abv": "6.5%",
+      "description": "Color - Orange haze Aroma - Mango, citrus, peaches Body - Medium low Flavor - Orange, tangerine, mango, peach, medium high bitterness Dry-Hopped with Nectaron, Strata, Galaxy "
     },
     {
       "name": "The Presence",
       "style": "IPA - Imperial",
       "abv": "8.0%",
       "description": "Double IPA with the addition of Phantasm from New Zealand. Superdelic and Simcoe dry hop"
-    },
-    {
-      "name": "Time Off",
-      "style": "Wheat Beer - Witbier",
-      "abv": "5.0%",
-      "description": "Witbier brewed with orange zest and coriander seeds. Color: Straw hazy. Aroma: Coriander, pink peppercorns, orange, white flowers, bread. Flavor: Orange zest, coriander, peppercorns with medium-high intensity. Medium mouthfeel, creamy with a persistent orange flavor. "
-    },
-    {
-      "name": "Mirage Royale",
-      "style": "Sour- Fruited",
-      "abv": "4.7%",
-      "description": "Mango and Pineapple sour"
     },
 {
       "name": "Footloose",
@@ -36,33 +48,60 @@
       "abv": "4.8%",
       "description": "Czech Amber Lager - Aroma notes of biscuit, dried fruit, slight caramel, and a minimal spicy hop. Subtle malt flavors and earthiness present with a dry finish."
     },
-    {
+  {
       "name": "Wanaka Willow",
       "style": "Pilsner - New Zealand",
       "abv": "4.8%",
       "description": "The Wanaka tree stands alone in the calm waters of Lake Wanaka, personifying purity and natural beauty. New Zealand Pilsner: refreshing, clean, and simple in appearance, yet offering a complex blend of aromas and flavors in every sip."
     },
     
-    {
+   {
       "name": "Glacier",
       "style": "Pilsner - Other",
       "abv": "4.8%",
       "description": "Color - Straw. Aroma - Bread, grain. Flavor - Azahar flower (orange blossom), citrus. Body - Low-medium."
     },
-   
     {
+      "name": "Mirage Royale",
+      "style": "Sour- Fruited",
+      "abv": "4.7%",
+      "description": "Mango and Pineapple sour"
+    },
+  {
       "name": "Alternate Continuum",
       "style": "Farmhouse Ale - Saison",
       "abv": "8.2%",
       "description": "Aged in Chardonnay white wine barrels for 13 months. Wine character flavors, with notes of apricot and peach, pineapple, and white flowers. A gentle toast from the oak adds layers of vanilla, coconut, and a subtle spice."
     },
+{
+      "name": "Footloose",
+      "style": "Pilsner - Czech",
+      "abv": "5%",
+      "description": "Silver Medal - Aro Rojo Beer Cup Silver Medal - Rhode Worthy Immerse in the rich beer heritage of the Czech Republic with our Bohemian Pilsner, a homage to the Czech Lager tradition. "
+    },
+{
+      "name": "Half-Dark",
+      "style": "Lager - Polotmavé (Czech Amber)",
+      "abv": "4.8%",
+      "description": "Czech Amber Lager - Aroma notes of biscuit, dried fruit, slight caramel, and a minimal spicy hop. Subtle malt flavors and earthiness present with a dry finish."
+    },
+  
+    
+ 
    
   
+   
     {
-      "name": "Elegant Viking (Can Pours 16oz)",
-      "style": "IPA- New England",
-      "abv": "6.5%",
-      "description": "Color - Orange haze Aroma - Mango, citrus, peaches Body - Medium low Flavor - Orange, tangerine, mango, peach, medium high bitterness Dry-Hopped with Nectaron, Strata, Galaxy"
+      "name": "Cascade Brook  (Can Pours 16oz)",
+      "style": "Cider - Hopped",
+      "abv": "6.4%",
+      "description": "Featuring 100% 2025 harvest season apples from Phantom Farms on Diamond Hill Road in Cumberland, RI. Gently dry-hopped with Citra and Simcoe."
+    },
+    {
+      "name": "Blushing Sky (Can Pours 16oz)",
+      "style": "Cider - Other Fruit",
+      "abv": "6.2%",
+      "description": "Cider with real raspberry puree, no artificial flavors. Gluten free. Pink hue of the cider evokes the serene, picturesque quality of a sunset or twilight sky. Evocative and calming—great for conveying the peaceful experience of enjoyment."
     },
     {
       "name": "Wander (Can Pours 16oz)",
@@ -70,12 +109,7 @@
       "abv": "7.3%",
       "description": "Brewed with Origin Beer Project from Providence, RI. Chosen hops in partnership with Yakima Chief Hops, Wander explores the partnership between the city and the valley, bringing fresh, earthy hop notes with some fruit undertones. Shaped by both place and process."
     },
-    {
-      "name": "Picknick (Can Pours 16oz)",
-      "style": "Pilsner - German",
-      "abv": "4.5%",
-      "description": "A modern interpretation of the classic German beer, PickNick features new German hops alongside traditional grains and yeast. At 4.5% alcohol, its easy-drinking allure pairs perfectly with a picnic day, offering a crisp dryness while enjoying the outdoors."
-    },
+   
     {
       "name": "Mordax (Can Pours 16oz)",
       "style": "IPA- New England",

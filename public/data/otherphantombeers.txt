@@ -1,0 +1,25 @@
+ {
+      "name": "Picknick (Can Pours 16oz)",
+      "style": "Pilsner - German",
+      "abv": "4.5%",
+      "description": "A modern interpretation of the classic German beer, PickNick features new German hops alongside traditional grains and yeast. At 4.5% alcohol, its easy-drinking allure pairs perfectly with a picnic day, offering a crisp dryness while enjoying the outdoors."
+    },
+
+{
+      "name": "Bulldog Lager (Can Pours 16oz)",
+      "style": "Lager - American",
+      "abv": "4.7%",
+      "description": "Official Partner of Bryant University. Visit the official Phantom Farms Brewing Beer Garden during home football games at Beirne Stadium starting this fall. Go Bulldogs!"
+    },
+{
+      "name": "Blue Demon (Can Pours 16oz)",
+      "style": "Lager - Mexican",
+      "abv": "5.5%",
+      "description": "!"
+    },
+{
+      "name": "Iron Coast (Can Pours 16oz)",
+      "style": "Porter - Baltic",
+      "abv": "7.7%",
+      "description": "!"
+    },
