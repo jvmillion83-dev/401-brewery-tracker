@@ -1,0 +1,53 @@
+{
+  "On Tap": [
+    {
+      "name": "Anthem American Pale Ale",
+      "style": "Pale Ale - American",
+      "abv": "4.9% ABV",
+      "description": "A dry hopped, crisp pale ale. Generously hopped with Citra for optimal flavor and aroma."
+    },
+    {
+      "name": "Imperial Couch Surfer (Raspberry Hibiscus Hard Tea)",
+      "style": "Flavored Malt Beverage",
+      "abv": "8.5% ABV",
+      "description": ""
+    },
+    {
+      "name": "Hard Apple Cider",
+      "style": "Cider - Dry",
+      "abv": "6.5% ABV",
+      "description": "Dry and not too sweet, this cider packs all the flavor of fall into a brilliant sparkling cider."
+    },
+    {
+      "name": "Parachute Helles",
+      "style": "Lager - Helles",
+      "abv": "4.7% ABV",
+      "description": "Crystal clear lager. Crisp and ultra refreshing. A strikingly perfect balance between two row barley and Saaz hops."
+    },
+    {
+      "name": "Box 444 Belgian Wit",
+      "style": "Wheat Beer - Witbier",
+      "abv": "4.4% ABV",
+      "description": "A lightly spicy Belgian Witbier, brewed with orange and corriander."
+    },
+    {
+      "name": "Voodoo Ranger 1985 Mango IPA",
+      "style": "IPA - Fruited",
+      "abv": "6.7% ABV",
+      "description": "Like totally loaded with juicy mango flavor, 1985 takes you back to the future of Hazy IPA's. Buckle up!"
+    },
+    {
+      "name": "Nut Brown Ale",
+      "style": "Brown Ale - English",
+      "abv": "5% ABV",
+      "description": "Brewed with well water (the original well at the Old Brewery, sunk in 1758, is still in use, with the hard well water being drawn from 85 feet underground); best barley malt, yeast and aromatic hops; fermented in 'stone Yorkshire squares' to create a relatively dry ale with rich nutty colour and plate of beech nuts, almonds and walnuts."
+    },
+    {
+      "name": "Guinness Draught",
+      "style": "Stout - Irish Dry",
+      "abv": "4.2% ABV",
+      "description": "Swirling clouds tumble as the storm begins to calm. Settle. Breathe in the moment, then break through the smooth, light head to the bittersweet reward.\n\nUnmistakeably GUINNESS, from the first velvet sip to the last, lingering drop. And every deep-dark satisfying mouthful in between.\n\nPure beauty. Pure GUINNESS.\n\nGuinness Draught is sold in kegs, widget cans, and bottles. The ABV varies from 4.1 to 4.3%.\n\nGuinness Extra Cold is the exact same beer only served through a super cooler at 3.5 \u00b0C"
+    }
+  ],
+  "lastUpdated": "6/26/2026"
+}
