@@ -1,6 +1,6 @@
 {
-  "lastUpdated": "6/18/2026, 8:58:04 PM",
-  "count": 5,
+  "lastUpdated": "6/26/2026, 3:17:35 PM",
+  "count": 6,
   "beers": [
     {
       "name": "KOLSCH ENOUGH",
@@ -8,9 +8,9 @@
       "description": "Our Uncommon take on a German favorite"
     },
     {
-      "name": "RARE AIR",
+      "name": "COMMON GROUND",
       "abv": "ABV 5.3%",
-      "description": "Passionfruit Pale Ale"
+      "description": "American Pale Ale"
     },
     {
       "name": "GIRLS TRIP (SOURSOP)",
@@ -18,19 +18,19 @@
       "description": "NO! It's not a sour! Banana/Guava(ish) Sweet & Tangy Hef Ale"
     },
     {
-      "name": "DEEPER FIVE",
-      "abv": "ABV 6%",
-      "description": "Our 5 grain stout with an English twist"
+      "name": "SLOW DANCE",
+      "abv": "ABV 5.3%",
+      "description": "Dark Sweet Cherry Marshmallow Porter"
+    },
+    {
+      "name": "ANGRY MUSIC *SATURDAY 6/27 LAUNCH*",
+      "abv": "ABV 6.6%",
+      "description": "Hibiscus Pink Peppercorn Farmhouse"
     },
     {
       "name": "MIX TAPE",
       "abv": "ABV 5%",
-      "description": "Hard Seltzer, Light Citrus Flavor Pick your track - galaxy|pine|lavender|lemon| lime|raspberry|peach| watermelon|hibiscus|vanilla| cherry|orange|jalapeño"
-    },
-  {
-      "name": "SLOW DANCE",
-      "abv": "ABV 5.3%",
-      "description": "Dark sweet cherry marshmellow porter"
+      "description": "Hard Seltzer, Light Citrus Flavor Pick your track - pine|lavender|lemon| lime|raspberry|peach|pomegranate| champagne|watermelon|hibiscus|vanilla| cherry|orange|jalapeño"
     }
   ]
 }

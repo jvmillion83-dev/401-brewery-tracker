@@ -1,0 +1,36 @@
+{
+  "lastUpdated": "6/18/2026, 8:58:04 PM",
+  "count": 5,
+  "beers": [
+    {
+      "name": "KOLSCH ENOUGH",
+      "abv": "ABV 4.2%",
+      "description": "Our Uncommon take on a German favorite"
+    },
+    {
+      "name": "RARE AIR",
+      "abv": "ABV 5.3%",
+      "description": "Passionfruit Pale Ale"
+    },
+    {
+      "name": "GIRLS TRIP (SOURSOP)",
+      "abv": "ABV 5.8%",
+      "description": "NO! It's not a sour! Banana/Guava(ish) Sweet & Tangy Hef Ale"
+    },
+    {
+      "name": "DEEPER FIVE",
+      "abv": "ABV 6%",
+      "description": "Our 5 grain stout with an English twist"
+    },
+    {
+      "name": "MIX TAPE",
+      "abv": "ABV 5%",
+      "description": "Hard Seltzer, Light Citrus Flavor Pick your track - galaxy|pine|lavender|lemon| lime|raspberry|peach| watermelon|hibiscus|vanilla| cherry|orange|jalapeño"
+    },
+  {
+      "name": "SLOW DANCE",
+      "abv": "ABV 5.3%",
+      "description": "Dark sweet cherry marshmellow porter"
+    }
+  ]
+}
