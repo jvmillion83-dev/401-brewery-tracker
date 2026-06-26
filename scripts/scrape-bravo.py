@@ -54,7 +54,7 @@ def scrape_menu():
     output_path = os.path.join(output_dir, 'bravo-menu.json')
     
     with open(output_path, 'w') as f:
-        json.dump({"On Tap": menu_items, "lastUpdated": "6/26/2026"}, f, indent=2)
+        json.dump({"Beer on tap": menu_items, "lastUpdated": "6/26/2026"}, f, indent=2)
     
     print(f"Menu saved successfully to {output_path}")
 
