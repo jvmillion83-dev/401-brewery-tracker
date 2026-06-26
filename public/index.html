@@ -458,16 +458,7 @@ function renderTapList(data) {
         <div class="menu-item">
           <strong>${item.name}</strong> - ${item.abv}<br>
           <em>${item.style}</em><br>
-         
-itemDiv.innerHTML = `
-  <div class="menu-item">
-    <strong>${item.name}</strong> - ${item.abv}<br>
-    <em>${item.style}</em><br>
-    ${item.description ? `<p>${item.description}</p>` : ""}
-  </div>
-`;
-
-
+          <p>${item.description}</p>
         </div>
       `;
       container.appendChild(itemDiv);
