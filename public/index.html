@@ -454,21 +454,18 @@ function renderTapList(data) {
     // 2. Loop through items in that category
     data[category].forEach(item => {
       const itemDiv = document.createElement('div');
-     
-          
+      itemDiv.innerHTML = `
+        <div class="menu-item">
+          <strong>${item.name}</strong> - ${item.abv}<br>
+          <em>${item.style}</em><br>
+          <p>${item.description}</p>
+        </div>
+      `;
+      container.appendChild(itemDiv);
+    });
+  });
+}
 
-data[category].forEach(item => {
-  const itemDiv = document.createElement('div');
-  // Combine everything into one clean template literal
-  itemDiv.innerHTML = `
-    <div class="menu-item">
-      <strong>${item.name}</strong> - ${item.abv}<br>
-      <em>${item.style}</em><br>
-      ${item.description ? `<p>${item.description}</p>` : ""}
-    </div>
-  `;
-  container.appendChild(itemDiv);
-});
 
 
 
