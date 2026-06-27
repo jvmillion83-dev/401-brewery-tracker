@@ -201,8 +201,6 @@ function renderDate(selectedNormDate) {
         // 1. Initial filter for trucks
         let listToRender = allTruckData
 
-console.log("Selected Date:", selectedNormDate);
-console.log("Filtered Trucks:", listToRender);
 
 
             .filter(t => normalize(t.start) === selectedNormDate)
@@ -217,6 +215,9 @@ console.log("Filtered Trucks:", listToRender);
                     rawHours: info ? info.hours[selectedDay] : "Closed" 
                 };
             });
+
+console.log("Selected Date:", selectedNormDate);
+console.log("Filtered Trucks:", listToRender);
 
         // 2. Tab Logic
         if (currentTab === 'beer') {
