@@ -435,7 +435,7 @@ async function initApp() {
         const [mainRes, manualRes, eventsRes] = await Promise.all([
             fetch('/api/trucks').catch(() => ({ json: () => [] })),
             fetch('/manual-trucks.json').catch(() => ({ json: () => [] })),
-            fetch('/data/events.json')(() => ({ json: () => [] }))
+            fetch('/data/events.json')
         ]);
 
         const mainTrucks = await mainRes.json();
