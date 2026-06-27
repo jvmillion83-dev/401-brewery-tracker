@@ -186,14 +186,15 @@
         }
     }
 
+
+
     function renderDate(selectedNormDate) {
     const container = document.getElementById('truck-container');
     container.innerHTML = '';
     const [m, d] = selectedNormDate.split('/');
     const selectedDay = new Date(new Date().getFullYear(), parseInt(m) - 1, parseInt(d)).getDay();
-    const isActuallyToday = selectedNormDate === `${new Date().getMonth() + 1}/${new Date().getDate()}`;
 
-    // 1. Initial filter for trucks scheduled on this specific date
+    // 1. Initial filter for trucks
     let listToRender = allTruckData
         .filter(t => normalize(t.start) === selectedNormDate)
         .map(t => {
@@ -207,7 +208,29 @@
                 hasKitchen: info ? info.hasKitchen : false,
                 rawHours: info ? info.hours[selectedDay] : "Closed"
             };
-        });
+        }); // <-- Close the map here
+
+    // 2. Tab Logic (After trucks are processed)
+    if (currentTab === 'beer') {
+        // ... (your existing beer tab code)
+    } else if (currentTab === 'food') {
+        // ... (your existing food tab code)
+    } else if (currentTab === 'events') {
+        listToRender = allEventData.filter(e => e.date === selectedNormDate).map(e => ({
+            brewery: e.name, 
+            truck: "Event",
+            distance: null,
+            description: e.description,
+            rawHours: e.date
+        }));
+    }
+
+    // 3. Sorting and final rendering
+    listToRender.sort((a, b) => a.distance - b.distance);
+    // ... rest of your render code
+}
+
+
 
     if (currentTab === 'beer') {
         // 2. BEER TAB LOGIC: Show all breweries scheduled OR not scheduled, but NOT if they are closed today
