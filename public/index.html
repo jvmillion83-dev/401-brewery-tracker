@@ -38,8 +38,11 @@
     </p>
 
     <div class="tab-container">
+
         <div class="tab active" id="beer-tab" onclick="switchTab('beer')">🍺 Beer</div>
         <div class="tab" id="food-tab" onclick="switchTab('food')">🍔 Food</div>
+
+
     </div>
     
     <div id="date-picker"></div>
@@ -224,6 +227,10 @@
                     isOpenNow: checkIfOpen(todayHours),
                     hasKitchen: info.hasKitchen,
                     rawHours: todayHours
+
+
+
+
                 });
             }
         });
@@ -251,6 +258,13 @@
                     rawHours: info.hours[selectedDay]
                 };
             });
+
+
+
+
+
+
+
 
         // Combine both sources and remove duplicates (preferring scheduled trucks over generic "Kitchen" label)
         const combined = [...listToRender, ...kitchenBreweries];
