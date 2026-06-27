@@ -431,7 +431,6 @@ async function initApp() {
     generateDatePicker();
 
     try {
-        // ... (Your fetch logic as provided previously) ...
         const [mainRes, manualRes, eventsRes] = await Promise.all([
             fetch('/api/trucks').catch(() => ({ json: () => [] })),
             fetch('/manual-trucks.json').catch(() => ({ json: () => [] })),
@@ -447,12 +446,10 @@ async function initApp() {
 
         console.log("Data Loaded - Trucks:", allTruckData.length, "Events:", allEventData.length);
         
-        // INITIAL RENDER CALL
         const today = new Date();
         const dateString = `${today.getMonth() + 1}/${today.getDate()}`;
         renderDate(dateString);
 
-        // GEOLOCATION
         if (navigator.geolocation) {
             navigator.geolocation.getCurrentPosition(pos => {
                 userCoords = { lat: pos.coords.latitude, lng: pos.coords.longitude };
@@ -462,7 +459,7 @@ async function initApp() {
     } catch (error) {
         console.error("Critical error in initApp:", error);
     }
-}
+} // <--- This closing brace closes the initApp function
 
 // Start the app
 initApp();
