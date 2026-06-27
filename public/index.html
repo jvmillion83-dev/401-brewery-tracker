@@ -189,7 +189,7 @@
 
 
 
-    function renderDate(selectedNormDate) {
+   function renderDate(selectedNormDate) {
     const container = document.getElementById('truck-container');
     container.innerHTML = '';
     const [m, d] = selectedNormDate.split('/');
@@ -205,13 +205,13 @@
             return { 
                 ...t, 
                 distance: dist, 
-                isOpenNow: info ? checkIfOpen(info.hours[selectedDay]) : false,
-                hasKitchen: info ? info.hasKitchen : false,
-                rawHours: info ? info.hours[selectedDay] : "Closed"
+                isOpenNow: info ? checkIfOpen(info.hours[selectedDay]) : false, 
+                hasKitchen: info ? info.hasKitchen : false, 
+                rawHours: info ? info.hours[selectedDay] : "Closed" 
             };
         });
 
-    // 2. Tab Logic
+    // 2. Tab Logic: Handle each tab exclusively
     if (currentTab === 'beer') {
         const scheduledBreweryNames = new Set(listToRender.map(t => t.brewery));
         Object.keys(breweryData).forEach(bName => {
@@ -246,20 +246,23 @@
     } else if (currentTab === 'events') {
         listToRender = allEventData.filter(e => e.date === selectedNormDate).map(e => ({
             brewery: e.name, 
-            truck: "Event",
-            distance: null,
-            description: e.description,
+            truck: "Event", 
+            distance: null, 
+            description: e.description, 
             rawHours: e.date
         }));
     }
 
-    // 3. Sorting and Final Render
+    // 3. Final Sorting and Rendering
     listToRender.sort((a, b) => a.distance - b.distance);
     
     if (listToRender.length === 0) {
         container.innerHTML = `<p style="text-align:center; color:#888; margin-top:40px;">No options found for this date.</p>`;
         return;
     }
+    
+    // ... [Your existing loop to append cards to the container goes here]
+}
 
 
 
