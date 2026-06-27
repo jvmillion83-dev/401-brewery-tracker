@@ -229,10 +229,21 @@ function renderDate(selectedNormDate) {
                             .filter(t => t.hasKitchen || (t.truck && t.truck !== "No Truck Scheduled" && t.truck !== "Taproom Hours"));
 
     } else if (currentTab === 'events') {
-        listToRender = allEventData.filter(e => e.date === selectedNormDate).map(e => ({
-            brewery: e.name, truck: "Event", distance: null, description: e.description, rawHours: e.date
-        }));
-    }
+    listToRender = allEventData.filter(e => {
+        // Normalize the event date to match the format of selectedNormDate
+        // Assuming selectedNormDate is in "M/D" or "M/D/YYYY" format
+        const eventDateParts = e.date.split('/'); // ["06", "27", "2026"]
+        const normalizedEventDate = `${parseInt(eventDateParts[0])}/${parseInt(eventDateParts[1])}`;
+        
+        return normalizedEventDate === selectedNormDate;
+    }).map(e => ({
+        brewery: e.location, // Note: You were using e.name, but your JSON has location!
+        truck: "Event", 
+        distance: null, 
+        description: e.description, 
+        rawHours: e.date
+    }));
+}
 
     // 3. Sort and Render
     listToRender.sort((a, b) => (a.distance || 0) - (b.distance || 0));
