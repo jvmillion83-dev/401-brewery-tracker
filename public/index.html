@@ -41,6 +41,7 @@
 
         <div class="tab active" id="beer-tab" onclick="switchTab('beer')">🍺 Beer</div>
         <div class="tab" id="food-tab" onclick="switchTab('food')">🍔 Food</div>
+	<div class="tab" id="events-tab" onclick="switchTab('events')"> Events</div>
 
 
     </div>
@@ -228,7 +229,7 @@
                     hasKitchen: info.hasKitchen,
                     rawHours: todayHours
 
-
+let dist = info ? getDistance(userCoords.lat, userCoords.lng, info.lat, info.lng) : "N/A";
 
 
                 });
@@ -260,7 +261,11 @@
             });
 
 
-
+} else if (currentTab === 'events') {
+    // Filter your event data based on the selected date
+    listToRender = allEventData.filter(e => e.date === selectedNormDate);
+    // Add logic here to display these events
+}
 
 
 
@@ -485,38 +490,45 @@ function renderTapList(data) {
 
 
 
+async function initApp() {
+    generateDatePicker();
+    
+    try {
+        // 1. Fetch all your data sources at once
+        const [mainRes, manualRes, eventsRes] = await Promise.all([
+            fetch('/api/trucks').catch(() => ({ json: () => [] })),
+            fetch('/manual-trucks.json').catch(() => ({ json: () => [] })),
+            fetch('/data/events.json').catch(() => ({ json: () => [] })) // Add this
+        ]);
 
-
-
-
-
-    async function initApp() {
-        generateDatePicker();
-        try {
-            const [mainRes, manualRes] = await Promise.all([
-                fetch('/api/trucks').catch(() => ({ json: () => [] })),
-                fetch('/manual-trucks.json').catch(() => ({ json: () => [] })) 
-            ]);
-            allTruckData = [...await mainRes.json(), ...await manualRes.json()];
-        } catch (err) { console.error("Data load error:", err); }
-
-
-
-
-
-        const today = new Date();
-        const dateString = `${today.getMonth() + 1}/${today.getDate()}`;
-        renderDate(dateString);
-
-        if (navigator.geolocation) {
-            navigator.geolocation.getCurrentPosition(pos => {
-                userCoords = { lat: pos.coords.latitude, lng: pos.coords.longitude };
-                renderDate(dateString);
-            });
-        }
+        // 2. Combine the data
+        const mainTrucks = await mainRes.json();
+        const manualTrucks = await manualRes.json();
+        
+        allTruckData = [...mainTrucks, ...manualTrucks];
+        allEventData = await eventsRes.json(); // Save your events
+        
+    } catch (err) { 
+        console.error("Data load error:", err); 
     }
 
-    initApp();
+    // 3. Render initial view
+    const today = new Date();
+    const dateString = `${today.getMonth() + 1}/${today.getDate()}`;
+    renderDate(dateString);
+
+    // 4. Handle Geolocation
+    if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(pos => {
+            userCoords = { lat: pos.coords.latitude, lng: pos.coords.longitude };
+            renderDate(dateString);
+        });
+    }
+}
+
+// Start the app
+initApp();
+
 </script>
 </body>
 </html>
