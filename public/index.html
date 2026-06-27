@@ -189,243 +189,117 @@
 
 
 
-   function renderDate(selectedNormDate) {
-    const container = document.getElementById('truck-container');
-    container.innerHTML = '';
-    const [m, d] = selectedNormDate.split('/');
-    const selectedDay = new Date(new Date().getFullYear(), parseInt(m) - 1, parseInt(d)).getDay();
-
-    // 1. Initial filter for trucks
-    let listToRender = allTruckData
-        .filter(t => normalize(t.start) === selectedNormDate)
-        .map(t => {
-            const info = breweryData[t.brewery];
-            let dist = Infinity;
-            if (userCoords && info) dist = getDistance(userCoords.lat, userCoords.lng, info.lat, info.lng);
-            return { 
-                ...t, 
-                distance: dist, 
-                isOpenNow: info ? checkIfOpen(info.hours[selectedDay]) : false, 
-                hasKitchen: info ? info.hasKitchen : false, 
-                rawHours: info ? info.hours[selectedDay] : "Closed" 
-            };
-        });
-
-    // 2. Tab Logic: Handle each tab exclusively
-    if (currentTab === 'beer') {
-        const scheduledBreweryNames = new Set(listToRender.map(t => t.brewery));
-        Object.keys(breweryData).forEach(bName => {
-            const info = breweryData[bName];
-            const todayHours = info.hours[selectedDay];
-            if (!scheduledBreweryNames.has(bName) && todayHours.toLowerCase() !== "closed") {
-                let dist = userCoords ? getDistance(userCoords.lat, userCoords.lng, info.lat, info.lng) : Infinity;
-                listToRender.push({
-                    brewery: bName,
-                    truck: "Taproom Hours",
-                    distance: dist,
-                    isOpenNow: checkIfOpen(todayHours),
-                    hasKitchen: info.hasKitchen,
-                    rawHours: todayHours
-                });
-            }
-        });
-        listToRender = listToRender.filter(item => item.rawHours.toLowerCase() !== "closed");
-
-    } else if (currentTab === 'food') {
-        const kitchenBreweries = Object.keys(breweryData)
-            .filter(bName => breweryData[bName].hasKitchen && breweryData[bName].hours[selectedDay].toLowerCase() !== "closed")
-            .map(bName => {
-                const info = breweryData[bName];
-                let dist = userCoords ? getDistance(userCoords.lat, userCoords.lng, info.lat, info.lng) : Infinity;
-                return { brewery: bName, truck: "Full Kitchen On-Site", distance: dist, hasKitchen: true, rawHours: info.hours[selectedDay] };
-            });
-        const combined = [...listToRender, ...kitchenBreweries];
-        listToRender = Array.from(new Map(combined.map(item => [item.brewery, item])).values());
-        listToRender = listToRender.filter(t => t.hasKitchen || (t.truck && t.truck !== "No Truck Scheduled" && t.truck !== "Taproom Hours"));
-
-    } else if (currentTab === 'events') {
-        listToRender = allEventData.filter(e => e.date === selectedNormDate).map(e => ({
-            brewery: e.name, 
-            truck: "Event", 
-            distance: null, 
-            description: e.description, 
-            rawHours: e.date
-        }));
-    }
-
-    // 3. Final Sorting and Rendering
-    listToRender.sort((a, b) => a.distance - b.distance);
-    
-    if (listToRender.length === 0) {
-        container.innerHTML = `<p style="text-align:center; color:#888; margin-top:40px;">No options found for this date.</p>`;
-        return;
-    }
-    
-    // ... [Your existing loop to append cards to the container goes here]
-}
+   
 
 
+function renderDate(selectedNormDate) {
+        const container = document.getElementById('truck-container');
+        container.innerHTML = '';
+        const [m, d] = selectedNormDate.split('/');
+        const selectedDay = new Date(new Date().getFullYear(), parseInt(m) - 1, parseInt(d)).getDay();
 
-
-
-    if (currentTab === 'beer') {
-        // 2. BEER TAB LOGIC: Show all breweries scheduled OR not scheduled, but NOT if they are closed today
-        const scheduledBreweryNames = new Set(listToRender.map(t => t.brewery));
-        
-        Object.keys(breweryData).forEach(bName => {
-            const info = breweryData[bName];
-            const todayHours = info.hours[selectedDay];
-
-            // Only add if brewery isn't already in list AND isn't "Closed"
-            if (!scheduledBreweryNames.has(bName) && todayHours.toLowerCase() !== "closed") {
-                let dist = Infinity;
-                if (userCoords) dist = getDistance(userCoords.lat, userCoords.lng, info.lat, info.lng);
-                listToRender.push({
-                    brewery: bName,
-                    truck: "Taproom Hours",
-                    distance: dist,
-                    isOpenNow: checkIfOpen(todayHours),
-                    hasKitchen: info.hasKitchen,
-                    rawHours: todayHours
-
-let dist = info ? getDistance(userCoords.lat, userCoords.lng, info.lat, info.lng) : "N/A";
-
-
-                });
-            }
-        });
-
-        // Final Beer Tab cleanup: Remove anything that ended up in the list but is closed
-        listToRender = listToRender.filter(item => item.rawHours.toLowerCase() !== "closed");
-
-    } else {
-        // 3. FOOD TAB LOGIC: Show scheduled trucks AND breweries with kitchens
-        const kitchenBreweries = Object.keys(breweryData)
-            .filter(bName => {
-                const info = breweryData[bName];
-                return info.hasKitchen && info.hours[selectedDay].toLowerCase() !== "closed";
-            })
-            .map(bName => {
-                const info = breweryData[bName];
-                let dist = Infinity;
-                if (userCoords) dist = getDistance(userCoords.lat, userCoords.lng, info.lat, info.lng);
-                return {
-                    brewery: bName,
-                    truck: "Full Kitchen On-Site",
-                    distance: dist,
-                    isOpenNow: checkIfOpen(info.hours[selectedDay]),
-                    hasKitchen: true,
-                    rawHours: info.hours[selectedDay]
+        // 1. Initial filter for trucks
+        let listToRender = allTruckData
+            .filter(t => normalize(t.start) === selectedNormDate)
+            .map(t => {
+                const info = breweryData[t.brewery];
+                let dist = userCoords && info ? getDistance(userCoords.lat, userCoords.lng, info.lat, info.lng) : Infinity;
+                return { 
+                    ...t, 
+                    distance: dist, 
+                    isOpenNow: info ? checkIfOpen(info.hours[selectedDay]) : false, 
+                    hasKitchen: info ? info.hasKitchen : false, 
+                    rawHours: info ? info.hours[selectedDay] : "Closed" 
                 };
             });
 
+        // 2. Tab Logic
+        if (currentTab === 'beer') {
+            const scheduledBreweryNames = new Set(listToRender.map(t => t.brewery));
+            Object.keys(breweryData).forEach(bName => {
+                const info = breweryData[bName];
+                const todayHours = info.hours[selectedDay];
+                if (!scheduledBreweryNames.has(bName) && todayHours.toLowerCase() !== "closed") {
+                    let dist = userCoords ? getDistance(userCoords.lat, userCoords.lng, info.lat, info.lng) : Infinity;
+                    listToRender.push({
+                        brewery: bName,
+                        truck: "Taproom Hours",
+                        distance: dist,
+                        isOpenNow: checkIfOpen(todayHours),
+                        hasKitchen: info.hasKitchen,
+                        rawHours: todayHours
+                    });
+                }
+            });
+            listToRender = listToRender.filter(item => item.rawHours.toLowerCase() !== "closed");
 
-} else if (currentTab === 'events') {
-    // Filter your event data based on the selected date
-    listToRender = allEventData.filter(e => e.date === selectedNormDate);
-    // Add logic here to display these events
-}
+        } else if (currentTab === 'food') {
+            const kitchenBreweries = Object.keys(breweryData)
+                .filter(bName => breweryData[bName].hasKitchen && breweryData[bName].hours[selectedDay].toLowerCase() !== "closed")
+                .map(bName => {
+                    const info = breweryData[bName];
+                    let dist = userCoords ? getDistance(userCoords.lat, userCoords.lng, info.lat, info.lng) : Infinity;
+                    return { brewery: bName, truck: "Full Kitchen On-Site", distance: dist, hasKitchen: true, rawHours: info.hours[selectedDay] };
+                });
+            const combined = [...listToRender, ...kitchenBreweries];
+            listToRender = Array.from(new Map(combined.map(item => [item.brewery, item])).values());
+            listToRender = listToRender.filter(t => t.hasKitchen || (t.truck && t.truck !== "No Truck Scheduled" && t.truck !== "Taproom Hours"));
 
+        } else if (currentTab === 'events') {
+            listToRender = allEventData.filter(e => e.date === selectedNormDate).map(e => ({
+                brewery: e.name, 
+                truck: "Event", 
+                distance: null, 
+                description: e.description, 
+                rawHours: e.date
+            }));
+        }
 
-
-
-
-        // Combine both sources and remove duplicates (preferring scheduled trucks over generic "Kitchen" label)
-        const combined = [...listToRender, ...kitchenBreweries];
-        listToRender = Array.from(new Map(combined.map(item => [item.brewery, item])).values());
+        // 3. Sort and Render
+        listToRender.sort((a, b) => (a.distance || 0) - (b.distance || 0));
         
-        // Ensure we only show items with food
-        listToRender = listToRender.filter(t => t.hasKitchen || (t.truck && t.truck !== "No Truck Scheduled" && t.truck !== "Taproom Hours"));
+        if (listToRender.length === 0) {
+            container.innerHTML = `<p style="text-align:center; color:#888; margin-top:40px;">No options found for this date.</p>`;
+            return;
+        }
+
+        listToRender.forEach(item => {
+            const info = breweryData[item.brewery];
+            const card = document.createElement('div');
+            card.className = 'card';
+            
+            const statusText = item.isOpenNow ? 'Open Now' : 'Scheduled';
+            const statusColor = item.isOpenNow ? '#2e7d32' : '#444';
+            const mainLabel = currentTab === 'beer' ? "Taproom Hours" : item.truck;
+
+            let tapListHtml = '';
+            if (info && info.menus) {
+                tapListHtml = info.menus
+                    .filter(menu => currentTab === 'beer' ? menu.label.includes('TAP LIST') : true)
+                    .map(menu => `<button onclick="openTapList('${menu.path}', '${item.brewery}')" class="tap-list-btn" style="margin-top:5px;">${menu.label}</button>`).join('');
+            } else if (info && info.tapListUrl) {
+                tapListHtml = `<a href="${info.tapListUrl}" target="_blank" class="tap-list-btn">📝 View Tap List</a>`;
+            }
+
+            card.innerHTML = `
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+                    <a href="${info?.url || '#'}" target="_blank" class="brewery-link">
+                        <img src="${info?.logo || ''}" alt="${item.brewery}" class="brewery-logo">
+                    </a>
+                    <span class="distance-tag">${item.distance !== Infinity && item.distance !== null ? item.distance.toFixed(1) + ' mi' : ''}</span>
+                </div>
+                <div style="font-size: 0.7rem; color: #888; margin-bottom: 10px;">Hours: ${item.rawHours}</div>
+                <span class="truck-name">${item.brewery}</span>
+                <div style="font-size: 0.8rem; margin-bottom: 10px;">${item.description || mainLabel}</div>
+                <div style="display: flex; align-items: center; gap: 10px;">
+                    <span class="status-badge" style="background: ${statusColor};">${statusText}</span>
+                    ${item.hasKitchen ? '<span class="status-badge" style="background: #0277bd;">Food On-Site</span>' : ''}
+                </div>
+                ${tapListHtml}
+            `;
+            container.appendChild(card);
+        });
     }
-
-    // Sort by distance and render
-    listToRender.sort((a, b) => a.distance - b.distance);
-
-    if (listToRender.length === 0) {
-        container.innerHTML = `<p style="text-align:center; color:#888; margin-top:40px;">No options found for this date.</p>`;
-        return;
-    }
-
-    
-
-
-
-listToRender.forEach(item => {
-        const info = breweryData[item.brewery];
-        const card = document.createElement('div');
-        card.className = 'card';
-        
-        const statusText = item.isOpenNow ? 'Open Now' : 'Scheduled';
-        const statusColor = item.isOpenNow ? '#2e7d32' : '#444';
-        
-        // Determine label: If it's the beer tab, show "Taproom Hours". If food, show the truck name or kitchen info.
-        const mainLabel = currentTab === 'beer' ? "Taproom Hours" : item.truck;
-
-       let tapListHtml = '';
-if (item.brewery.toLowerCase().includes('uncommon')) {
-    tapListHtml = `<button onclick="openTapList('/data/uncommon-pair-menu.json', 'Uncommon Pair')" class="tap-list-btn">📝 VIEW TAP LIST</button>`;
-} else if (item.brewery.toLowerCase().includes('phantom')) {
-    tapListHtml = `<button onclick="openTapList('/data/phantom-menu.json', 'Phantom Farms')" class="tap-list-btn">📝 VIEW TAP LIST</button>`;
-} else if (item.brewery.toLowerCase().includes('foolproof')) {
-    tapListHtml = `<button onclick="openTapList('/data/foolproof-menu.json', 'Foolproof Brewing')" class="tap-list-btn">📝 VIEW TAP LIST</button>`;
-} else if (item.brewery.toLowerCase().includes('lops')) {
-    tapListHtml = `<button onclick="openTapList('/data/lops-menu.json', 'Lops Brewery')" class="tap-list-btn">📝 VIEW TAP LIST</button>`;
-
-
-} else if (item.brewery.toLowerCase().includes('guild')) {
-    // Generate both buttons if the brewery is The Guild
-    tapListHtml = `	
-        <button onclick="openTapList('/data/guild-menu.json', 'The Guild Pawtucket')" class="tap-list-btn">📝 VIEW TAP LIST</button>
-        <button onclick="openTapList('/data/guild-food-menu.json', 'The Guild Pawtucket')" class="tap-list-btn" style="margin-top: 5px;">🍔 VIEW FOOD MENU</button>
-    `;
-
-
-} else if (item.brewery.toLowerCase().includes('crooked') && item.brewery.toLowerCase().includes('current')) {
-    tapListHtml = `<button onclick="openTapList('/data/crookedcurrent-menu.json', 'Crooked Current Brewing')" class="tap-list-btn">📝 VIEW TAP LIST</button>`;
-// Add this new block for Moniker:
-} else if (item.brewery.toLowerCase().includes('moniker')) {
-    tapListHtml = `<button onclick="openTapList('/data/moniker-menu.json', 'Moniker Brewery')" class="tap-list-btn">📝 VIEW TAP LIST</button>`;
-} else if (info.tapListUrl){
-    tapListHtml = `<a href="${info.tapListUrl}" target="_blank" class="tap-list-btn">📝 View Tap List</a>`;
-}
-
-if (info && info.menus) {
-    tapListHtml = info.menus
-        .filter(menu => {
-            // If on 'beer' tab, only show tap list. If 'food' tab, show both.
-            if (currentTab === 'beer') return menu.label.includes('TAP LIST');
-            return true; // Show everything on 'food' tab
-        })
-        .map(menu => `
-            <button onclick="openTapList('${menu.path}', '${item.brewery}')" 
-                    class="tap-list-btn" style="display:block; width:100%; margin-top:5px;">
-                ${menu.label}
-            </button>
-        `).join('');
-} else if (info && info.tapListUrl) {
-    tapListHtml = `<a href="${info.tapListUrl}" target="_blank" class="tap-list-btn">📝 View Tap List</a>`;
-}
-
-
-        card.innerHTML = `
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
-                <a href="${info.url}" target="_blank" class="brewery-link">
-                    <img src="${info.logo}" alt="${item.brewery}" class="brewery-logo">
-                </a>
-                <span class="distance-tag">${item.distance !== Infinity ? item.distance.toFixed(1) + ' mi' : ''}</span>
-            </div>
-            <div style="font-size: 0.7rem; color: #888; margin-bottom: 10px;">Hours: ${item.rawHours}</div>
-            <span class="truck-name">${mainLabel}</span>
-            <div style="display: flex; align-items: center; gap: 10px;">
-                <span class="status-badge" style="background: ${statusColor};">${statusText}</span>
-                ${item.hasKitchen ? '<span class="status-badge" style="background: #0277bd;">Food On-Site</span>' : ''}
-            </div>
-            ${tapListHtml}
-        `;
-        container.appendChild(card);
-    });
-}
-
 
 
 
