@@ -427,30 +427,31 @@ async function initApp() {
     generateDatePicker();
     
     try {
-        // 1. Fetch all your data sources at once
+        // Fetch data
         const [mainRes, manualRes, eventsRes] = await Promise.all([
             fetch('/api/trucks').catch(() => ({ json: () => [] })),
             fetch('/manual-trucks.json').catch(() => ({ json: () => [] })),
-            fetch('/data/events.json').catch(() => ({ json: () => [] })) // Add this
+            fetch('/data/events.json').catch(() => ({ json: () => [] }))
         ]);
 
-        // 2. Combine the data
         const mainTrucks = await mainRes.json();
         const manualTrucks = await manualRes.json();
         
-        allTruckData = [...mainTrucks, ...manualTrucks];
-        allEventData = await eventsRes.json(); // Save your events
+        // Ensure these are arrays
+        allTruckData = [...(Array.isArray(mainTrucks) ? mainTrucks : []), ...(Array.isArray(manualTrucks) ? manualTrucks : [])];
+        const eventData = await eventsRes.json();
+        allEventData = Array.isArray(eventData) ? eventData : [];
+        
+        console.log("Data Loaded - Trucks:", allTruckData.length, "Events:", allEventData.length);
         
     } catch (err) { 
         console.error("Data load error:", err); 
     }
 
-    // 3. Render initial view
     const today = new Date();
     const dateString = `${today.getMonth() + 1}/${today.getDate()}`;
     renderDate(dateString);
 
-    // 4. Handle Geolocation
     if (navigator.geolocation) {
         navigator.geolocation.getCurrentPosition(pos => {
             userCoords = { lat: pos.coords.latitude, lng: pos.coords.longitude };
