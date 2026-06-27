@@ -200,6 +200,11 @@ function renderDate(selectedNormDate) {
 
         // 1. Initial filter for trucks
         let listToRender = allTruckData
+
+console.log("Selected Date:", selectedNormDate);
+console.log("Filtered Trucks:", listToRender);
+
+
             .filter(t => normalize(t.start) === selectedNormDate)
             .map(t => {
                 const info = breweryData[t.brewery];
