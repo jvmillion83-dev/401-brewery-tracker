@@ -1,11 +1,28 @@
 [
+
+{
+    "name": "Summer Concert Series: Fortunate Youth",
+    "date": "6/27/2026",
+    "location": "Phantom Farms Brewery",
+    "description": "Doors open @ 3pm
+Quasi Kings ~4:30pm
+Fortunate Youth ~6:30pm
+*set times are approximate and subject to change*
+*Joe Samba was never on the bill*
+
+One lawn chair + one refillable water bottle per guest.
+3 food vendors plus PFB pizza.
+
+Note: no dogs, no outside food/drink, no tents/canopies.",
+    "url": "https://phantomfarmsbrewing.com/"
+  },
   {
     "name": "Newport Beer Run",
     "date": "7/18/2026",
     "location": "Fort Adams State Park Newport, RI",
     "description": "A 5k open to beer lovers of all speeds followed by a 3-hour post-race beer festival highlighting the local craft brewing and food scene.",
     "url": "https://newportbeerrun.com/"
-  }
+  },
 
 {
     "name": "Brew At The Zoo",
