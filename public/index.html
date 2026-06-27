@@ -208,13 +208,40 @@
                 hasKitchen: info ? info.hasKitchen : false,
                 rawHours: info ? info.hours[selectedDay] : "Closed"
             };
-        }); // <-- Close the map here
+        });
 
-    // 2. Tab Logic (After trucks are processed)
+    // 2. Tab Logic
     if (currentTab === 'beer') {
-        // ... (your existing beer tab code)
+        const scheduledBreweryNames = new Set(listToRender.map(t => t.brewery));
+        Object.keys(breweryData).forEach(bName => {
+            const info = breweryData[bName];
+            const todayHours = info.hours[selectedDay];
+            if (!scheduledBreweryNames.has(bName) && todayHours.toLowerCase() !== "closed") {
+                let dist = userCoords ? getDistance(userCoords.lat, userCoords.lng, info.lat, info.lng) : Infinity;
+                listToRender.push({
+                    brewery: bName,
+                    truck: "Taproom Hours",
+                    distance: dist,
+                    isOpenNow: checkIfOpen(todayHours),
+                    hasKitchen: info.hasKitchen,
+                    rawHours: todayHours
+                });
+            }
+        });
+        listToRender = listToRender.filter(item => item.rawHours.toLowerCase() !== "closed");
+
     } else if (currentTab === 'food') {
-        // ... (your existing food tab code)
+        const kitchenBreweries = Object.keys(breweryData)
+            .filter(bName => breweryData[bName].hasKitchen && breweryData[bName].hours[selectedDay].toLowerCase() !== "closed")
+            .map(bName => {
+                const info = breweryData[bName];
+                let dist = userCoords ? getDistance(userCoords.lat, userCoords.lng, info.lat, info.lng) : Infinity;
+                return { brewery: bName, truck: "Full Kitchen On-Site", distance: dist, hasKitchen: true, rawHours: info.hours[selectedDay] };
+            });
+        const combined = [...listToRender, ...kitchenBreweries];
+        listToRender = Array.from(new Map(combined.map(item => [item.brewery, item])).values());
+        listToRender = listToRender.filter(t => t.hasKitchen || (t.truck && t.truck !== "No Truck Scheduled" && t.truck !== "Taproom Hours"));
+
     } else if (currentTab === 'events') {
         listToRender = allEventData.filter(e => e.date === selectedNormDate).map(e => ({
             brewery: e.name, 
@@ -225,10 +252,15 @@
         }));
     }
 
-    // 3. Sorting and final rendering
+    // 3. Sorting and Final Render
     listToRender.sort((a, b) => a.distance - b.distance);
-    // ... rest of your render code
-}
+    
+    if (listToRender.length === 0) {
+        container.innerHTML = `<p style="text-align:center; color:#888; margin-top:40px;">No options found for this date.</p>`;
+        return;
+    }
+
+
 
 
 
