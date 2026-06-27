@@ -431,50 +431,38 @@ async function initApp() {
     generateDatePicker();
 
     try {
-        // Fetch all data
+        // ... (Your fetch logic as provided previously) ...
         const [mainRes, manualRes, eventsRes] = await Promise.all([
-            fetch('/api/trucks'),
-            fetch('/manual-trucks.json'),
-            fetch('/data/events.json')
+            fetch('/api/trucks').catch(() => ({ json: () => [] })),
+            fetch('/manual-trucks.json').catch(() => ({ json: () => [] })),
+            fetch('/data/events.json').catch(() => ({ json: () => [] }))
         ]);
 
-        // Check if the responses are OK
-        if (!mainRes.ok) console.warn("Trucks API failed");
-        if (!manualRes.ok) console.warn("Manual trucks file failed");
-        if (!eventsRes.ok) console.error("Events file failed - Check path!");
+        const mainTrucks = await mainRes.json();
+        const manualTrucks = await manualRes.json();
+        const eventData = await eventsRes.json();
 
-        const mainTrucks = await mainRes.json().catch(() => []);
-        const manualTrucks = await manualRes.json().catch(() => []);
-        const eventData = await eventsRes.json().catch(() => []);
-
-        // Combine data
         allTruckData = [...mainTrucks, ...manualTrucks];
         allEventData = Array.isArray(eventData) ? eventData : [];
 
         console.log("Data Loaded - Trucks:", allTruckData.length, "Events:", allEventData.length);
         
-        // Trigger initial render
-        // renderDate(today); 
+        // INITIAL RENDER CALL
+        const today = new Date();
+        const dateString = `${today.getMonth() + 1}/${today.getDate()}`;
+        renderDate(dateString);
+
+        // GEOLOCATION
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(pos => {
+                userCoords = { lat: pos.coords.latitude, lng: pos.coords.longitude };
+                renderDate(dateString);
+            });
+        }
     } catch (error) {
         console.error("Critical error in initApp:", error);
     }
 }
 
-    const today = new Date();
-    const dateString = `${today.getMonth() + 1}/${today.getDate()}`;
-    renderDate(dateString);
-
-    if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition(pos => {
-            userCoords = { lat: pos.coords.latitude, lng: pos.coords.longitude };
-            renderDate(dateString);
-        });
-    }
-}
-
 // Start the app
 initApp();
-
-</script>
-</body>
-</html>
