@@ -1,0 +1,35 @@
+[
+
+{
+    "name": "Summer Concert Series: Fortunate Youth",
+    "date": "06/27/2026",
+    "location": "Phantom Farms Brewery",
+    "description": "Doors open @ 3pm
+Quasi Kings ~4:30pm
+Fortunate Youth ~6:30pm
+*set times are approximate and subject to change*
+*Joe Samba was never on the bill*
+
+One lawn chair + one refillable water bottle per guest.
+3 food vendors plus PFB pizza.
+
+Note: no dogs, no outside food/drink, no tents/canopies.",
+    "url": "https://phantomfarmsbrewing.com/"
+  },
+  {
+    "name": "Newport Beer Run",
+    "date": "7/18/2026",
+    "location": "Fort Adams State Park Newport, RI",
+    "description": "A 5k open to beer lovers of all speeds followed by a 3-hour post-race beer festival highlighting the local craft brewing and food scene.",
+    "url": "https://newportbeerrun.com/"
+  },
+
+{
+    "name": "Brew At The Zoo",
+    "date": "8/29/2026",
+    "location": "Roger Williams Park Providence, RI",
+    "description": "Tap into your wild side at Brew at the Zoo on Saturday, August 29th, an adults-only evening event, and sample hundreds of beers, hard seltzers, wines and ready-to-drink cocktails from dozens of local, regional and national breweries (see list below). Enjoy live musical entertainment, animal encounters, and more at Rhode Island’s largest outdoor beer festival.",
+    "url": "https://www.rwpzoo.org/event/brew//"
+  }
+
+]
