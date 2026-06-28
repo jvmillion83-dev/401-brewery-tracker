@@ -61,6 +61,9 @@
     </div>
 
 <script>
+window.onerror = function(message, source, lineno, colno, error) {
+   alert('Script Error: ' + message + ' at line ' + lineno);
+};
     let allTruckData = [];
     let allEventData = []; // Added this so it doesn't crash when loading events
     let userCoords = null;
