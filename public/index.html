@@ -41,7 +41,6 @@
 
         <div class="tab active" id="beer-tab" onclick="switchTab('beer')">🍺 Beer</div>
         <div class="tab" id="food-tab" onclick="switchTab('food')">🍔 Food</div>
-	<div class="tab" id="events-tab" onclick="switchTab('events')">📅 Events</div>
 
 
     </div>
@@ -61,11 +60,7 @@
     </div>
 
 <script>
-window.onerror = function(message, source, lineno, colno, error) {
-   alert('Script Error: ' + message + ' at line ' + lineno);
-};
     let allTruckData = [];
-    let allEventData = []; // Added this so it doesn't crash when loading events
     let userCoords = null;
     let currentTab = 'beer';
 
@@ -87,7 +82,7 @@ window.onerror = function(message, source, lineno, colno, error) {
         "TRAGMAR ALE WORKS": { lat: 41.6941, lng: -71.2692, url: "https://www.tragmar.com/", tapListUrl: "https://www.tragmar.com/draftlist", logo: "logos/tragmar.png", hours: ["12-5pm", "Closed", "Closed", "3-8pm", "3-8pm", "12-9pm", "12-9pm"] },
         "VIGILANT BREWING": { lat: 41.7028, lng: -71.2682, url: "https://vigilantbrewing.com/", tapListUrl: "https://untappd.com/v/vigilant-brewing/11374511", logo: "logos/vigilant.png", hours: ["1-6pm", "4-8pm", "Closed", "4-8pm", "3-8pm", "1-10pm", "1-10pm"] },
         "TILTED BARN BREWERY": { lat: 41.5707, lng: -71.5192, url: "https://www.tiltedbarnbrewery.com/", tapListUrl: "https://www.tiltedbarnbrewery.com/on-tap-to-go", logo: "logos/tiltedbarn.png", hours: ["12-5pm", "Closed", "Closed", "4-8pm", "12-8pm", "12-8pm", "12-8pm"] },
-        "PHANTOM FARMS": { lat: 41.9744, lng: -71.4556, url: "https://phantomfarmsbrewing.com/", tapListUrl: "https://phantomfarmsbrewing.com/pages/beers-on-tap", logo: "logos/phantom.png", hours: ["12-8pm", "5-9pm", "Closed", "4-9pm", "4-9pm", "12-10pm", "12-10pm"], menus: [   { label: "📝 VIEW TAP LIST", path: "/data/phantom-menu.json" },  { label: "📅 VIEW EVENTS MENU", path: "/data/phantom-events-menu.json" }   ] },
+        "PHANTOM FARMS": { lat: 41.9744, lng: -71.4556, url: "https://phantomfarmsbrewing.com/", tapListUrl: "https://phantomfarmsbrewing.com/pages/beers-on-tap", logo: "logos/phantom.png", hours: ["12-8pm", "5-9pm", "Closed", "4-9pm", "4-9pm", "12-10pm", "12-10pm"], menus: [   { label: "📝 VIEW TAP LIST", path: "/data/phantom-menu.json" }] },
 
  "CROOKED CURRENT BREWERY": { lat: 41.8728, lng: -71.4057, url: "https://www.facebook.com/CrookedCurrentBrewery/",tapListUrl: "https://www.facebook.com/CrookedCurrentBrewery/", logo: "logos/crookedcurrent.png", hours: ["Closed", "Closed", "Closed", "Closed", "5-8pm", "5-9pm", "1-6pm"], menus: [   { label: "📝 VIEW TAP LIST", path: "/data/crookedcurrent-menu.json" }] },
    
@@ -120,7 +115,7 @@ window.onerror = function(message, source, lineno, colno, error) {
 
        	
         "UNION STATION BREWERY": { lat: 41.8257, lng: -71.4143, url: "https://unionstationpvd.com/", tapListUrl: "https://unionstationpvd.com/providence-union-station-brewery-our-beer", logo: "logos/unionstation.png", hours: ["11:30am-9pm", "11:30am-10pm", "11:30am-10pm", "11:30am-10pm", "11:30am-12am", "11:30am-12am", "11:30am-1am"], hasKitchen: true },
-     "WEST PASSAGE BREWING": { lat: 41.5853, lng: -71.4578, url: "https://westpassagebrewing.com/", tapListUrl: "https://westpassagebrewing.com/our-beers/", logo: "logos/westpassage.png", hours: ["8am-1pm", "5-10pm", "Closed", "4-10pm", "4-10pm", "11:00am-11pm", "8:00am-11pm"], hasKitchen: true },
+     "WEST PASSAGE BREWING": { lat: 41.5853, lng: -71.4578, url: "https://https://westpassagebrewing.com/", tapListUrl: "https://westpassagebrewing.com/our-beers/", logo: "logos/westpassage.png", hours: ["8am-1pm", "5-10pm", "Closed", "4-10pm", "4-10pm", "11:00am-11pm", "8:00am-11pm"], hasKitchen: true },
     "TOWER HILL BREWING": { lat: 41.4563, lng: -71.4639, url: "https://www.towerhillbrewing.com/", tapListUrl: "https://www.towerhillbrewing.com/menu/", logo: "logos/towerhill.png", hours: ["12-9pm", "3-9pm", "3-9pm", "3-9pm", "3-9pm", "2-10pm", "12-10pm"]},
         "APPONAUG BREWING": { lat: 41.7028, lng: -71.4475, url: "https://apponaugbrewing.com/", tapListUrl: "https://apponaugbrewing.com/warwick-apponaug-brewing-menus", logo: "logos/apponaug.png", hours: ["12-8pm", "Closed", "4-10pm", "4-10pm", "4-10pm", "4-11pm", "12-11pm"], hasKitchen: true }
     };
@@ -190,105 +185,173 @@ window.onerror = function(message, source, lineno, colno, error) {
         }
     }
 
-
-function renderDate(selectedNormDate) {
+    function renderDate(selectedNormDate) {
     const container = document.getElementById('truck-container');
     container.innerHTML = '';
     const [m, d] = selectedNormDate.split('/');
     const selectedDay = new Date(new Date().getFullYear(), parseInt(m) - 1, parseInt(d)).getDay();
+    const isActuallyToday = selectedNormDate === `${new Date().getMonth() + 1}/${new Date().getDate()}`;
 
-    // 1. Base list: All trucks for the selected date
+    // 1. Initial filter for trucks scheduled on this specific date
     let listToRender = allTruckData
         .filter(t => normalize(t.start) === selectedNormDate)
         .map(t => {
             const info = breweryData[t.brewery];
-            let dist = userCoords && info ? getDistance(userCoords.lat, userCoords.lng, info.lat, info.lng) : Infinity;
-            return { ...t, distance: dist, isOpenNow: info ? checkIfOpen(info.hours[selectedDay]) : false, hasKitchen: info ? info.hasKitchen : false, rawHours: info ? info.hours[selectedDay] : "Closed" };
+            let dist = Infinity;
+            if (userCoords && info) dist = getDistance(userCoords.lat, userCoords.lng, info.lat, info.lng);
+            return { 
+                ...t, 
+                distance: dist, 
+                isOpenNow: info ? checkIfOpen(info.hours[selectedDay]) : false,
+                hasKitchen: info ? info.hasKitchen : false,
+                rawHours: info ? info.hours[selectedDay] : "Closed"
+            };
         });
 
-    // 2. Tab-specific logic
     if (currentTab === 'beer') {
+        // 2. BEER TAB LOGIC: Show all breweries scheduled OR not scheduled, but NOT if they are closed today
         const scheduledBreweryNames = new Set(listToRender.map(t => t.brewery));
+        
         Object.keys(breweryData).forEach(bName => {
             const info = breweryData[bName];
             const todayHours = info.hours[selectedDay];
-            if (!scheduledBreweryNames.has(bName) && todayHours && todayHours.toLowerCase() !== "closed") {
-                let dist = userCoords ? getDistance(userCoords.lat, userCoords.lng, info.lat, info.lng) : Infinity;
-                listToRender.push({ brewery: bName, truck: "Taproom Hours", distance: dist, isOpenNow: checkIfOpen(todayHours), hasKitchen: info.hasKitchen, rawHours: todayHours });
+
+            // Only add if brewery isn't already in list AND isn't "Closed"
+            if (!scheduledBreweryNames.has(bName) && todayHours.toLowerCase() !== "closed") {
+                let dist = Infinity;
+                if (userCoords) dist = getDistance(userCoords.lat, userCoords.lng, info.lat, info.lng);
+                listToRender.push({
+                    brewery: bName,
+                    truck: "Taproom Hours",
+                    distance: dist,
+                    isOpenNow: checkIfOpen(todayHours),
+                    hasKitchen: info.hasKitchen,
+                    rawHours: todayHours
+
+
+
+
+                });
             }
         });
+
+        // Final Beer Tab cleanup: Remove anything that ended up in the list but is closed
         listToRender = listToRender.filter(item => item.rawHours.toLowerCase() !== "closed");
 
-    } else if (currentTab === 'food') {
+    } else {
+        // 3. FOOD TAB LOGIC: Show scheduled trucks AND breweries with kitchens
         const kitchenBreweries = Object.keys(breweryData)
-            .filter(bName => breweryData[bName].hasKitchen && breweryData[bName].hours[selectedDay].toLowerCase() !== "closed")
+            .filter(bName => {
+                const info = breweryData[bName];
+                return info.hasKitchen && info.hours[selectedDay].toLowerCase() !== "closed";
+            })
             .map(bName => {
                 const info = breweryData[bName];
-                let dist = userCoords ? getDistance(userCoords.lat, userCoords.lng, info.lat, info.lng) : Infinity;
-                return { brewery: bName, truck: "Full Kitchen On-Site", distance: dist, hasKitchen: true, rawHours: info.hours[selectedDay] };
+                let dist = Infinity;
+                if (userCoords) dist = getDistance(userCoords.lat, userCoords.lng, info.lat, info.lng);
+                return {
+                    brewery: bName,
+                    truck: "Full Kitchen On-Site",
+                    distance: dist,
+                    isOpenNow: checkIfOpen(info.hours[selectedDay]),
+                    hasKitchen: true,
+                    rawHours: info.hours[selectedDay]
+                };
             });
+
+
+
+
+
+
+
+
+        // Combine both sources and remove duplicates (preferring scheduled trucks over generic "Kitchen" label)
         const combined = [...listToRender, ...kitchenBreweries];
-        listToRender = Array.from(new Map(combined.map(item => [item.brewery, item])).values())
-                            .filter(t => t.hasKitchen || (t.truck && t.truck !== "No Truck Scheduled" && t.truck !== "Taproom Hours"));
+        listToRender = Array.from(new Map(combined.map(item => [item.brewery, item])).values());
+        
+        // Ensure we only show items with food
+        listToRender = listToRender.filter(t => t.hasKitchen || (t.truck && t.truck !== "No Truck Scheduled" && t.truck !== "Taproom Hours"));
+    }
 
-    } else if (currentTab === 'events') {
-    listToRender = allEventData.filter(e => {
-        // Normalize the event date to match the format of selectedNormDate
-        // Assuming selectedNormDate is in "M/D" or "M/D/YYYY" format
+    // Sort by distance and render
+    listToRender.sort((a, b) => a.distance - b.distance);
 
-        const eventDateParts = e.date.split('/'); 
-const normalizedEventDate = `${parseInt(eventDateParts[0])}/${parseInt(eventDateParts[1])}`;
-return normalizedEventDate === selectedNormDate;
-
-    }).map(e => ({
-        brewery: e.location, // Note: You were using e.name, but your JSON has location!
-        truck: "Event", 
-        distance: null, 
-        description: e.description, 
-        rawHours: e.date
-    }));
-}
-
-    // 3. Sort and Render
-    listToRender.sort((a, b) => (a.distance || 0) - (b.distance || 0));
-    
     if (listToRender.length === 0) {
         container.innerHTML = `<p style="text-align:center; color:#888; margin-top:40px;">No options found for this date.</p>`;
         return;
     }
 
-    listToRender.forEach(item => {
+    
+
+
+
+listToRender.forEach(item => {
         const info = breweryData[item.brewery];
-if (!info) {
-    console.warn(`Missing data for: ${item.brewery}`);
-    return; // Or continue
-}
         const card = document.createElement('div');
         card.className = 'card';
         
         const statusText = item.isOpenNow ? 'Open Now' : 'Scheduled';
         const statusColor = item.isOpenNow ? '#2e7d32' : '#444';
+        
+        // Determine label: If it's the beer tab, show "Taproom Hours". If food, show the truck name or kitchen info.
         const mainLabel = currentTab === 'beer' ? "Taproom Hours" : item.truck;
 
-        let tapListHtml = '';
-        if (info && info.menus) {
-            tapListHtml = info.menus
-                .filter(menu => currentTab === 'beer' ? menu.label.includes('TAP LIST') : true)
-                .map(menu => `<button onclick="openTapList('${menu.path}', '${item.brewery}')" class="tap-list-btn" style="margin-top:5px;">${menu.label}</button>`).join('');
-        } else if (info && info.tapListUrl) {
-            tapListHtml = `<a href="${info.tapListUrl}" target="_blank" class="tap-list-btn">📝 View Tap List</a>`;
-        }
+       let tapListHtml = '';
+if (item.brewery.toLowerCase().includes('uncommon')) {
+    tapListHtml = `<button onclick="openTapList('/data/uncommon-pair-menu.json', 'Uncommon Pair')" class="tap-list-btn">📝 VIEW TAP LIST</button>`;
+} else if (item.brewery.toLowerCase().includes('phantom')) {
+    tapListHtml = `<button onclick="openTapList('/data/phantom-menu.json', 'Phantom Farms')" class="tap-list-btn">📝 VIEW TAP LIST</button>`;
+} else if (item.brewery.toLowerCase().includes('foolproof')) {
+    tapListHtml = `<button onclick="openTapList('/data/foolproof-menu.json', 'Foolproof Brewing')" class="tap-list-btn">📝 VIEW TAP LIST</button>`;
+} else if (item.brewery.toLowerCase().includes('lops')) {
+    tapListHtml = `<button onclick="openTapList('/data/lops-menu.json', 'Lops Brewery')" class="tap-list-btn">📝 VIEW TAP LIST</button>`;
+
+
+} else if (item.brewery.toLowerCase().includes('guild')) {
+    // Generate both buttons if the brewery is The Guild
+    tapListHtml = `	
+        <button onclick="openTapList('/data/guild-menu.json', 'The Guild Pawtucket')" class="tap-list-btn">📝 VIEW TAP LIST</button>
+        <button onclick="openTapList('/data/guild-food-menu.json', 'The Guild Pawtucket')" class="tap-list-btn" style="margin-top: 5px;">🍔 VIEW FOOD MENU</button>
+    `;
+
+
+} else if (item.brewery.toLowerCase().includes('crooked') && item.brewery.toLowerCase().includes('current')) {
+    tapListHtml = `<button onclick="openTapList('/data/crookedcurrent-menu.json', 'Crooked Current Brewing')" class="tap-list-btn">📝 VIEW TAP LIST</button>`;
+// Add this new block for Moniker:
+} else if (item.brewery.toLowerCase().includes('moniker')) {
+    tapListHtml = `<button onclick="openTapList('/data/moniker-menu.json', 'Moniker Brewery')" class="tap-list-btn">📝 VIEW TAP LIST</button>`;
+} else if (info.tapListUrl){
+    tapListHtml = `<a href="${info.tapListUrl}" target="_blank" class="tap-list-btn">📝 View Tap List</a>`;
+}
+
+if (info && info.menus) {
+    tapListHtml = info.menus
+        .filter(menu => {
+            // If on 'beer' tab, only show tap list. If 'food' tab, show both.
+            if (currentTab === 'beer') return menu.label.includes('TAP LIST');
+            return true; // Show everything on 'food' tab
+        })
+        .map(menu => `
+            <button onclick="openTapList('${menu.path}', '${item.brewery}')" 
+                    class="tap-list-btn" style="display:block; width:100%; margin-top:5px;">
+                ${menu.label}
+            </button>
+        `).join('');
+} else if (info && info.tapListUrl) {
+    tapListHtml = `<a href="${info.tapListUrl}" target="_blank" class="tap-list-btn">📝 View Tap List</a>`;
+}
+
 
         card.innerHTML = `
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
-                <a href="${info?.url || '#'}" target="_blank" class="brewery-link">
-                    <img src="${info?.logo || ''}" alt="${item.brewery}" class="brewery-logo">
+                <a href="${info.url}" target="_blank" class="brewery-link">
+                    <img src="${info.logo}" alt="${item.brewery}" class="brewery-logo">
                 </a>
-                <span class="distance-tag">${item.distance !== Infinity && item.distance !== null ? item.distance.toFixed(1) + ' mi' : ''}</span>
+                <span class="distance-tag">${item.distance !== Infinity ? item.distance.toFixed(1) + ' mi' : ''}</span>
             </div>
             <div style="font-size: 0.7rem; color: #888; margin-bottom: 10px;">Hours: ${item.rawHours}</div>
-            <span class="truck-name">${item.brewery}</span>
-            <div style="font-size: 0.8rem; margin-bottom: 10px;">${item.description || mainLabel}</div>
+            <span class="truck-name">${mainLabel}</span>
             <div style="display: flex; align-items: center; gap: 10px;">
                 <span class="status-badge" style="background: ${statusColor};">${statusText}</span>
                 ${item.hasKitchen ? '<span class="status-badge" style="background: #0277bd;">Food On-Site</span>' : ''}
@@ -298,12 +361,13 @@ if (!info) {
         container.appendChild(card);
     });
 }
-   
 
 
 
 
-async function openTapList(jsonPath, breweryName) {
+
+
+ async function openTapList(jsonPath, breweryName) {
     const modal = document.getElementById('tapListModal');
     const content = document.getElementById('modalContent');
     const title = document.getElementById('modalTitle');
@@ -314,70 +378,132 @@ async function openTapList(jsonPath, breweryName) {
 
     try {
         const response = await fetch(jsonPath);
-        if (!response.ok) throw new Error("Network response was not ok");
         const data = await response.json();
-        renderTapList(data); 
+
+        // 1. Handle Images
+        if (data.isImageMenu) {
+            content.innerHTML = `
+                <div style="text-align:center; padding: 20px;">
+                    <img src="${data.menuImageUrl}" style="width:100%; max-width:600px; border-radius:8px; border: 1px solid #444;" alt="Menu" />
+                    <p style="font-size:0.8rem; color:#888; margin-top:10px;">Last updated: ${data.lastUpdated}</p>
+                </div>
+            `;
+            return;
+        }
+
+        // 2. Handle Nested Format (On Tap/Can Pours)
+        if (data["Beer on tap"] && typeof data["Beer on tap"] === 'object' && !Array.isArray(data["Beer on tap"])) {
+            let htmlContent = "";
+            for (const [category, items] of Object.entries(data["Beer on tap"])) {
+                htmlContent += `<h3 style="color: #ffc107; border-bottom: 1px solid #444; margin-top: 20px;">${category}</h3>`;
+                htmlContent += items.map(b => `
+                    <div style="padding:10px; border-bottom:1px solid #333;">
+                        <strong>${b.name}</strong> - ${b.abv}<br>
+                        <div style="font-size:0.8rem; color:#aaa;">${b.description}</div>
+                    </div>
+                `).join('');
+            }
+            content.innerHTML = htmlContent;
+            return;
+        }
+
+        // 3. Handle Grouped (Food) or Flat (Old Beer)
+        const isGrouped = data.hasOwnProperty("Food on site");
+        const displayData = data["Food on site"] || data["Beer on tap"] || data["Beer On Tap"] || data.beers || [];
+
+        if (displayData.length === 0) {
+            content.innerHTML = "<p style='text-align:center;'>No items available.</p>";
+        } else if (isGrouped) {
+            content.innerHTML = displayData.map(section => `
+                <div style="margin-bottom: 20px;">
+                    <h3 style="color: #ffc107; border-bottom: 1px solid #444; margin-top: 20px;">${section.header}</h3>
+                    ${section.items.map(item => `
+                        <div style="padding:10px; border-bottom:1px solid #333;">
+                            <div style="display:flex; justify-content:space-between;"><strong>${item.name}</strong><span>${item.price}</span></div>
+                            <div style="font-size:0.8rem; color:#aaa;">${item.description}</div>
+                        </div>
+                    `).join('')}
+                </div>
+            `).join('');
+        } else {
+            content.innerHTML = displayData.map(b => `
+                <div style="padding:10px; border-bottom:1px solid #333;">
+                    <strong>${b.name}</strong> - ${b.abv}
+                    <div style="font-size:0.8rem; color:#aaa;">${b.description}</div>
+                </div>
+            `).join('');
+        }
     } catch (e) {
         content.innerHTML = "Failed to load.";
         console.error("Menu Load Error:", e);
     }
 }
 
-function renderTapList(data) {
-    const container = document.getElementById('modalContent');
-    container.innerHTML = ''; 
-
-    if (data.isImageMenu) {
-        container.innerHTML = `<img src="${data.menuImageUrl}" style="width:100%">`;
-        return;
-    }
-
-    Object.keys(data).forEach(category => {
-        if (category === 'lastUpdated' || category === 'isImageMenu') return;
-
-        const header = document.createElement('h3');
-        header.textContent = category;
-        container.appendChild(header);
-
-        data[category].forEach(item => {
-            const itemDiv = document.createElement('div');
-            itemDiv.innerHTML = `
-                <div style="padding:10px; border-bottom:1px solid #333;">
-                    <strong>${item.name}</strong> - ${item.abv}<br>
-                    <div style="font-size:0.8rem; color:#aaa;">${item.description || ''}</div>
-                </div>
-            `;
-            container.appendChild(itemDiv);
-        });
-    });
-}
-
 function closeModal() {
     document.getElementById('tapListModal').style.display = "none";
 }
 
-// --- Initialization ---
 
-async function initApp() {
-    generateDatePicker();
 
-    try {
-        // Use Promise.all with explicit catch to prevent one failing fetch from killing the app
-        const [mainRes, manualRes, eventsRes] = await Promise.all([
-    fetch('/api/trucks').catch(() => ({ json: () => [] })),
-    fetch('/manual-trucks.json').catch(() => ({ json: () => [] })),
-    fetch('/data/events.json').catch(() => ({ json: () => [] })) // Removed the extra ()
-]);
+function renderTapList(data) {
+  // Change 'menu-container' to 'modalContent' to match your HTML
+  const container = document.getElementById('modalContent');
+  
+  if (!container) {
+    console.error("Could not find element with id 'modalContent'.");
+    return;
+  }
+  container.innerHTML = ''; // Clear existing content
 
-        const mainTrucks = await mainRes.json();
-        const manualTrucks = await manualRes.json();
-        const eventData = await eventsRes.json();
+  // Loop through each category (e.g., "On Tap", "Can Pours")
+  Object.keys(data).forEach(category => {
+    // Skip 'lastUpdated'
+    if (category === 'lastUpdated') return;
 
-        allTruckData = [...mainTrucks, ...manualTrucks];
-        allEventData = Array.isArray(eventData) ? eventData : [];
+    // 1. Create and append the category header
+    const header = document.createElement('h3');
+    header.textContent = category; // This sets the header to "On Tap" or "Can Pours"
+    container.appendChild(header);
 
-        console.log("Data Loaded - Trucks:", allTruckData.length, "Events:", allEventData.length);
-        
+    // 2. Loop through items in that category
+    data[category].forEach(item => {
+      const itemDiv = document.createElement('div');
+      itemDiv.innerHTML = `
+        <div class="menu-item">
+          <strong>${item.name}</strong> - ${item.abv}<br>
+          <em>${item.style}</em><br>
+          <p>${item.description}</p>
+        </div>
+      `;
+      container.appendChild(itemDiv);
+    });
+  });
+}
+
+
+
+
+
+
+
+
+
+
+
+    async function initApp() {
+        generateDatePicker();
+        try {
+            const [mainRes, manualRes] = await Promise.all([
+                fetch('/api/trucks').catch(() => ({ json: () => [] })),
+                fetch('/manual-trucks.json').catch(() => ({ json: () => [] })) 
+            ]);
+            allTruckData = [...await mainRes.json(), ...await manualRes.json()];
+        } catch (err) { console.error("Data load error:", err); }
+
+
+
+
+
         const today = new Date();
         const dateString = `${today.getMonth() + 1}/${today.getDate()}`;
         renderDate(dateString);
@@ -388,10 +514,9 @@ async function initApp() {
                 renderDate(dateString);
             });
         }
-    } catch (error) {
-        console.error("Critical error in initApp:", error);
     }
-}
 
-// Start the app
-initApp();
+    initApp();
+</script>
+</body>
+</html>
