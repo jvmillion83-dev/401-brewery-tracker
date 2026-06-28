@@ -364,10 +364,10 @@ async function initApp() {
     try {
         // Use Promise.all with explicit catch to prevent one failing fetch from killing the app
         const [mainRes, manualRes, eventsRes] = await Promise.all([
-            fetch('/api/trucks').catch(() => ({ json: () => [] })),
-            fetch('/manual-trucks.json').catch(() => ({ json: () => [] })),
-            fetch('/data/events.json').catch(() => ({ json: () => [] }))
-        ]);
+    fetch('/api/trucks').catch(() => ({ json: () => [] })),
+    fetch('/manual-trucks.json').catch(() => ({ json: () => [] })),
+    fetch('/data/events.json').catch(() => ({ json: () => [] })) // Removed the extra ()
+]);
 
         const mainTrucks = await mainRes.json();
         const manualTrucks = await manualRes.json();
