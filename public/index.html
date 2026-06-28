@@ -300,20 +300,6 @@ if (!info) {
 
 
 
-
-
-
-
-
-
-
-    
-
-
-
-
-
-
 async function openTapList(jsonPath, breweryName) {
     const modal = document.getElementById('tapListModal');
     const content = document.getElementById('modalContent');
@@ -325,18 +311,15 @@ async function openTapList(jsonPath, breweryName) {
 
     try {
         const response = await fetch(jsonPath);
+        if (!response.ok) throw new Error("Network response was not ok");
         const data = await response.json();
-        
-        // Call the rendering function here
         renderTapList(data); 
-
     } catch (e) {
         content.innerHTML = "Failed to load.";
         console.error("Menu Load Error:", e);
     }
 }
 
-// 2. The Rendering Function (Must be outside the other function)
 function renderTapList(data) {
     const container = document.getElementById('modalContent');
     container.innerHTML = ''; 
@@ -366,30 +349,17 @@ function renderTapList(data) {
     });
 }
 
-    } catch (e) {
-        content.innerHTML = "Failed to load.";
-        console.error("Menu Load Error:", e);
-    }
-}
-
-
-
-
-
-
-
 function closeModal() {
     document.getElementById('tapListModal').style.display = "none";
 }
 
-
-
-
+// --- Initialization ---
 
 async function initApp() {
     generateDatePicker();
 
     try {
+        // Use Promise.all with explicit catch to prevent one failing fetch from killing the app
         const [mainRes, manualRes, eventsRes] = await Promise.all([
             fetch('/api/trucks').catch(() => ({ json: () => [] })),
             fetch('/manual-trucks.json').catch(() => ({ json: () => [] })),
@@ -418,7 +388,7 @@ async function initApp() {
     } catch (error) {
         console.error("Critical error in initApp:", error);
     }
-} // <--- This closing brace closes the initApp function
+}
 
 // Start the app
 initApp();
