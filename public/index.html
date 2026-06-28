@@ -232,10 +232,11 @@ function renderDate(selectedNormDate) {
     listToRender = allEventData.filter(e => {
         // Normalize the event date to match the format of selectedNormDate
         // Assuming selectedNormDate is in "M/D" or "M/D/YYYY" format
-        const eventDateParts = e.date.split('/'); // ["06", "27", "2026"]
-        const normalizedEventDate = `${parseInt(eventDateParts[0])}/${parseInt(eventDateParts[1])}`;
-        
-        return normalizedEventDate === selectedNormDate;
+
+        const eventDateParts = e.date.split('/'); 
+const normalizedEventDate = `${parseInt(eventDateParts[0])}/${parseInt(eventDateParts[1])}`;
+return normalizedEventDate === selectedNormDate;
+
     }).map(e => ({
         brewery: e.location, // Note: You were using e.name, but your JSON has location!
         truck: "Event", 
@@ -255,6 +256,10 @@ function renderDate(selectedNormDate) {
 
     listToRender.forEach(item => {
         const info = breweryData[item.brewery];
+if (!info) {
+    console.warn(`Missing data for: ${item.brewery}`);
+    return; // Or continue
+}
         const card = document.createElement('div');
         card.className = 'card';
         
@@ -378,38 +383,35 @@ function renderDate(selectedNormDate) {
         }
 
 function renderTapList(data) {
-  // Change 'menu-container' to 'modalContent' to match your HTML
-  const container = document.getElementById('modalContent');
-  
-  if (!container) {
-    console.error("Could not find element with id 'modalContent'.");
-    return;
-  }
-  container.innerHTML = ''; // Clear existing content
+    const container = document.getElementById('modalContent');
+    container.innerHTML = ''; 
 
-  // Loop through each category (e.g., "On Tap", "Can Pours")
-  Object.keys(data).forEach(category => {
-    // Skip 'lastUpdated'
-    if (category === 'lastUpdated') return;
+    // 1. Handle Image Menus
+    if (data.isImageMenu) {
+        container.innerHTML = `<img src="${data.menuImageUrl}" style="width:100%">`;
+        return;
+    }
 
-    // 1. Create and append the category header
-    const header = document.createElement('h3');
-    header.textContent = category; // This sets the header to "On Tap" or "Can Pours"
-    container.appendChild(header);
+    // 2. Handle Object/Category based menus (The logic from your current renderTapList)
+    // Ensure you match the structure of your JSON files here!
+    Object.keys(data).forEach(category => {
+        if (category === 'lastUpdated' || category === 'isImageMenu') return;
 
-    // 2. Loop through items in that category
-    data[category].forEach(item => {
-      const itemDiv = document.createElement('div');
-      itemDiv.innerHTML = `
-        <div class="menu-item">
-          <strong>${item.name}</strong> - ${item.abv}<br>
-          <em>${item.style}</em><br>
-          <p>${item.description}</p>
-        </div>
-      `;
-      container.appendChild(itemDiv);
+        const header = document.createElement('h3');
+        header.textContent = category;
+        container.appendChild(header);
+
+        data[category].forEach(item => {
+            const itemDiv = document.createElement('div');
+            itemDiv.innerHTML = `
+                <div style="padding:10px; border-bottom:1px solid #333;">
+                    <strong>${item.name}</strong> - ${item.abv}<br>
+                    <div style="font-size:0.8rem; color:#aaa;">${item.description || ''}</div>
+                </div>
+            `;
+            container.appendChild(itemDiv);
+        });
     });
-  });
 }
 
     } catch (e) {
